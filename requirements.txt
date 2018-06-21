@@ -1,6 +1,4 @@
-rpyc
 hypothesis
 pytest
-future
 mock
 six

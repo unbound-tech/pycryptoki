@@ -1,23 +1,18 @@
 """
 RC-related Mechanism implementations
 """
-import logging
-import types
-from ctypes import c_void_p, cast, pointer, POINTER, sizeof, create_string_buffer, c_char
+from ctypes import c_void_p, cast, pointer, sizeof
 
-from six import integer_types
-
-from .. import cryptoki
 from . import Mechanism
-from ..attributes import to_byte_array, to_char_array, CONVERSIONS
-from ..cryptoki import CK_AES_CBC_PAD_EXTRACT_PARAMS, CK_MECHANISM, \
+from ..attributes import to_byte_array
+from ..cryptoki import CK_AES_CBC_PAD_EXTRACT_PARAMS, \
     CK_ULONG, CK_ULONG_PTR, CK_AES_CBC_PAD_INSERT_PARAMS, CK_BYTE, CK_BYTE_PTR, CK_RC2_CBC_PARAMS, \
     CK_RC5_PARAMS, CK_RC5_CBC_PARAMS, CK_MECHANISM_TYPE, CK_AES_XTS_PARAMS, \
     CK_RSA_PKCS_OAEP_PARAMS, \
     CK_AES_GCM_PARAMS, CK_RSA_PKCS_PSS_PARAMS, CK_KEY_DERIVATION_STRING_DATA, c_ubyte, \
     CK_AES_CBC_ENCRYPT_DATA_PARAMS
 from ..defines import *
-from ..exceptions import LunaException
+from ..exceptions import CryptokiException
 
 
 class RC2Mechanism(Mechanism):

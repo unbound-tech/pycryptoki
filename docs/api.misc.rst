@@ -20,27 +20,4 @@ Find Objects, Attribute Setting/Getting
     :undoc-members:
     :show-inheritance:
 
-HSM Management
---------------
 
-.. automodule:: pycryptoki.hsm_management
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Audit Functions
----------------
-
-.. automodule:: pycryptoki.audit_handling
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Backup Functions
-----------------
-
-.. automodule:: pycryptoki.backup
-    :members:
-    :undoc-members:
-    :show-inheritance:

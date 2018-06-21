@@ -6,13 +6,11 @@ from ctypes import byref
 from .attributes import Attributes
 from .cryptoki import C_DeriveKey
 from .cryptoki import C_DestroyObject, CK_OBJECT_HANDLE, CK_ULONG, C_GenerateKey, \
-    C_GenerateKeyPair, CA_DestroyMultipleObjects, C_CopyObject
+    C_GenerateKeyPair, C_CopyObject
 from .default_templates import CKM_DES_KEY_GEN_TEMP, \
     get_default_key_pair_template
 from .defines import CKM_DES_KEY_GEN, CKM_RSA_PKCS_KEY_PAIR_GEN
 from .mechanism import parse_mechanism
-from .exceptions import make_error_handle_function
-from .common_utils import AutoCArray
 
 
 def c_destroy_object(h_session, h_object_value):
@@ -24,25 +22,6 @@ def c_destroy_object(h_session, h_object_value):
     """
     ret = C_DestroyObject(h_session, CK_OBJECT_HANDLE(h_object_value))
     return ret
-
-
-c_destroy_object_ex = make_error_handle_function(c_destroy_object)
-
-def ca_destroy_multiple_objects(h_session, objects):
-    """Delete multiple objects corresponding to given object handles
-
-    :param int h_session: Session handle
-    :param list objects: The handles of the objects to delete
-    :returns: Return code
-    """
-    handles_count = len(objects)
-    handles = AutoCArray(data=objects, ctype=CK_ULONG)
-    ret = CA_DestroyMultipleObjects(h_session, handles_count, handles.array, byref(CK_ULONG()))
-    return ret
-
-
-ca_destroy_multiple_objects_ex = make_error_handle_function(ca_destroy_multiple_objects)
-
 
 def c_copy_object(h_session, h_object, template=None):
     """Method to call the C_CopyObject cryptoki command.
@@ -63,9 +42,6 @@ def c_copy_object(h_session, h_object, template=None):
     ret = C_CopyObject(h_session, h_object, attributes.get_c_struct(), template_size, h_new_object)
 
     return ret, h_new_object.value
-
-
-c_copy_object_ex = make_error_handle_function(c_copy_object)
 
 
 def c_generate_key(h_session, mechanism=None, template=None):
@@ -97,9 +73,6 @@ def c_generate_key(h_session, mechanism=None, template=None):
                         us_public_template_size, byref(h_key))
 
     return ret, h_key.value
-
-
-c_generate_key_ex = make_error_handle_function(c_generate_key)
 
 
 def c_generate_key_pair(h_session,
@@ -141,9 +114,6 @@ def c_generate_key_pair(h_session,
     return ret, h_pbkey.value, h_prkey.value
 
 
-c_generate_key_pair_ex = make_error_handle_function(c_generate_key_pair)
-
-
 def c_derive_key(h_session, h_base_key, template, mechanism=None):
     """Derives a key from another key.
 
@@ -163,9 +133,6 @@ def c_derive_key(h_session, h_base_key, template, mechanism=None):
                       c_template, CK_ULONG(len(template)),
                       byref(h_key))
     return ret, h_key.value
-
-
-c_derive_key_ex = make_error_handle_function(c_derive_key)
 
 
 def clear_keys(h_session):

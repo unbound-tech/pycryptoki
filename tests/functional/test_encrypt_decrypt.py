@@ -1,7 +1,6 @@
 """ Functional tests for encryption / decryption """
 import collections
 import logging
-from distutils.version import LooseVersion
 
 import pytest
 
@@ -14,17 +13,15 @@ from pycryptoki.defines import (CKM_DES_CBC, CKM_DES_KEY_GEN,
                                 CKM_CAST5_CBC, CKM_CAST5_ECB, CKM_CAST5_KEY_GEN,
                                 CKM_RC2_CBC, CKM_RC2_ECB, CKM_RC2_CBC_PAD, CKM_RC2_KEY_GEN,
                                 CKM_RC4, CKM_RC4_KEY_GEN,
-                                CKM_SEED_CBC, CKM_SEED_CBC_PAD, CKM_SEED_ECB, CKM_SEED_KEY_GEN,
                                 CKM_RSA_PKCS, CKM_RSA_PKCS_OAEP, CKM_RSA_PKCS_KEY_PAIR_GEN,
                                 CKM_RSA_X_509, CKM_RSA_X9_31_KEY_PAIR_GEN,
-                                CKM_SHA_1, CKG_MGF1_SHA1, CKM_AES_KWP, CKM_AES_KW,
+                                CKM_SHA_1, CKG_MGF1_SHA1,
                                 CKR_MECHANISM_INVALID, CKR_MECHANISM_PARAM_INVALID, CKM_AES_CTR,
                                 CKM_AES_GMAC)
 from pycryptoki.defines import (CKR_OK, CKR_DATA_LEN_RANGE, CKR_KEY_SIZE_RANGE)
 from pycryptoki.encryption import c_encrypt, c_decrypt
 from pycryptoki.key_generator import c_generate_key, c_generate_key_pair, c_destroy_object
 from pycryptoki.lookup_dicts import ret_vals_dictionary
-from . import config as hsm_config
 from .util import get_session_template
 
 logger = logging.getLogger(__name__)
@@ -34,8 +31,6 @@ SYM_TABLE = {CKM_DES_CBC: CKM_DES_KEY_GEN,
              CKM_AES_ECB: CKM_AES_KEY_GEN,
              CKM_AES_CTR: CKM_AES_KEY_GEN,
              CKM_AES_GCM: CKM_AES_KEY_GEN,
-             CKM_AES_KW: CKM_AES_KEY_GEN,
-             CKM_AES_KWP: CKM_AES_KEY_GEN,  # Note: Supported in Q3/Q4 2016 SA
              CKM_DES3_CBC: CKM_DES3_KEY_GEN,
              CKM_DES3_ECB: CKM_DES3_KEY_GEN,
              CKM_DES3_CBC_PAD: CKM_DES3_KEY_GEN,
@@ -47,9 +42,7 @@ SYM_TABLE = {CKM_DES_CBC: CKM_DES_KEY_GEN,
              CKM_RC2_ECB: CKM_RC2_KEY_GEN,
              CKM_RC2_CBC_PAD: CKM_RC2_KEY_GEN,
              CKM_RC4: CKM_RC4_KEY_GEN,
-             CKM_SEED_CBC: CKM_SEED_KEY_GEN,
-             CKM_SEED_CBC_PAD: CKM_SEED_KEY_GEN,
-             CKM_SEED_ECB: CKM_SEED_KEY_GEN}
+            }
 
 ASYM_TABLE = {CKM_RSA_PKCS: CKM_RSA_PKCS_KEY_PAIR_GEN,
               CKM_RSA_PKCS_OAEP: CKM_RSA_PKCS_KEY_PAIR_GEN,
@@ -59,10 +52,6 @@ ASYM_TABLE = {CKM_RSA_PKCS: CKM_RSA_PKCS_KEY_PAIR_GEN,
 #   *** Update as additional test params are added ***
 PARAM_TABLE = {CKM_DES_CBC: [{}, {'iv': list(range(8))}],
                CKM_AES_CBC: [{}, {'iv': list(range(16))}],
-               CKM_AES_KW: [{'iv': []},
-                            {'iv': list(range(8))}],
-               CKM_AES_KWP: [{'iv': []},
-                             {'iv': list(range(8))}],
                CKM_AES_CTR: [{'cb': list(range(16)),
                               'ulCounterBits': 16}],
                #  Note: Supported in Q3/Q4 2016 SA
@@ -80,9 +69,6 @@ PARAM_TABLE = {CKM_DES_CBC: [{}, {'iv': list(range(8))}],
                CKM_RC2_ECB: [{'usEffectiveBits': 8}],
                CKM_RC2_CBC_PAD: [{'iv': list(range(8)), 'usEffectiveBits': 8}],
                CKM_RC4: [{}],
-               CKM_SEED_CBC: [{}],
-               CKM_SEED_CBC_PAD: [{}],
-               CKM_SEED_ECB: [{}],
                CKM_RSA_PKCS: [{}],
                CKM_RSA_PKCS_OAEP: [{'hashAlg': CKM_SHA_1,
                                     'mgf': CKG_MGF1_SHA1,
@@ -107,8 +93,6 @@ PADDING_ALGORITHMS = [CKM_DES3_CBC_PAD,
                       CKM_RC2_CBC_PAD,
                       CKM_RC4,
                       CKM_AES_GCM,
-                      CKM_AES_KWP,
-                      CKM_SEED_CBC_PAD,
                       CKM_AES_CTR]
 
 # Ret error, however encrypt /decrypt is successful. Needs to be addressed at some point
@@ -152,13 +136,7 @@ def scenarios(which_table):
     ret_list = []
     for mech in which_table.keys():
         for params in PARAM_TABLE[mech]:
-            if mech == CKM_AES_KW:
-                ret_list.append(
-                    pytest.mark.xfail(
-                        LooseVersion(hsm_config.get('firmware', "6.2.1")) > LooseVersion("6.24.0"),
-                        reason="Mechanism not list in C_GetMechanismList()")((mech, params)))
-            else:
-                ret_list.append((mech, params))
+            ret_list.append((mech, params))
 
     return ret_list
 

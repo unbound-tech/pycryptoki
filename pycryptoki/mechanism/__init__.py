@@ -81,25 +81,13 @@ from ..defines import (CKM_DES_CBC,
                        CKM_CAST5_CBC,
                        CKM_DES_CBC_PAD,
                        CKM_DES3_CBC_PAD,
-                       CKM_DES3_CBC_PAD_IPSEC,
                        CKM_CAST3_CBC_PAD,
                        CKM_CAST5_CBC_PAD,
                        CKM_DES_CFB8,
                        CKM_DES_CFB64,
                        CKM_DES_OFB64,
-                       CKM_AES_KW,
-                       CKM_AES_KWP,
-                       CKM_AES_CFB8,
-                       CKM_AES_CFB128,
-                       CKM_AES_OFB,
-                       CKM_ARIA_CFB8,
-                       CKM_ARIA_CFB128,
-                       CKM_ARIA_OFB,
-                       CKM_SEED_CBC,
-                       CKM_SEED_CBC_PAD,
                        CKM_AES_CBC,
                        CKM_AES_CBC_PAD,
-                       CKM_AES_CBC_PAD_IPSEC,
                        CKM_ARIA_ECB,
                        CKM_ARIA_CBC,
                        CKM_ARIA_CBC_PAD,
@@ -110,7 +98,6 @@ from ..defines import (CKM_DES_CBC,
                        CKM_RC5_CBC,
                        CKM_RC5_ECB,
 
-                       CKM_AES_XTS,
                        CKM_VENDOR_DEFINED,
                        CKM_AES_GCM,
 
@@ -136,8 +123,7 @@ from ..defines import (CKM_DES_CBC,
                        CKM_ECDH1_DERIVE,
                        CKM_AES_CTR,
                        CKM_AES_GMAC,
-
-                       CKM_PRF_KDF)
+                       )
 
 MECH_LOOKUP = {
     # Iv
@@ -147,27 +133,15 @@ MECH_LOOKUP = {
     CKM_CAST5_CBC: IvMechanism,
     CKM_DES_CBC_PAD: IvMechanism,
     CKM_DES3_CBC_PAD: IvMechanism,
-    CKM_DES3_CBC_PAD_IPSEC: IvMechanism,
     CKM_CAST3_CBC_PAD: IvMechanism,
     CKM_CAST5_CBC_PAD: IvMechanism,
     CKM_DES_CFB8: IvMechanism,
     CKM_DES_CFB64: IvMechanism,
     CKM_DES_OFB64: IvMechanism,
-    CKM_AES_KW: IvMechanism,
-    CKM_AES_KWP: IvMechanism,
-    CKM_AES_CFB8: IvMechanism,
-    CKM_AES_CFB128: IvMechanism,
-    CKM_AES_OFB: IvMechanism,
     CKM_AES_CTR: AESCTRMechanism,
-    CKM_ARIA_CFB8: IvMechanism,
-    CKM_ARIA_CFB128: IvMechanism,
-    CKM_ARIA_OFB: IvMechanism,
     # Iv16
-    CKM_SEED_CBC: Iv16Mechanism,
-    CKM_SEED_CBC_PAD: Iv16Mechanism,
     CKM_AES_CBC: Iv16Mechanism,
     CKM_AES_CBC_PAD: Iv16Mechanism,
-    CKM_AES_CBC_PAD_IPSEC: Iv16Mechanism,
     CKM_ARIA_ECB: Iv16Mechanism,
     CKM_ARIA_CBC: Iv16Mechanism,
     CKM_ARIA_CBC_PAD: Iv16Mechanism,
@@ -179,8 +153,6 @@ MECH_LOOKUP = {
     CKM_RC5_CBC: RC5CBCMechanism,
     CKM_RC5_ECB: RC5Mechanism,
 
-    CKM_AES_XTS: AESXTSMechanism,
-    (CKM_VENDOR_DEFINED + 0x11c): AESGCMMechanism,  # Backwards compatibility w/ older Lunas.
     CKM_AES_GCM: AESGCMMechanism,
     CKM_AES_GMAC: AESGCMMechanism,
 
@@ -204,6 +176,4 @@ MECH_LOOKUP = {
     CKM_CONCATENATE_DATA_AND_BASE: StringDataDerivationMechanism,
 
     CKM_ECDH1_DERIVE: ECDH1DeriveMechanism,
-
-    CKM_PRF_KDF: PRFKDFDeriveMechanism,
 }

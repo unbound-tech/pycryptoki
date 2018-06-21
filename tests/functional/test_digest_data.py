@@ -3,15 +3,13 @@ import logging
 import pytest
 
 from pycryptoki.return_values import ret_vals_dictionary
-from pycryptoki.defines import CKR_OK, \
-    CKM_MD2, CKM_SHA_1, CKM_SHA224, CKM_SHA256, CKM_SHA384, CKM_SHA512
+from pycryptoki.defines import CKR_OK, CKM_MD5, CKM_SHA_1, CKM_SHA256, CKM_SHA384, CKM_SHA512
 from pycryptoki.misc import c_digest
 
 logger = logging.getLogger(__name__)
 
-MECHS = {CKM_MD2: "MD2",
+MECHS = {CKM_MD5: "MD5",
          CKM_SHA_1: "SHA1",
-         CKM_SHA224: "SHA224",
          CKM_SHA256: "SHA256",
          CKM_SHA384: "SHA384",
          CKM_SHA512: "SHA512"}

@@ -6,8 +6,6 @@ PKCS11 Interface to the following functions:
 * c_digest
 * c_digestkey
 * c_create_object
-* c_set_ped_id (CA_ function)
-* c_get_ped_id (CA_ function)
 """
 from _ctypes import POINTER
 from ctypes import create_string_buffer, cast, byref, string_at, c_ubyte
@@ -19,9 +17,8 @@ from .attributes import Attributes, to_byte_array
 from .common_utils import refresh_c_arrays, AutoCArray
 from .cryptoki import C_GenerateRandom, CK_BYTE_PTR, CK_ULONG, \
     C_SeedRandom, C_DigestInit, C_DigestUpdate, C_DigestFinal, C_Digest, C_CreateObject, \
-    CA_SetPedId, CK_SLOT_ID, CA_GetPedId, C_DigestKey
+    C_DigestKey
 from .defines import CKR_OK
-from .exceptions import make_error_handle_function
 from .mechanism import parse_mechanism
 from .sign_verify import do_multipart_sign_or_digest
 
@@ -42,10 +39,6 @@ def c_generate_random(h_session, length):
     data = string_at(data_ptr, length)
     return ret, data
 
-
-c_generate_random_ex = make_error_handle_function(c_generate_random)
-
-
 def c_seed_random(h_session, seed):
     """Seeds the random number generator
 
@@ -61,10 +54,6 @@ def c_seed_random(h_session, seed):
         seed_length = CK_ULONG(len(seed))
     ret = C_SeedRandom(h_session, seed_bytes, seed_length)
     return ret
-
-
-c_seed_random_ex = make_error_handle_function(c_seed_random)
-
 
 def c_digest(h_session, data_to_digest, digest_flavor, mechanism=None, output_buffer=None):
     """Digests some data
@@ -136,9 +125,6 @@ def c_digest(h_session, data_to_digest, digest_flavor, mechanism=None, output_bu
     return ret, digested_python_string
 
 
-c_digest_ex = make_error_handle_function(c_digest)
-
-
 def c_digestkey(h_session, h_key, digest_flavor, mechanism=None):
     """Digest a key
 
@@ -163,9 +149,6 @@ def c_digestkey(h_session, h_key, digest_flavor, mechanism=None):
     return ret
 
 
-c_digestkey_ex = make_error_handle_function(c_digestkey)
-
-
 def c_create_object(h_session, template):
     """Creates an object based on a given python template
 
@@ -179,36 +162,3 @@ def c_create_object(h_session, template):
     ret = C_CreateObject(h_session, c_template, CK_ULONG(len(template)), byref(new_object_handle))
 
     return ret, new_object_handle.value
-
-
-c_create_object_ex = make_error_handle_function(c_create_object)
-
-
-def c_set_ped_id(slot, id):
-    """Set the PED ID for the given slot.
-
-    :param slot: slot number
-    :param id: PED ID to use
-    :returns: The result code
-
-    """
-    ret = CA_SetPedId(CK_SLOT_ID(slot), CK_ULONG(id))
-    return ret
-
-
-c_set_ped_id_ex = make_error_handle_function(c_set_ped_id)
-
-
-def c_get_ped_id(slot):
-    """Get the PED ID for the given slot.
-
-    :param slot: slot number
-    :returns: The result code and ID
-
-    """
-    pedId = CK_ULONG()
-    ret = CA_GetPedId(CK_SLOT_ID(slot), byref(pedId))
-    return ret, pedId.value
-
-
-c_get_ped_id_ex = make_error_handle_function(c_get_ped_id)

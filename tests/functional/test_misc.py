@@ -5,9 +5,9 @@ import logging
 
 import pytest
 
-from . import config as hsm_config
 from pycryptoki.defines import CKR_OK
-from pycryptoki.misc import c_generate_random_ex, c_seed_random, \
+from . import config as test_config
+from pycryptoki.misc import c_generate_random, c_seed_random, \
     c_generate_random
 from pycryptoki.lookup_dicts import ret_vals_dictionary
 
@@ -20,7 +20,7 @@ class TestRNG(object):
     @pytest.fixture(autouse=True)
     def setup_teardown(self, auth_session):
         self.h_session = auth_session
-        self.admin_slot = hsm_config["test_slot"]
+        self.admin_slot = test_config["test_slot"]
 
     def test_rng(self):
         """Tests generating a random number"""
@@ -44,12 +44,13 @@ class TestRNG(object):
                               "it returned " + \
                               ret_vals_dictionary[ret]
 
-        random_string_one = c_generate_random_ex(self.h_session, 10)
-
+        ret, random_string_one = c_generate_random(self.h_session, 10)
+        assert ret == CKR_OK
         ret = c_seed_random(self.h_session, seed)
         assert ret == CKR_OK, "Seeding the random number generator a second time shouldn't return " \
                               "" \
                               "an error, it returned " + \
                               ret_vals_dictionary[ret]
 
-        random_string_two = c_generate_random_ex(self.h_session, 10)
+        ret, random_string_two = c_generate_random(self.h_session, 10)
+        assert ret == CKR_OK

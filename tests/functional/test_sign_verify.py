@@ -4,13 +4,11 @@ import pytest
 
 from pycryptoki.sign_verify import c_sign, c_verify
 from pycryptoki.key_generator import c_generate_key_pair, c_generate_key, c_destroy_object
-from pycryptoki.defines import (CKM_AES_MAC, CKM_AES_CMAC, CKM_AES_KEY_GEN,
+from pycryptoki.defines import (CKM_AES_GMAC, CKM_AES_CMAC, CKM_AES_KEY_GEN,
                                 CKM_DES_MAC, CKM_DES_KEY_GEN,
                                 CKM_DES3_MAC, CKM_DES3_CMAC, CKM_DES3_KEY_GEN,
-                                CKM_CAST3_MAC, CKM_CAST3_KEY_GEN,
-                                CKM_CAST5_MAC, CKM_CAST5_KEY_GEN,
-                                CKM_SEED_MAC, CKM_SEED_CMAC, CKM_SEED_KEY_GEN,
-
+                                # CKM_CAST3_MAC, CKM_CAST3_KEY_GEN,
+                                # CKM_CAST5_MAC, CKM_CAST5_KEY_GEN,
                                 CKM_DSA, CKM_DSA_KEY_PAIR_GEN,
                                 CKM_ECDSA, CKM_ECDSA_KEY_PAIR_GEN,
                                 CKR_OK)
@@ -32,12 +30,13 @@ logger = logging.getLogger(__name__)
 
 DATA = [b"This is some test string to sign.", [b"a" * 1024, b"b" * 1024]]
 
-SYM_PARAMS = [(CKM_AES_KEY_GEN, CKM_AES_MAC), (CKM_AES_KEY_GEN, CKM_AES_CMAC),
-              (CKM_DES_KEY_GEN, CKM_DES_MAC),
-              (CKM_DES3_KEY_GEN, CKM_DES3_MAC), (CKM_DES3_KEY_GEN, CKM_DES3_CMAC),
-              (CKM_CAST3_KEY_GEN, CKM_CAST3_MAC),
-              (CKM_CAST5_KEY_GEN, CKM_CAST5_MAC),
-              (CKM_SEED_KEY_GEN, CKM_SEED_MAC), (CKM_SEED_KEY_GEN, CKM_SEED_CMAC)]
+SYM_PARAMS = [(CKM_AES_KEY_GEN, CKM_AES_CMAC),
+              #(CKM_AES_KEY_GEN, CKM_AES_GMAC),
+            #   (CKM_DES3_KEY_GEN, CKM_DES3_MAC),
+              (CKM_DES3_KEY_GEN, CKM_DES3_CMAC),
+            #   (CKM_CAST3_KEY_GEN, CKM_CAST3_MAC),
+            #   (CKM_CAST5_KEY_GEN, CKM_CAST5_MAC),
+              ]
 SYM_KEYS = [key for key, _ in SYM_PARAMS]
 
 DSA_PUB_TEMPS = [CKM_DSA_KEY_PAIR_GEN_PUBTEMP_1024_160, CKM_DSA_KEY_PAIR_GEN_PUBTEMP_2048_224,
@@ -161,3 +160,5 @@ class TestSignVerify(object):
 
         ret = c_verify(self.h_session, pub_key, data, signature, mechanism=sig_mech)
         self.verify_ret(ret, CKR_OK)
+
+   

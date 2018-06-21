@@ -11,35 +11,9 @@ from six import integer_types
 from pycryptoki.lookup_dicts import MECH_NAME_LOOKUP
 from ..cryptoki import CK_AES_CBC_PAD_EXTRACT_PARAMS, CK_MECHANISM, \
     CK_ULONG, CK_ULONG_PTR, CK_AES_CBC_PAD_INSERT_PARAMS, CK_BYTE, CK_BYTE_PTR, CK_MECHANISM_TYPE
-from ..defines import *
+# from ..defines import *
 
 LOG = logging.getLogger(__name__)
-
-CK_AES_CBC_PAD_EXTRACT_PARAMS_TEMP = {'mechanism': CKM_AES_CBC_PAD_EXTRACT_DOMAIN_CTRL,
-                                      'ulType': CK_CRYPTOKI_ELEMENT,
-                                      'ulHandle': 5,
-                                      'ulDeleteAfterExtract': 0,
-                                      'pBuffer': 0,
-                                      'pulBufferLen': 0,
-                                      'ulStorage': CK_STORAGE_HOST,
-                                      'pedId': 0,
-                                      'pbFileName': 0,
-                                      'ctxID': 3
-                                      }
-
-CK_AES_CBC_PAD_INSERT_PARAMS_TEMP = {'mechanism': CKM_AES_CBC_PAD_INSERT_DOMAIN_CTRL,
-                                     'ulType': CK_CRYPTOKI_ELEMENT,
-                                     'ulContainerState': 0,
-                                     'pBuffer': 0,
-                                     'pulBufferLen': 0,
-                                     'ulStorageType': CK_STORAGE_HOST,
-                                     'pulType': 0,
-                                     'pulHandle': 0,
-                                     'ctxID': 3,
-                                     'pedID': 3,
-                                     'pbFileName': 0,
-                                     'ulStorage': CK_STORAGE_HOST,
-                                     }
 
 supported_parameters = {'CK_AES_CBC_PAD_EXTRACT_PARAMS': CK_AES_CBC_PAD_EXTRACT_PARAMS,
                         'CK_AES_CBC_PAD_INSERT_PARAMS': CK_AES_CBC_PAD_INSERT_PARAMS}
@@ -147,12 +121,10 @@ def get_c_struct_from_mechanism(python_dictionary, params_type_string):
         else:
             params.pBuffer = (CK_BYTE * len(python_dictionary['pBuffer']))()
         # params.pbFileName = 0 #TODO convert byte pointer to serializable type
-        pass
     elif params_type == CK_AES_CBC_PAD_INSERT_PARAMS:
         # params.pbFileName =  TODO
         params.pBuffer = cast(create_string_buffer(python_dictionary['pBuffer']), CK_BYTE_PTR)
         params.ulBufferLen = len(python_dictionary['pBuffer'])
-        pass
     else:
         raise Exception("Unsupported parameter type, pycryptoki can be extended to make it work")
 
@@ -243,11 +215,6 @@ def parse_mechanism(mechanism_param):
 
         3. :class:`~pycryptoki.cryptoki.CK_MECHANISM` struct -- passed directly into the raw C Call.
         4. Mechanism class -- will call to_c_mech() on the class, and use the results.
-
-    .. warning:: If you're using this with rpyc, you need to make sure the call `to_c_mech` occurs
-        on the *server* (the machine with the HSM)! If you pass in a :py:class:`Mechanism` class
-        that was created on the client, the resulting call into `to_c_mech()` will *also* be on
-        the client side!
 
     .. note:: You can look at ``REQUIRED_PARAMS`` on each mechanism class to see what parameters are
         required.

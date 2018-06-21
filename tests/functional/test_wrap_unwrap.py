@@ -4,73 +4,41 @@ Testcases for wrapping/unwrapping keys.
 import logging
 
 import pytest
-
 from pycryptoki.default_templates import MECHANISM_LOOKUP_EXT as LOOKUP
 from pycryptoki.default_templates import get_default_key_template
-from pycryptoki.defines import (CKM_DES_ECB, CKM_DES_CBC, CKM_DES_CBC_PAD, CKM_DES_KEY_GEN,
-                                CKM_DES3_ECB, CKM_DES3_CBC, CKM_DES3_CBC_PAD, CKM_DES3_KEY_GEN,
-                                CKM_AES_ECB, CKM_AES_CBC, CKM_AES_CBC_PAD, CKM_AES_KEY_GEN,
-                                CKM_CAST3_ECB, CKM_CAST3_CBC, CKM_CAST3_CBC_PAD, CKM_CAST3_KEY_GEN,
-                                CKM_CAST5_ECB, CKM_CAST5_CBC, CKM_CAST5_CBC_PAD, CKM_CAST5_KEY_GEN,
-                                CKM_SEED_ECB, CKM_SEED_CBC, CKM_SEED_KEY_GEN,
-
-                                CKR_OK, CKA_DECRYPT, CKA_VERIFY, CKA_UNWRAP,
-                                CKA_VALUE_LEN, CKA_EXTRACTABLE)
-from pycryptoki.encryption import c_wrap_key, c_unwrap_key, c_encrypt, c_decrypt
+from pycryptoki.defines import (CKA_DECRYPT, CKA_EXTRACTABLE, CKA_UNWRAP,
+                                CKA_VALUE_LEN, CKA_VERIFY, CKM_AES_CBC,
+                                CKM_AES_CBC_PAD, CKM_AES_ECB, CKM_AES_KEY_GEN,
+                                CKM_DES3_CBC, CKM_DES3_CBC_PAD, CKM_DES3_ECB,
+                                CKM_DES3_KEY_GEN, CKR_OK)
+from pycryptoki.encryption import (c_decrypt, c_encrypt, c_unwrap_key,
+                                   c_wrap_key)
 from pycryptoki.key_generator import c_destroy_object, c_generate_key
 from pycryptoki.lookup_dicts import ret_vals_dictionary
 from pycryptoki.test_functions import verify_object_attributes
 
 logger = logging.getLogger(__name__)
 
-PARAM_LIST = [(CKM_DES_ECB, CKM_DES_KEY_GEN),
-              (CKM_DES_CBC, CKM_DES_KEY_GEN),
-              (CKM_DES_CBC_PAD, CKM_DES_KEY_GEN),
-
-              (CKM_DES3_ECB, CKM_DES3_KEY_GEN),
+PARAM_LIST = [(CKM_DES3_ECB, CKM_DES3_KEY_GEN),
               (CKM_DES3_CBC, CKM_DES3_KEY_GEN),
               (CKM_DES3_CBC_PAD, CKM_DES3_KEY_GEN),
 
               (CKM_AES_ECB, CKM_AES_KEY_GEN),
               (CKM_AES_CBC, CKM_AES_KEY_GEN),
               (CKM_AES_CBC_PAD, CKM_AES_KEY_GEN),
+             ]
 
-              (CKM_CAST3_ECB, CKM_CAST3_KEY_GEN),
-              (CKM_CAST3_CBC, CKM_CAST3_KEY_GEN),
-              (CKM_CAST3_CBC_PAD, CKM_CAST3_KEY_GEN),
-
-              (CKM_CAST5_ECB, CKM_CAST5_KEY_GEN),
-              (CKM_CAST5_CBC, CKM_CAST5_KEY_GEN),
-              (CKM_CAST5_CBC_PAD, CKM_CAST5_KEY_GEN),
-
-              (CKM_SEED_ECB, CKM_SEED_KEY_GEN),
-              (CKM_SEED_CBC, CKM_SEED_KEY_GEN)]
-
-EXTRA_PARAM = {CKM_DES_ECB: {},
-               CKM_DES_CBC: {'iv': list(range(8))},
-               CKM_DES_CBC_PAD: {},
-
-               CKM_DES3_ECB: {},
+EXTRA_PARAM = {CKM_DES3_ECB: {},
                CKM_DES3_CBC: {'iv': list(range(8))},
                CKM_DES3_CBC_PAD: {'iv': list(range(8))},
 
                CKM_AES_ECB: {},
                CKM_AES_CBC: {'iv': list(range(16))},
                CKM_AES_CBC_PAD: {},
-
-               CKM_CAST3_ECB: {},
-               CKM_CAST3_CBC: {'iv': list(range(8))},
-               CKM_CAST3_CBC_PAD: {},
-
-               CKM_CAST5_ECB: {},
-               CKM_CAST5_CBC: {},
-               CKM_CAST5_CBC_PAD: {},
-
-               CKM_SEED_ECB: {},
-               CKM_SEED_CBC: {}}
+              }
 
 # Don't pop 'CKA_VALUE_LEN' for these mechs
-VALUE_LEN = [CKM_AES_KEY_GEN, CKM_CAST3_KEY_GEN, CKM_CAST5_KEY_GEN]
+VALUE_LEN = [CKM_AES_KEY_GEN]
 
 
 @pytest.yield_fixture(scope='class')
@@ -171,7 +139,7 @@ class TestWrappingKeys(object):
             # Verify all of the attributes against the originally generated attributes
             verify_object_attributes(self.h_session, h_unwrapped_key, temp)
         finally:
-            if h_unwrapped_key:
+            if h_unwrapped_key != None:
                 c_destroy_object(self.h_session, h_unwrapped_key)
 
     @pytest.mark.parametrize(('mech', 'k_type'), PARAM_LIST,
@@ -222,5 +190,5 @@ class TestWrappingKeys(object):
                 "The decrypted data should be the same as the data that was encrypted. " \
                 "Instead found " + str(decrypted_string)
         finally:
-            if h_unwrapped_key:
+            if h_unwrapped_key != None:
                 c_destroy_object(self.h_session, h_unwrapped_key)

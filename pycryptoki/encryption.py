@@ -14,7 +14,6 @@ from .cryptoki import C_Decrypt, C_DecryptInit, CK_OBJECT_HANDLE, \
     C_WrapKey, C_UnwrapKey, C_EncryptUpdate, C_EncryptFinal, CK_BYTE_PTR, \
     C_DecryptUpdate, C_DecryptFinal
 from .defines import CKR_OK
-from .exceptions import make_error_handle_function
 from .lookup_dicts import ret_vals_dictionary
 from .mechanism import parse_mechanism
 
@@ -100,9 +99,6 @@ def c_encrypt(h_session, h_key, data, mechanism, output_buffer=None):
         encrypted_python_string = string_at(enc_data.array, enc_data.size.contents.value)
 
     return ret, encrypted_python_string
-
-
-c_encrypt_ex = make_error_handle_function(c_encrypt)
 
 
 def _split_string_into_list(python_string, block_size):
@@ -209,9 +205,6 @@ def c_decrypt(h_session, h_key, encrypted_data, mechanism, output_buffer=None):
         python_data = string_at(decrypted_data.array, decrypted_data.size.contents.value)
 
     return ret, python_data
-
-
-c_decrypt_ex = make_error_handle_function(c_decrypt)
 
 
 def do_multipart_operation(h_session,
@@ -328,7 +321,7 @@ def do_multipart_operation(h_session,
 
 
 def c_wrap_key(h_session, h_wrapping_key, h_key, mechanism, output_buffer=None):
-    """Wrap a key off the HSM into an encrypted data blob.
+    """Wrap a key into an encrypted data blob.
 
     :param int h_session: The session to use
     :param int h_wrapping_key: The handle of the key to use to wrap another key
@@ -363,9 +356,6 @@ def c_wrap_key(h_session, h_wrapping_key, h_key, mechanism, output_buffer=None):
         return ret, None
 
     return ret, string_at(wrapped_key.array, wrapped_key.size.contents.value)
-
-
-c_wrap_key_ex = make_error_handle_function(c_wrap_key)
 
 
 def c_unwrap_key(h_session, h_unwrapping_key, wrapped_key, key_template, mechanism):
@@ -406,6 +396,3 @@ def c_unwrap_key(h_session, h_unwrapping_key, wrapped_key, key_template, mechani
                       c_template, CK_ULONG(len(key_template)), byref(h_output_key))
 
     return ret, h_output_key.value
-
-
-c_unwrap_key_ex = make_error_handle_function(c_unwrap_key)

@@ -1,12 +1,12 @@
 """
-Generic Mechanisms conversions. 
+Generic Mechanisms conversions.
 """
 from ctypes import c_void_p, cast, pointer, POINTER, sizeof
 from . import Mechanism, MechanismException
 from .. import cryptoki
 from ..attributes import to_byte_array, CONVERSIONS
 from ..cryptoki import CK_ULONG, CK_KEY_DERIVATION_STRING_DATA, c_ubyte
-from ..exceptions import LunaException
+from ..exceptions import CryptokiException
 
 
 class ConcatenationDeriveMechanism(Mechanism):
@@ -105,7 +105,7 @@ class AutoMech(Mechanism):
             if hasattr(c_type, '_length_'):
                 c_type = c_type._type_
                 if c_type not in CONVERSIONS:
-                    raise LunaException("Cannot convert to c_type: {}".format(c_type))
+                    raise CryptokiException("Cannot convert to c_type: {}".format(c_type))
                 ptr, length = CONVERSIONS[c_type](self.params[name])
                 setattr(c_params, name, cast(ptr, POINTER(c_type)))
             # Otherwise, do a direct conversion.

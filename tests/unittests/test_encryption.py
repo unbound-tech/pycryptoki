@@ -1,14 +1,13 @@
 """
 Unit tests for encryption.py
 """
-import pytest
+from string import ascii_letters
+
 from hypothesis import given
 from hypothesis.strategies import text, integers, data, lists
 from six import b
 
 import pycryptoki.encryption as encrypt
-
-from string import ascii_letters as ascii
 
 
 class TestEncryption(object):
@@ -19,13 +18,13 @@ class TestEncryption(object):
         _split_string_into_list() w/ random text and block size
         :param data:
         """
-        txt = data.draw(text(alphabet=ascii, min_size=1))
+        txt = data.draw(text(alphabet=ascii_letters, min_size=1))
         block = data.draw(integers(min_value=1, max_value=len(txt)))
 
         txt_list = [txt[i:i + block] for i in range(0, len(txt), block)]
         assert encrypt._split_string_into_list(txt, block) == txt_list
 
-    @given(lists(elements=text(alphabet=ascii), min_size=1))
+    @given(lists(elements=text(alphabet=ascii_letters), min_size=1))
     def test_get_string_from_list(self, list_val):
         """
         _get_string_from_list w/ list of random text

@@ -8,15 +8,13 @@ python setup.py sdist
 """
 from setuptools import setup
 
-setup(name='pycryptoki',
-      description="A python wrapper around the C cryptoki library.",
-      author='Ashley Straw',
-      url='https://github.com/gemalto/pycryptoki',
+setup(name='unbound-pkcs11',
+      description="A python wrapper around the PKCS#11 C library.",
+      maintainer='Michael Kraitsberg',
+      url='https://github.com/unbound-tech/pycryptoki',
       version='2.1.1',
       packages=['pycryptoki',
-                'pycryptoki.daemon',
                 'pycryptoki.mechanism'],
-      scripts=['pycryptoki/daemon/rpyc_pycryptoki.py'],
       tests_require=['pytest', 'hypothesis', 'mock', 'pytz'],
-      install_requires=['future', 'rpyc', 'six']
+      install_requires=['six']
       )

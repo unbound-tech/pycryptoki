@@ -7,13 +7,13 @@ import logging
 import pytest
 from pycryptoki.key_generator import c_destroy_object
 
-from pycryptoki.defines import CKA_VALUE
+from pycryptoki.defines import CKA_VALUE, CKR_OK
 
-from pycryptoki.object_attr_lookup import c_get_attribute_value_ex
+from pycryptoki.object_attr_lookup import c_get_attribute_value
 
 from pycryptoki.default_templates import CERTIFICATE_TEMPLATE, DATA_TEMPLATE
-from pycryptoki.misc import c_create_object_ex
-from . import config as hsm_config
+from pycryptoki.misc import c_create_object
+from . import config as test_config
 from .util import get_session_template
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ class TestObjectCreation(object):
     @pytest.fixture(autouse=True)
     def setup_teardown(self, auth_session):
         self.h_session = auth_session
-        self.admin_slot = hsm_config["test_slot"]
+        self.admin_slot = test_config["test_slot"]
 
     def test_certificate_create(self):
         """Tests C_CreateObject with a certificate template and verifies the object's
@@ -34,10 +34,12 @@ class TestObjectCreation(object):
 
         """
         template = get_session_template(CERTIFICATE_TEMPLATE)
-        h_object = c_create_object_ex(self.h_session, template)
+        ret, h_object = c_create_object(self.h_session, template)
+        assert ret == CKR_OK
         try:
             desired_attrs = {x: None for x in template.keys()}
-            attr = c_get_attribute_value_ex(self.h_session, h_object, template=desired_attrs)
+            ret, attr = c_get_attribute_value(self.h_session, h_object, template=desired_attrs)
+            assert ret == CKR_OK
             # CKA_VALUE in the template is a list of ints, but is returned as a single hex string.
             # Let's try to convert it back to the list of ints.
             value = attr[CKA_VALUE]
@@ -53,10 +55,12 @@ class TestObjectCreation(object):
 
         """
         template = get_session_template(DATA_TEMPLATE)
-        h_object = c_create_object_ex(self.h_session, template)
+        ret, h_object = c_create_object(self.h_session, template)
+        assert ret == CKR_OK
         try:
             desired_attrs = {x: None for x in template.keys()}
-            attr = c_get_attribute_value_ex(self.h_session, h_object, template=desired_attrs)
+            ret, attr = c_get_attribute_value(self.h_session, h_object, template=desired_attrs)
+            assert ret == CKR_OK
             # CKA_VALUE in the template is a list of ints, but is returned as a single hex string.
             # Let's try to convert it back to the list of ints.
             value = attr[CKA_VALUE]
@@ -64,3 +68,6 @@ class TestObjectCreation(object):
             assert attr == template
         finally:
             c_destroy_object(self.h_session, h_object)
+
+if __name__ == '__main__':
+    test_library()

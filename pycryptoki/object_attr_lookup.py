@@ -8,7 +8,6 @@ from .attributes import Attributes, c_struct_to_python, KEY_TRANSFORMS
 from .cryptoki import CK_OBJECT_HANDLE, C_FindObjectsInit, CK_ULONG, \
     C_FindObjects, C_FindObjectsFinal, C_GetAttributeValue, C_SetAttributeValue
 from .defines import CKR_OK
-from .exceptions import make_error_handle_function
 
 LOG = logging.getLogger(__name__)
 
@@ -39,16 +38,13 @@ def c_find_objects(h_session, template, num_entries):
     return ret, [h_ary[i] for i in range(us_total.value)]
 
 
-c_find_objects_ex = make_error_handle_function(c_find_objects)
-
-
 def c_get_attribute_value(h_session, h_object, template):
     """Calls C_GetAttrributeValue to get an attribute value based on a python template
 
     :param int h_session: Session handle
     :param h_object: The handle of the object to get attributes for
     :param template: A python dictionary representing the template of the attributes to be retrieved
-    :returns: A python dictionary representing the attributes returned from the HSM/library
+    :returns: A python dictionary representing the attributes
 
     """
     c_struct = Attributes(template).get_c_struct()
@@ -76,21 +72,16 @@ def c_get_attribute_value(h_session, h_object, template):
     return ret, c_struct_to_python(c_struct)
 
 
-c_get_attribute_value_ex = make_error_handle_function(c_get_attribute_value)
-
-
 def c_set_attribute_value(h_session, h_object, template):
     """Calls C_SetAttributeValue to set an attribute value based on a python template
 
     :param int h_session: Session handle
     :param h_object: The handle of the object to get attributes for
     :param template: A python dictionary representing the template of the attributes to be written
-    :returns: A python dictionary representing the attributes returned from the HSM/library
+    :returns: A python dictionary representing the attributes returned
 
     """
     c_struct = Attributes(template).get_c_struct()
     ret = C_SetAttributeValue(h_session, h_object, c_struct, CK_ULONG(len(template)))
     return ret
 
-
-c_set_attribute_value_ex = make_error_handle_function(c_set_attribute_value)

@@ -17,9 +17,7 @@ from six import b, string_types, integer_types, text_type, binary_type
 from pycryptoki.conversions import from_bytestring
 from .cryptoki import CK_ATTRIBUTE, CK_BBOOL, CK_ATTRIBUTE_TYPE, CK_ULONG, \
     CK_BYTE, CK_CHAR
-from .defines import CKA_EKM_UID, CKA_GENERIC_1, CKA_GENERIC_2, \
-    CKA_GENERIC_3
-from .defines import CKA_USAGE_LIMIT, CKA_USAGE_COUNT, CKA_CLASS, CKA_TOKEN, \
+from .defines import CKA_CLASS, CKA_TOKEN, \
     CKA_PRIVATE, CKA_LABEL, CKA_APPLICATION, CKA_CERTIFICATE_TYPE, \
     CKA_ISSUER, CKA_SERIAL_NUMBER, CKA_KEY_TYPE, CKA_SUBJECT, CKA_ID, CKA_SENSITIVE, \
     CKA_ENCRYPT, CKA_DECRYPT, CKA_WRAP, CKA_UNWRAP, CKA_SIGN, CKA_SIGN_RECOVER, \
@@ -29,9 +27,9 @@ from .defines import CKA_USAGE_LIMIT, CKA_USAGE_COUNT, CKA_CLASS, CKA_TOKEN, \
     CKA_PRIME, CKA_SUBPRIME, CKA_BASE, CKA_PRIME_BITS, CKA_SUBPRIME_BITS, \
     CKA_VALUE_BITS, CKA_VALUE_LEN, CKA_LOCAL, \
     CKA_MODIFIABLE, CKA_EXTRACTABLE, CKA_ALWAYS_SENSITIVE, CKA_NEVER_EXTRACTABLE, \
-    CKA_CCM_PRIVATE, CKA_FINGERPRINT_SHA1, CKA_FINGERPRINT_SHA256, CKA_OUID, CKA_UNWRAP_TEMPLATE, \
+    CKA_UNWRAP_TEMPLATE, \
     CKA_DERIVE_TEMPLATE, \
-    CKA_X9_31_GENERATED, CKA_VALUE
+    CKA_VALUE
 
 LOG = logging.getLogger(__name__)
 
@@ -264,8 +262,6 @@ KEY_TRANSFORMS.update({
     CKA_PRIME_BITS: to_long,
     CKA_SUBPRIME_BITS: to_long,
     CKA_VALUE_BITS: to_long,
-    CKA_USAGE_COUNT: to_long,
-    CKA_USAGE_LIMIT: to_long,
 
     # int, bool
     CKA_TOKEN: to_bool,
@@ -280,13 +276,11 @@ KEY_TRANSFORMS.update({
     CKA_VERIFY: to_bool,
     CKA_VERIFY_RECOVER: to_bool,
     CKA_DERIVE: to_bool,
-    CKA_CCM_PRIVATE: to_bool,
     CKA_LOCAL: to_bool,
     CKA_MODIFIABLE: to_bool,
     CKA_EXTRACTABLE: to_bool,
     CKA_ALWAYS_SENSITIVE: to_bool,
     CKA_NEVER_EXTRACTABLE: to_bool,
-    CKA_X9_31_GENERATED: to_bool,
 
     # str, list(?)
     CKA_LABEL: to_char_array,
@@ -294,10 +288,6 @@ KEY_TRANSFORMS.update({
     CKA_ISSUER: to_char_array,
     CKA_SUBJECT: to_char_array,
     CKA_ID: to_char_array,
-    CKA_EKM_UID: to_char_array,
-    CKA_GENERIC_1: to_char_array,
-    CKA_GENERIC_2: to_char_array,
-    CKA_GENERIC_3: to_char_array,
 
     # str, dict, datetime
     CKA_START_DATE: to_ck_date,
@@ -317,9 +307,6 @@ KEY_TRANSFORMS.update({
     CKA_PRIME: to_byte_array,
     CKA_SUBPRIME: to_byte_array,
     CKA_BASE: to_byte_array,
-    CKA_FINGERPRINT_SHA1: to_byte_array,
-    CKA_FINGERPRINT_SHA256: to_byte_array,
-    CKA_OUID: to_byte_array,
 
     # Dict
     CKA_UNWRAP_TEMPLATE: to_sub_attributes,

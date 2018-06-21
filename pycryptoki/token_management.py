@@ -6,14 +6,10 @@ Created on Aug 24, 2012
 import logging
 from ctypes import byref
 
-# Cryptoki Constants
-from six import b
-
 from .cryptoki import (CK_ULONG,
                        CK_BBOOL,
                        CK_MECHANISM_TYPE,
                        CK_MECHANISM_INFO)
-from .defaults import ADMIN_PARTITION_LABEL, ADMIN_SLOT
 from .defines import CKR_OK
 
 # Cryptoki functions.
@@ -21,9 +17,8 @@ from .cryptoki import (C_InitToken,
                        C_GetSlotList,
                        C_GetMechanismList,
                        C_GetMechanismInfo,
-                       CA_GetTokenPolicies)
+                       )
 from .session_management import c_get_token_info
-from .exceptions import make_error_handle_function
 from .common_utils import AutoCArray
 from .common_utils import refresh_c_arrays
 
@@ -53,9 +48,6 @@ def c_init_token(slot_num, password, token_label='Main Token'):
                        label.array)
 
 
-c_init_token_ex = make_error_handle_function(c_init_token)
-
-
 def get_token_by_label(label):
     """Iterates through all the tokens and returns the first token that
     has a label that is identical to the one that is passed in
@@ -64,13 +56,6 @@ def get_token_by_label(label):
     :returns: The result code, The slot of the token
 
     """
-
-    if label == ADMIN_PARTITION_LABEL:
-        # XXX the admin partition's label changes depending on
-        # the boards state
-        #        ret, slot_info = get_slot_info("Viper")
-        #        return ret, slot_info.keys()[1]
-        return CKR_OK, ADMIN_SLOT
 
     slot_list = AutoCArray()
 
@@ -92,11 +77,8 @@ def get_token_by_label(label):
     raise Exception("Slot with label " + str(label) + " not found.")
 
 
-get_token_by_label_ex = make_error_handle_function(get_token_by_label)
-
-
 def c_get_mechanism_list(slot):
-    """Gets the list of mechanisms from the HSM
+    """Gets the list of mechanisms 
 
     :param slot: The slot number to get the mechanism list on
     :returns: The result code, A python dictionary representing the mechanism list
@@ -115,9 +97,6 @@ def c_get_mechanism_list(slot):
     return ret, [x for x in mech]
 
 
-c_get_mechanism_list_ex = make_error_handle_function(c_get_mechanism_list)
-
-
 def c_get_mechanism_info(slot, mechanism_type):
     """Gets a mechanism's info
 
@@ -130,31 +109,3 @@ def c_get_mechanism_info(slot, mechanism_type):
     ret = C_GetMechanismInfo(CK_ULONG(slot), CK_MECHANISM_TYPE(mechanism_type), byref(mech_info))
     return ret, mech_info
 
-
-c_get_mechanism_info_ex = make_error_handle_function(c_get_mechanism_info)
-
-
-def ca_get_token_policies(slot):
-    """
-    Get the policies of the given slot.
-
-    :param int slot: Target slot number
-    :return: retcode, {id: val} dict of policies (None if command failed)
-    """
-    slot_id = CK_ULONG(slot)
-    pol_ids = AutoCArray()
-    pol_vals = AutoCArray()
-
-    @refresh_c_arrays(1)
-    def _get_token_policies():
-        """Closure for retries to work w/ properties.
-        """
-        return CA_GetTokenPolicies(slot_id, pol_ids.array, pol_ids.size,
-                                   pol_vals.array, pol_vals.size)
-
-    ret = _get_token_policies()
-
-    return ret, dict(list(zip(pol_ids, pol_vals)))
-
-
-ca_get_token_policies_ex = make_error_handle_function(ca_get_token_policies)

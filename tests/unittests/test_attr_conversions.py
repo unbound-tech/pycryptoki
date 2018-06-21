@@ -2,7 +2,6 @@
 Unit tests for python/c type conversions
 """
 import logging
-from _ctypes import POINTER
 from binascii import hexlify
 from collections import defaultdict
 from ctypes import cast, c_void_p, c_ulong, sizeof
@@ -14,6 +13,8 @@ from hypothesis import given
 from hypothesis.extra.datetime import dates
 from hypothesis.strategies import integers, floats, text, booleans, lists, dictionaries, one_of
 from six import b, integer_types
+
+from _ctypes import POINTER
 
 from pycryptoki.attributes import (CK_ATTRIBUTE,
                                    CKA_CLASS,

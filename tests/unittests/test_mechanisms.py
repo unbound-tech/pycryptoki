@@ -20,9 +20,7 @@ from pycryptoki.mechanism import (Mechanism,
                                   AESGCMMechanism,
                                   NullMech)
 
-MECH_PARAMS = {CKM_AES_XTS: {'hTweakKey': 0,
-                             'cb': list(range(12)),
-                             'test_id': 'AES_XTS'},
+MECH_PARAMS = {
                CKM_DES3_CBC: {'iv': list(range(12)),
                               'test_id': 'DES3'},
                CKM_AES_CBC: {'iv': list(range(16)),
@@ -59,15 +57,13 @@ def idfn(test):
 # noinspection PyArgumentList
 class TestMechanisms(object):
     @pytest.mark.parametrize('flavor,params',
-                             [(CKM_AES_XTS, ['hTweakKey', 'cb']),
-                              (CKM_RC2_ECB, ['usEffectiveBits']),
+                              [(CKM_RC2_ECB, ['usEffectiveBits']),
                               (CKM_RC2_CBC, ['usEffectiveBits', 'iv']),
                               (CKM_RC5_ECB, ['ulWordsize', 'ulRounds']),
                               (CKM_RC5_CBC, ['ulWordsize', 'ulRounds', 'iv']),
                               (CKM_RSA_PKCS_OAEP, ['hashAlg', 'mgf'])
                               ],
-                             ids=["XTS", "RC2", "RC2_CBC",
-                                  "RC5", "RC5_CBC", "RSA_PKCS_OAEP"])
+                             ids=["RC2", "RC2_CBC", "RC5", "RC5_CBC", "RSA_PKCS_OAEP"])
     def test_missing_params(self, flavor, params):
         """
         Test that missing parameters for various mechs raises the appropriate exception.
@@ -171,8 +167,7 @@ class TestMechanisms(object):
         iv = [rawiv[x] for x in range(cmech.usParameterLen)]
         assert iv == [1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]
 
-    @pytest.mark.parametrize("flavor", [CKM_SHA256, CKM_SHA512,
-                                        CKM_DSA, CKM_RSA_PKCS],
+    @pytest.mark.parametrize("flavor", [CKM_SHA256, CKM_SHA512, CKM_DSA, CKM_RSA_PKCS],
                              ids=["SHA256", "SHA512", "DSA", "RSA_PKCS"])
     def test_null_mech(self, flavor):
         """

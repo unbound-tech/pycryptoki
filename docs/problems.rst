@@ -40,24 +40,6 @@ Another example::
     See this article for more details about the differences between unicode and bytestrings in
         python: http://lucumr.pocoo.org/2014/1/5/unicode-in-2-and-3/
 
-Internal Initialization Vectors
--------------------------------
-
-When you use an internal IV for AES mechanisms, the IV is appended to the cipher text. This needs to
-be stripped off and used to create the mechanism for decryption::
-
-    from pycryptoki.encryption import c_encrypt_ex
-
-    data_to_encrypt = b"a" * 64
-    mech = Mechanism(CKM_AES_KW,
-                     params={"iv": []}) # Uses an internal IV
-
-    enc_data = c_encrypt_ex(session, key, data_to_encrypt, mech)
-    iv = enc_data[-16:] # Strip off the last 16 bytes of the encrypted data.
-    decrypt_mech = Mechanism(CKM_AES_KW,
-                             params={"iv": iv})
-    decrypted_data = c_decrypt_ex(session, key, enc_data[:-16], decrypt_mech)
-
 
 PKCS11 Calling Conventions
 --------------------------
@@ -81,7 +63,7 @@ allocate a buffer that is incredibly large -- limited by the memory of your syst
 By default, pycryptoki will use method #2 (querying the library for buffer size)::
 
     data = b"deadbeef"
-    c_decrypt_ex(session, key, data, mechanism)
+    c_decrypt(session, key, data, mechanism)
 
 
 Will result in the raw underlying PKCS11 calls:
@@ -102,7 +84,7 @@ An example using a pre-allocated buffer::
 
 
     data = b"deadbeef"
-    c_decrypt_ex(session, key, data, mechanism, output_buffer=0xffff)
+    c_decrypt(session, key, data, mechanism, output_buffer=0xffff)
 
 
 And the resulting PKCS11 calls:
@@ -119,7 +101,7 @@ number of parts in the operation::
 
     data = [b"a" * 8, b"b" * 8, b"c" * 8, b"d" * 8]
     output_buffer = [0xffff] * len(data)  # Equivalent to: [0xffff, 0xffff, 0xffff, 0xffff]
-    c_encrypt_ex(session, key, data, mechanism, output_buffer=output_buffer)
+    c_encrypt(session, key, data, mechanism, output_buffer=output_buffer)
 
 
 For a multi-part operation that returns data in the ``C_*Final`` function, the output buffer will be

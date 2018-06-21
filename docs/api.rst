@@ -22,4 +22,3 @@ There are some general guidelines to using pycryptoki:
    Mechanisms <api.mechanisms>
    Miscellaneous <api.misc>
    Helpers <api.helpers>
-   RPYC Daemon <api.daemon>

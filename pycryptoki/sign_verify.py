@@ -16,7 +16,6 @@ from .cryptoki import C_VerifyInit, C_Verify, C_SignUpdate, \
     C_SignFinal, C_VerifyUpdate, C_VerifyFinal
 from .defines import CKR_OK
 from .encryption import MAX_BUFFER
-from .exceptions import make_error_handle_function
 from .lookup_dicts import ret_vals_dictionary
 from .mechanism import parse_mechanism
 
@@ -94,9 +93,6 @@ def c_sign(h_session, h_key, data_to_sign, mechanism, output_buffer=None):
         signature_string = string_at(signed_data.array, signed_data.size.contents.value)
 
     return ret, signature_string
-
-
-c_sign_ex = make_error_handle_function(c_sign)
 
 
 def do_multipart_sign_or_digest(h_session, c_update_function, c_final_function,
@@ -253,5 +249,3 @@ def c_verify(h_session, h_key, data_to_verify, signature, mechanism):
 
     return ret
 
-
-c_verify_ex = make_error_handle_function(c_verify)

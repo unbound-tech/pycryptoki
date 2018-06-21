@@ -18,7 +18,7 @@ from .cryptoki import (CK_ULONG,
                        CK_USER_TYPE,
                        CK_TOKEN_INFO,
                        CK_VOID_PTR,
-                       CK_BYTE, CK_INFO, C_GetInfo, CA_GetFirmwareVersion, c_ulong)
+                       CK_BYTE, CK_INFO, C_GetInfo, c_ulong)
 # Cryptoki Functions
 from .cryptoki import (C_Initialize,
                        C_GetSlotList,
@@ -30,16 +30,11 @@ from .cryptoki import (C_Initialize,
                        C_Logout,
                        C_CloseSession,
                        C_InitPIN,
-                       CA_FactoryReset,
                        C_GetTokenInfo,
                        C_Finalize,
                        C_SetPIN,
-                       CA_OpenApplicationID,
-                       CA_CloseApplicationID,
-                       CA_Restart,
-                       CA_SetApplicationID)
+                        )
 from .defines import CKR_OK, CKF_RW_SESSION, CKF_SERIAL_SESSION
-from .exceptions import make_error_handle_function, LunaCallException
 
 LOG = logging.getLogger(__name__)
 
@@ -50,12 +45,9 @@ def c_initialize():
     :returns: retcode
     """
     # INITIALIZE
-    LOG.info("C_Initialize: Initializing HSM")
+    LOG.info("C_Initialize: Initializing library")
     ret = C_Initialize(0)
     return ret
-
-
-c_initialize_ex = make_error_handle_function(c_initialize)
 
 
 def c_finalize():
@@ -64,12 +56,9 @@ def c_finalize():
     :return: retcode
     """
 
-    LOG.info("C_Finalize: Finalizing HSM")
+    LOG.info("C_Finalize: Finalizing library")
     ret = C_Finalize(0)
     return ret
-
-
-c_finalize_ex = make_error_handle_function(c_finalize)
 
 
 def c_open_session(slot_num, flags=(CKF_SERIAL_SESSION | CKF_RW_SESSION)):
@@ -92,9 +81,6 @@ def c_open_session(slot_num, flags=(CKF_SERIAL_SESSION | CKF_RW_SESSION)):
     LOG.info("C_OpenSession: Opening Session. slot=%s", slot_num)
 
     return ret, h_session.value
-
-
-c_open_session_ex = make_error_handle_function(c_open_session)
 
 
 def login(h_session, slot_num=1, password=None, user_type=1):
@@ -121,9 +107,6 @@ def login(h_session, slot_num=1, password=None, user_type=1):
     ret = C_Login(h_session, user_type, password.array, password.size.contents)
 
     return ret
-
-
-login_ex = make_error_handle_function(login)
 
 
 def c_get_info():
@@ -155,9 +138,6 @@ def c_get_info():
     return ret, info
 
 
-c_get_info_ex = make_error_handle_function(c_get_info)
-
-
 def c_get_slot_list(token_present=True):
     """
     Get a list of all slots.
@@ -176,9 +156,6 @@ def c_get_slot_list(token_present=True):
                        slots.array,
                        slots.size)
     return rc, [x for x in slots]
-
-
-c_get_slot_list_ex = make_error_handle_function(c_get_slot_list)
 
 
 def c_get_slot_info(slot):
@@ -207,9 +184,6 @@ def c_get_slot_info(slot):
     return ret, slot_info_dict
 
 
-c_get_slot_info_ex = make_error_handle_function(c_get_slot_info)
-
-
 def c_get_session_info(session):
     """Get information about the given session.
 
@@ -228,9 +202,6 @@ def c_get_session_info(session):
         session_info['usDeviceError'] = c_session_info.usDeviceError
 
     return ret, session_info
-
-
-c_get_session_info_ex = make_error_handle_function(c_get_session_info)
 
 
 def c_get_token_info(slot_id, rstrip=True):
@@ -275,16 +246,15 @@ def c_get_token_info(slot_id, rstrip=True):
     return ret, token_info
 
 
-c_get_token_info_ex = make_error_handle_function(c_get_token_info)
-
-
 def get_slot_dict(token_present=False):
     """Compiles a dictionary of the available slots
 
 
     :returns: A python dictionary of the available slots
     """
-    slot_list = c_get_slot_list_ex(token_present)
+    ret, slot_list = c_get_slot_list(token_present)
+    if (ret != 0): 
+        return ret
     slot_dict = {}
     ret = CKR_OK
     for slot in slot_list:
@@ -295,9 +265,6 @@ def get_slot_dict(token_present=False):
         slot_dict[slot] = data
 
     return ret, slot_dict
-
-
-get_slot_dict_ex = make_error_handle_function(get_slot_dict)
 
 
 def c_close_session(h_session):
@@ -313,9 +280,6 @@ def c_close_session(h_session):
     return ret
 
 
-c_close_session_ex = make_error_handle_function(c_close_session)
-
-
 def c_logout(h_session):
     """Logs out of a given session
 
@@ -326,9 +290,6 @@ def c_logout(h_session):
     LOG.info("C_Logout: Logging out of session %s", h_session)
     ret = C_Logout(h_session)
     return ret
-
-
-c_logout_ex = make_error_handle_function(c_logout)
 
 
 def c_init_pin(h_session, pin):
@@ -344,24 +305,6 @@ def c_init_pin(h_session, pin):
     pin = AutoCArray(data=pin)
     ret = C_InitPIN(h_session, pin.array, pin.size.contents)
     return ret
-
-
-c_init_pin_ex = make_error_handle_function(c_init_pin)
-
-
-def ca_factory_reset(slot):
-    """Does a factory reset on a given slot
-
-    :param slot: The slot to do a factory reset on
-    :returns: The result code
-
-    """
-    LOG.info("CA_FactoryReset: Factory Reset. slot=%s", slot)
-    ret = CA_FactoryReset(CK_SLOT_ID(slot), CK_ULONG(0))
-    return ret
-
-
-ca_factory_reset_ex = make_error_handle_function(ca_factory_reset)
 
 
 def c_set_pin(h_session, old_pass, new_pass):
@@ -385,9 +328,6 @@ def c_set_pin(h_session, old_pass, new_pass):
     return ret
 
 
-c_set_pin_ex = make_error_handle_function(c_set_pin)
-
-
 def c_close_all_sessions(slot):
     """Closes all the sessions on a given slot
 
@@ -400,125 +340,23 @@ def c_close_all_sessions(slot):
     ret = C_CloseAllSessions(CK_ULONG(slot))
     return ret
 
-
-c_close_all_sessions_ex = make_error_handle_function(c_close_all_sessions)
-
-
-def ca_openapplicationID(slot, id_high, id_low):
-    """Open an application ID on the given slot.
-
-    :param int slot: Slot on which to open the APP ID
-    :param int id_high: High value of App ID
-    :param int id_low: Low value of App ID
-    :return: retcode
-    :rtype: int
-    """
-    uid_high = CK_ULONG(id_high)
-    uid_low = CK_ULONG(id_low)
-
-    LOG.info("CA_OpenApplicationID: Attempting to open App ID %s:%s", id_high, id_low)
-
-    ret = CA_OpenApplicationID(CK_ULONG(slot), uid_high, uid_low)
-
-    LOG.info("CA_OpenApplicationID: Ret Value: %s", ret)
-
-    return ret
-
-
-ca_openapplicationID_ex = make_error_handle_function(ca_openapplicationID)
-
-
-def ca_closeapplicationID(slot, id_high, id_low):
-    """Close a given AppID on a slot.
-
-    :param int slot: Slot on which to close the APP ID
-    :param int id_high: High value of App ID
-    :param int id_low: Low value of App ID
-    :return: retcode
-    :rtype: int
-    """
-    uid_high = CK_ULONG(id_high)
-    uid_low = CK_ULONG(id_low)
-
-    LOG.info("CA_CloseApplicationID: Attempting to close App ID %s:%s", id_high, id_low)
-
-    ret = CA_CloseApplicationID(CK_ULONG(slot), uid_high, uid_low)
-
-    LOG.info("CA_CloseApplicationID: Ret Value: %s", ret)
-
-    return ret
-
-
-ca_closeapplicationID_ex = make_error_handle_function(ca_closeapplicationID)
-
-
-def ca_setapplicationID(id_high, id_low):
-    """Set the App ID for the current process.
-
-    :param int id_high: High value of App ID
-    :param int id_low: Low value of App ID
-    :return: retcode
-    :rtype: int
-    """
-    uid_high = CK_ULONG(id_high)
-    uid_low = CK_ULONG(id_low)
-
-    LOG.info("CA_SetApplicationID: Attempting to set App ID %s:%s", id_high, id_low)
-
-    ret = CA_SetApplicationID(uid_high, uid_low)
-
-    LOG.info("CA_SetApplicationID: Ret Value: %s", ret)
-
-    return ret
-
-
-ca_setapplicationID_ex = make_error_handle_function(ca_setapplicationID)
-
-
-def ca_restart(slot):
-    """
-
-    :param slot:
-    """
-    LOG.info("CA_Restart: attempting to restart")
-
-    ret = CA_Restart(CK_ULONG(slot))
-
-    LOG.info("CA_Restart: Ret Value: %s", ret)
-
-    return ret
-
-
-ca_restart_ex = make_error_handle_function(ca_restart)
-
-
 def get_firmware_version(slot):
     """
-    Returns a string representing the firmware version of the given slot.
-
-    It will first try to call ``CA_GetFirmwareVersion``, and if that fails (not present on older
-    cryptoki libraries), will call ``C_GetTokenInfo``.
+    Calls to ``C_GetTokenInfo`` for the given slot.
+    Returns a string representing the firmware version.
 
     :param int slot: Token slot number
     :return: Firmware String in the format "X.Y.Z", where X is major, Y is minor, Z is subminor.
     :rtype: str
     """
 
-    # Note, CA_GetFirmwareVersion should be available from 6.3+.
-    try:
-        ul_major, ul_minor, ul_subminor = c_ulong(), c_ulong(), c_ulong()
-        ret = CA_GetFirmwareVersion(slot, byref(ul_major), byref(ul_minor), byref(ul_subminor))
-        if ret != 0:
-            LOG.warning("Failed retrieving Firmware information from slot '%s'", slot)
-            raise LunaCallException(ret, "CA_GetFirmwareVersion", (0,))
-        else:
-            major = ul_major.value
-            minor = ul_minor.value
-            subminor = ul_subminor.value
-    except AttributeError:
-        raw_firmware = c_get_token_info_ex(slot)['firmwareVersion']
-        major = raw_firmware.major
-        minor = raw_firmware.minor / 10
-        subminor = raw_firmware.minor % 10
+    ret, info = c_get_token_info(slot)
+    raw_firmware = info['firmwareVersion']
+    if ret != 0:
+        return ret
+    major = raw_firmware.major
+    minor = raw_firmware.minor / 10
+    subminor = raw_firmware.minor % 10
 
-    return "{}.{}.{}".format(major, minor, subminor)
+    return ret, "{}.{}.{}".format(major, minor, subminor)
+

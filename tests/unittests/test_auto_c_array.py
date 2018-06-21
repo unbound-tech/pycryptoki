@@ -1,14 +1,14 @@
 """
 Unit tests for AutoCArray in common_util.py
 """
+import sys
 from ctypes import *
 from string import ascii_letters
 
 import pytest
-import sys
 from hypothesis import given
 from hypothesis.strategies import text, lists, sampled_from, integers
-from six import b, binary_type
+from six import b
 
 from pycryptoki.common_utils import AutoCArray
 

@@ -17,9 +17,10 @@ This example creates a 1024b RSA Key Pair.
        from pycryptoki.defines import CKM_RSA_PKCS_KEY_PAIR_GEN
        from pycryptoki.key_generator import c_generate_key_pair_ex
 
-       c_initialize_ex()
-       session = c_open_session_ex(0)      # 0 -> slot number
-       login_ex(session, 0, 'userpin')     # 0 -> Slot number, 'userpin' -> token password
+        # NOTE: Return value checks are omitted for brevity
+       c_initialize()
+       ret, session = c_open_session(0)      # 0 -> slot number
+       login(session, 0, 'userpin')     # 0 -> Slot number, 'userpin' -> token password
 
        # Templates are dictionaries in pycryptoki
        pub_template = {CKA_TOKEN: True,
@@ -41,13 +42,13 @@ This example creates a 1024b RSA Key Pair.
                         CKA_UNWRAP: True,
                         CKA_LABEL: b"RSA Private Key"}
 
-       pub_key, priv_key = c_generate_key_pair_ex(session,
-                                                  mechanism=CKM_RSA_PKCS_KEY_PAIR_GEN,
-                                                  pbkey_template=pub_template,
-                                                  prkey_template=priv_template)
+       ret, pub_key, priv_key = c_generate_key_pair(session,
+                                                mechanism=CKM_RSA_PKCS_KEY_PAIR_GEN,
+                                                pbkey_template=pub_template,
+                                                prkey_template=priv_template)
 
-       c_close_session_ex(session)
-       c_finalize_ex()
+       c_close_session(session)
+       c_finalize()
 
 
 --------------------------------
@@ -60,9 +61,9 @@ with that key using the AES-CBC-PAD mechanism.
    .. code-block:: python
 
 
-       from pycryptoki.session_management import (c_initialize_ex, c_finalize_ex,
-                                                  c_open_session_ex, c_close_session_ex,
-                                                  login_ex)
+       from pycryptoki.session_management import (c_initialize, c_finalize,
+                                                  c_open_session, c_close_session,
+                                                  login)
        from pycryptoki.defines import (CKM_AES_KEY_GEN,
                                        CKA_LABEL,
                                        CKA_ENCRYPT,
@@ -80,14 +81,15 @@ with that key using the AES-CBC-PAD mechanism.
                                        CKA_EXTRACTABLE,
                                        CKA_PRIVATE,
                                        CKM_AES_CBC_PAD)
-       from pycryptoki.key_generator import c_generate_key_ex
-       from pycryptoki.encryption import c_encrypt_ex
+       from pycryptoki.key_generator import c_generate_key
+       from pycryptoki.encryption import c_encrypt
        from pycryptoki.conversions import to_bytestring, from_hex
        from pycryptoki.mechanism import Mechanism
 
-       c_initialize_ex()
-       session = c_open_session_ex(0)      # 0 = slot number
-       login_ex(session, 0, 'userpin')        # 'userpin' = token password
+        # NOTE: Return value checks are omitted for brevity
+       c_initialize()
+       ret, session = c_open_session(0)      # 0 = slot number
+       login(session, 0, 'userpin')        # 'userpin' = token password
 
 
        template = {CKA_LABEL: b"Sample AES Key",
@@ -103,7 +105,7 @@ with that key using the AES-CBC-PAD mechanism.
                    CKA_DERIVE: True,
                    CKA_VALUE_LEN: 24,
                    CKA_EXTRACTABLE: True,}
-       aes_key = c_generate_key_ex(session, CKM_AES_KEY_GEN, template)
+       aes_key = c_generate_key(session, CKM_AES_KEY_GEN, template)
 
        # Data is in hex format here
        raw_data = "d0d77c63ab61e75a5fd4719fa77cc2de1d817efedcbd43e7663736007672e8c7"
@@ -115,10 +117,10 @@ with that key using the AES-CBC-PAD mechanism.
        # Note: this is *bad crypto practice*! DO NOT USE STATIC IVS!!
        mechanism = Mechanism(mech_type=CKM_AES_CBC_PAD,
                              params={"iv": list(range(16))})
-       static_iv_encrypted_data = c_encrypt_ex(session, aes_key, data_to_encrypt, mechanism)
+       ret, static_iv_encrypted_data = c_encrypt(session, aes_key, data_to_encrypt, mechanism)
 
-       c_close_session_ex(session)
-       c_finalize_ex()
+       c_close_session(session)
+       c_finalize()
 
 
 ---------------------------------
@@ -152,17 +154,17 @@ we'll find one that was already used.
                                        CKA_EXTRACTABLE,
                                        CKA_PRIVATE,
                                        CKM_AES_CBC_PAD)
-       from pycryptoki.encryption import c_decrypt_ex
+       from pycryptoki.encryption import c_decrypt
        from pycryptoki.conversions import to_bytestring, from_hex
        from pycryptoki.mechanism import Mechanism
 
-       c_initialize_ex()
-       session = c_open_session_ex(0)      # 0 = slot number
-       login_ex(session, 0, 'userpin')        # 'userpin' = token password
+       c_initialize()
+       ret, session = c_open_session(0)      # 0 = slot number
+       login(session, 0, 'userpin')        # 'userpin' = token password
 
        template = {CKA_LABEL: b"Sample AES key"}
 
-       keys = c_find_objects_ex(session, template, 1)
+       keys = c_find_objects(session, template, 1)
        aes_key = keys.pop(0) # Use the first key found.
 
        # Data is in hex format here
@@ -175,7 +177,7 @@ we'll find one that was already used.
        # Note: this is *bad crypto practice*! DO NOT USE STATIC IVS!!
        mechanism = Mechanism(mech_type=CKM_AES_CBC_PAD,
                              params={"iv": list(range(16))})
-       original_data = c_decrypt_ex(session, aes_key, data_to_decrypt, mechanism)
+       ret, original_data = c_decrypt(session, aes_key, data_to_decrypt, mechanism)
 
-       c_close_session_ex(session)
-       c_finalize_ex()
+       c_close_session(session)
+       c_finalize()

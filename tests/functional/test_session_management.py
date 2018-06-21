@@ -6,7 +6,7 @@ import logging
 
 from six import integer_types
 
-from . import config as hsm_config
+from . import config as test_config
 from pycryptoki.defines import CKR_OK
 import pycryptoki.session_management as sess_mang
 
@@ -19,7 +19,7 @@ class TestSessionManagement(object):
     """
     @pytest.fixture(autouse=True)
     def setup_teardown(self, auth_session):
-        self.admin_slot = hsm_config["test_slot"]
+        self.admin_slot = test_config["test_slot"]
         self.h_session = auth_session
 
     def test_c_get_session_info(self):
@@ -43,7 +43,8 @@ class TestSessionManagement(object):
         """
         Verify this also works with token_present = True
         """
-        slot_dict = sess_mang.get_slot_dict_ex(token_present=True)
+        ret, slot_dict = sess_mang.get_slot_dict(token_present=True)
+        assert ret == CKR_OK
         for slot in slot_dict.keys():
             assert sess_mang.c_get_token_info(slot)[0] == CKR_OK
 
@@ -51,7 +52,8 @@ class TestSessionManagement(object):
         """
         Verify get slot list works as expected.
         """
-        slot_list = sess_mang.c_get_slot_list_ex(token_present=True)
+        ret, slot_list = sess_mang.c_get_slot_list(token_present=True)
+        assert ret == CKR_OK
         for slot in slot_list:
             assert isinstance(slot, integer_types)
             assert sess_mang.c_get_token_info(slot)[0] == CKR_OK

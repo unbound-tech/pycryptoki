@@ -1,18 +1,17 @@
 """
 Test creation of Attributes instance
 """
+from ctypes import c_ulong, sizeof
+from collections import defaultdict
 
 import pytest
 import mock
 
-from collections import defaultdict
-
-from pycryptoki.attributes import Attributes, KEY_TRANSFORMS, c_struct_to_python
-
 from hypothesis import given
 from hypothesis.strategies import dictionaries, integers, one_of, none, just
 
-from ctypes import c_ulong, sizeof
+from pycryptoki.attributes import Attributes, KEY_TRANSFORMS, c_struct_to_python
+
 
 MAX_INT = 2 ** (sizeof(c_ulong) * 8) - 1
 
