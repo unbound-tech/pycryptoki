@@ -1,11 +1,11 @@
 ## Pypkcs11
-[![Doc Status](https://readthedocs.org/projects/pypkcs11/badge/?version=latest)](http://pypkcs11.readthedocs.io/en/latest/)
+[![Doc Status](https://readthedocs.org/projects/unbound-pypkcs11/badge/?version=latest)](http://unbound-pypkcs11.readthedocs.io/en/latest/)
 
 Pypkcs11 is a python wrapper around the PKCS11 library.
 
 ## Documentation
 
-Latest API documentation can be found on [readthedocs](http://pypkcs11.readthedocs.io/en/latest/index.html).
+Latest API documentation can be found on [readthedocs](http://unbound-pypkcs11.readthedocs.io).
 
 
 ## Key Generation Example
