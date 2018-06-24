@@ -7,7 +7,7 @@ from .helpers import Mechanism
 from ..attributes import to_byte_array
 from ..cryptoki import CK_ULONG, CK_RSA_PKCS_OAEP_PARAMS, \
     CK_RSA_PKCS_PSS_PARAMS
-# from ..defines import *
+from ..defines import CKZ_DATA_SPECIFIED
 
 
 class RSAPKCSOAEPMechanism(Mechanism):

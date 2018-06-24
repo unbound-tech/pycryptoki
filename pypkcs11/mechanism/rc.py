@@ -5,7 +5,7 @@ from ctypes import c_void_p, cast, pointer, sizeof
 
 from . import Mechanism
 from ..attributes import to_byte_array
-
+from ..cryptoki import CK_RC2_CBC_PARAMS, CK_RC5_CBC_PARAMS, CK_RC5_PARAMS, CK_ULONG, CK_BYTE, CK_BYTE_PTR
 
 class RC2Mechanism(Mechanism):
     """

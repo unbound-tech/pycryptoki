@@ -8,10 +8,6 @@ Pypkcs11 is a python wrapper around the PKCS11 library.
 Latest API documentation can be found on [readthedocs](http://pypkcs11.readthedocs.io/en/latest/index.html).
 
 
-## Installation
-
-pip install git+https://github.com/gemalto/pypkcs11
-
 ## Key Generation Example
 
 ```py
