@@ -11,18 +11,18 @@ This example creates a 1024b RSA Key Pair.
 
    .. code-block:: python
 
-       from pycryptoki.session_management import (c_initialize_ex, c_finalize_ex,
+       from pypkcs11.session_management import (c_initialize_ex, c_finalize_ex,
                                                   c_open_session_ex, c_close_session_ex,
                                                   login_ex)
-       from pycryptoki.defines import CKM_RSA_PKCS_KEY_PAIR_GEN
-       from pycryptoki.key_generator import c_generate_key_pair_ex
+       from pypkcs11.defines import CKM_RSA_PKCS_KEY_PAIR_GEN
+       from pypkcs11.key_generator import c_generate_key_pair_ex
 
         # NOTE: Return value checks are omitted for brevity
        c_initialize()
        ret, session = c_open_session(0)      # 0 -> slot number
        login(session, 0, 'userpin')     # 0 -> Slot number, 'userpin' -> token password
 
-       # Templates are dictionaries in pycryptoki
+       # Templates are dictionaries in pypkcs11
        pub_template = {CKA_TOKEN: True,
                        CKA_PRIVATE: True,
                        CKA_MODIFIABLE: True,
@@ -61,10 +61,10 @@ with that key using the AES-CBC-PAD mechanism.
    .. code-block:: python
 
 
-       from pycryptoki.session_management import (c_initialize, c_finalize,
+       from pypkcs11.session_management import (c_initialize, c_finalize,
                                                   c_open_session, c_close_session,
                                                   login)
-       from pycryptoki.defines import (CKM_AES_KEY_GEN,
+       from pypkcs11.defines import (CKM_AES_KEY_GEN,
                                        CKA_LABEL,
                                        CKA_ENCRYPT,
                                        CKA_DECRYPT,
@@ -81,10 +81,10 @@ with that key using the AES-CBC-PAD mechanism.
                                        CKA_EXTRACTABLE,
                                        CKA_PRIVATE,
                                        CKM_AES_CBC_PAD)
-       from pycryptoki.key_generator import c_generate_key
-       from pycryptoki.encryption import c_encrypt
-       from pycryptoki.conversions import to_bytestring, from_hex
-       from pycryptoki.mechanism import Mechanism
+       from pypkcs11.key_generator import c_generate_key
+       from pypkcs11.encryption import c_encrypt
+       from pypkcs11.conversions import to_bytestring, from_hex
+       from pypkcs11.mechanism import Mechanism
 
         # NOTE: Return value checks are omitted for brevity
        c_initialize()
@@ -133,11 +133,11 @@ we'll find one that was already used.
 
 .. code-block:: python
 
-       from pycryptoki.session_management import (c_initialize_ex, c_finalize_ex,
+       from pypkcs11.session_management import (c_initialize_ex, c_finalize_ex,
                                                   c_open_session_ex, c_close_session_ex,
                                                   login_ex)
-       from pycryptoki.object_attr_lookup import c_find_objects_ex
-       from pycryptoki.defines import (CKM_AES_KEY_GEN,
+       from pypkcs11.object_attr_lookup import c_find_objects_ex
+       from pypkcs11.defines import (CKM_AES_KEY_GEN,
                                        CKA_LABEL,
                                        CKA_ENCRYPT,
                                        CKA_DECRYPT,
@@ -154,9 +154,9 @@ we'll find one that was already used.
                                        CKA_EXTRACTABLE,
                                        CKA_PRIVATE,
                                        CKM_AES_CBC_PAD)
-       from pycryptoki.encryption import c_decrypt
-       from pycryptoki.conversions import to_bytestring, from_hex
-       from pycryptoki.mechanism import Mechanism
+       from pypkcs11.encryption import c_decrypt
+       from pypkcs11.conversions import to_bytestring, from_hex
+       from pypkcs11.mechanism import Mechanism
 
        c_initialize()
        ret, session = c_open_session(0)      # 0 = slot number

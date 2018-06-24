@@ -5,7 +5,7 @@ import logging
 from _ctypes import POINTER
 from ctypes import create_string_buffer, cast, byref, string_at, c_ubyte
 
-from pycryptoki.conversions import from_bytestring
+from pypkcs11.conversions import from_bytestring
 
 from .attributes import to_char_array, to_byte_array
 from .common_utils import refresh_c_arrays, AutoCArray
@@ -38,7 +38,7 @@ def c_sign(h_session, h_key, data_to_sign, mechanism, output_buffer=None):
                "It will operate on these strings in parts"]
 
     :param int h_key: The signing key
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
     :param list|int output_buffer: Integer or list of integers that specify a size of output
         buffer to use for an operation. By default will query with NULL pointer buffer
@@ -216,7 +216,7 @@ def c_verify(h_session, h_key, data_to_verify, signature, mechanism):
                            "It will operate on these strings in parts"]
     :param bytes signature: Signature with which to verify the data.
     :param int h_key: The verifying key
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
     :return: retcode of verify operation
     """

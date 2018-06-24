@@ -4,18 +4,18 @@ Testcases for wrapping/unwrapping keys.
 import logging
 
 import pytest
-from pycryptoki.default_templates import MECHANISM_LOOKUP_EXT as LOOKUP
-from pycryptoki.default_templates import get_default_key_template
-from pycryptoki.defines import (CKA_DECRYPT, CKA_EXTRACTABLE, CKA_UNWRAP,
+from pypkcs11.default_templates import MECHANISM_LOOKUP_EXT as LOOKUP
+from pypkcs11.default_templates import get_default_key_template
+from pypkcs11.defines import (CKA_DECRYPT, CKA_EXTRACTABLE, CKA_UNWRAP,
                                 CKA_VALUE_LEN, CKA_VERIFY, CKM_AES_CBC,
                                 CKM_AES_CBC_PAD, CKM_AES_ECB, CKM_AES_KEY_GEN,
                                 CKM_DES3_CBC, CKM_DES3_CBC_PAD, CKM_DES3_ECB,
                                 CKM_DES3_KEY_GEN, CKR_OK)
-from pycryptoki.encryption import (c_decrypt, c_encrypt, c_unwrap_key,
+from pypkcs11.encryption import (c_decrypt, c_encrypt, c_unwrap_key,
                                    c_wrap_key)
-from pycryptoki.key_generator import c_destroy_object, c_generate_key
-from pycryptoki.lookup_dicts import ret_vals_dictionary
-from pycryptoki.test_functions import verify_object_attributes
+from pypkcs11.key_generator import c_destroy_object, c_generate_key
+from pypkcs11.lookup_dicts import ret_vals_dictionary
+from pypkcs11.test_functions import verify_object_attributes
 
 logger = logging.getLogger(__name__)
 

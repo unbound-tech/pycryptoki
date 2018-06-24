@@ -1,8 +1,8 @@
 """
 Diffie-Hellman mechanisms. 
 """
-from _ctypes import pointer, sizeof
 from ctypes import cast, c_void_p
+from _ctypes import pointer, sizeof
 
 from ..attributes import to_byte_array
 from ..cryptoki import CK_ECDH1_DERIVE_PARAMS, CK_BYTE_PTR, CK_ULONG
@@ -19,7 +19,7 @@ class ECDH1DeriveMechanism(Mechanism):
         """
         Create the Param structure, then convert the data into byte arrays.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(ECDH1DeriveMechanism, self).to_c_mech()
         params = CK_ECDH1_DERIVE_PARAMS()

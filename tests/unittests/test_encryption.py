@@ -7,7 +7,7 @@ from hypothesis import given
 from hypothesis.strategies import text, integers, data, lists
 from six import b
 
-import pycryptoki.encryption as encrypt
+import pypkcs11.encryption as encrypt
 
 
 class TestEncryption(object):

@@ -6,7 +6,7 @@ Miscellaneous
 RNG, Digest, Creating Objects
 -----------------------------
 
-.. automodule:: pycryptoki.misc
+.. automodule:: pypkcs11.misc
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +15,7 @@ RNG, Digest, Creating Objects
 Find Objects, Attribute Setting/Getting
 ---------------------------------------
 
-.. automodule:: pycryptoki.object_attr_lookup
+.. automodule:: pypkcs11.object_attr_lookup
     :members:
     :undoc-members:
     :show-inheritance:

@@ -23,7 +23,7 @@ class IvMechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(IvMechanism, self).to_c_mech()
         if self.params is None or 'iv' not in self.params:
@@ -50,7 +50,7 @@ class Iv16Mechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(Iv16Mechanism, self).to_c_mech()
         if self.params is None or 'iv' not in self.params:
@@ -77,7 +77,7 @@ class AESXTSMechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(AESXTSMechanism, self).to_c_mech()
         xts_params = CK_AES_XTS_PARAMS()
@@ -98,7 +98,7 @@ class AESGCMMechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(AESGCMMechanism, self).to_c_mech()
         gcm_params = CK_AES_GCM_PARAMS()
@@ -131,7 +131,7 @@ class AESECBEncryptDataMechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(AESECBEncryptDataMechanism, self).to_c_mech()
         # from https://www.cryptsoft.com/pkcs11doc/v220
@@ -156,7 +156,7 @@ class AESCBCEncryptDataMechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(AESCBCEncryptDataMechanism, self).to_c_mech()
         # https://www.cryptsoft.com/pkcs11doc/v220
@@ -188,7 +188,7 @@ class AESCTRMechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(AESCTRMechanism, self).to_c_mech()
         ctr_params = CK_AES_CTR_PARAMS()

@@ -7,14 +7,13 @@ import binascii
 import collections
 import datetime
 import logging
-from collections import defaultdict
 from ctypes import cast, c_void_p, create_string_buffer, c_bool, \
     c_ulong, pointer, POINTER, sizeof, c_char, string_at, c_ubyte
 from functools import wraps
 
-from six import b, string_types, integer_types, text_type, binary_type
+from six import b, string_types, integer_types, binary_type
 
-from pycryptoki.conversions import from_bytestring
+from pypkcs11.conversions import from_bytestring
 from .cryptoki import CK_ATTRIBUTE, CK_BBOOL, CK_ATTRIBUTE_TYPE, CK_ULONG, \
     CK_BYTE, CK_CHAR
 from .defines import CKA_CLASS, CKA_TOKEN, \
@@ -90,7 +89,7 @@ def to_bool(val, reverse=False):
 
     :param val: Value to convert
     :param reverse: Whether to convert from C -> Python
-    :return: (:class:`ctypes.c_void_p` ptr to :class:`pycryptoki.cryptoki.CK_BBOOL`,
+    :return: (:class:`ctypes.c_void_p` ptr to :class:`pypkcs11.cryptoki.CK_BBOOL`,
     :class:`ctypes.c_ulong` size of bool value)
     """
     if reverse:
@@ -112,7 +111,7 @@ def to_char_array(val, reverse=False):
 
     :param val: Value to convert
     :param reverse: Whether to convert from C -> Python
-    :return: (:class:`ctypes.c_void_p` ptr to :class:`pycryptoki.cryptoki.CK_CHAR` array,
+    :return: (:class:`ctypes.c_void_p` ptr to :class:`pypkcs11.cryptoki.CK_CHAR` array,
     :class:`ctypes.c_ulong` size of array)
     """
     if reverse:
@@ -149,7 +148,7 @@ def to_ck_date(val, reverse=False):
 
     :param val: Value to convert
     :param reverse: Whether to convert from C -> Python
-    :return: (:class:`ctypes.c_void_p` ptr to :class:`pycryptoki.cryptoki.CK_CHAR` array,
+    :return: (:class:`ctypes.c_void_p` ptr to :class:`pypkcs11.cryptoki.CK_CHAR` array,
     :class:`ctypes.c_ulong` size of array)
     """
     if reverse:
@@ -185,7 +184,7 @@ def to_byte_array(val, reverse=False):
 
     :param val: Value to convert
     :param reverse: Whether to convert from C -> Python
-    :return: (:class:`ctypes.c_void_p` ptr to :class:`pycryptoki.cryptoki.CK_BYTE` array,
+    :return: (:class:`ctypes.c_void_p` ptr to :class:`pypkcs11.cryptoki.CK_BYTE` array,
     :class:`ctypes.c_ulong` size of array)
     """
     if reverse:
@@ -236,7 +235,7 @@ def to_sub_attributes(val, reverse=False):
 
     :param val: Value to convert
     :param reverse: Whether to convert from C -> Python
-    :return: (:class:`ctypes.c_void_p` ptr to :class:`pycryptoki.cryptoki.CK_ATTRIBUTE` array,
+    :return: (:class:`ctypes.c_void_p` ptr to :class:`pypkcs11.cryptoki.CK_ATTRIBUTE` array,
     :class:`ctypes.c_ulong` size of array)
     """
     if reverse:
@@ -250,7 +249,7 @@ def to_sub_attributes(val, reverse=False):
 
 
 # Default any unset transform to :func:`to_byte_array`
-KEY_TRANSFORMS = defaultdict(lambda: to_byte_array)
+KEY_TRANSFORMS = collections.defaultdict(lambda: to_byte_array)
 
 KEY_TRANSFORMS.update({
     # int, long
@@ -338,13 +337,13 @@ class Attributes(dict):
             pass
 
 
-    This list of structs can be used with :func:`~pycryptoki.cryptoki.C_GetAttributeValue` to get
+    This list of structs can be used with :func:`~pypkcs11.cryptoki.C_GetAttributeValue` to get
     the length of the value that will be placed
     in ``pValue`` (will be set to ``ulValueLen``), or if you already know the
     length required you can 'blank fill' ``pValue`` for direct use.
 
     You can also provide new transformations in the form of a dictionary that will be preferred
-    to the :const:`~pycryptoki.attributes.KEY_TRANSFORMS` dictionary. This is passed in only as a
+    to the :const:`~pypkcs11.attributes.KEY_TRANSFORMS` dictionary. This is passed in only as a
     keyword argument::
 
         transform = {1L: lambda x: return x**2}`
@@ -367,9 +366,9 @@ class Attributes(dict):
 
     def get_c_struct(self):
         """
-        Build an array of :class:`~pycryptoki.cryptoki.CK_ATTRIBUTE` Structs & return it.
+        Build an array of :class:`~pypkcs11.cryptoki.CK_ATTRIBUTE` Structs & return it.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_ATTRIBUTE` array
+        :return: :class:`~pypkcs11.cryptoki.CK_ATTRIBUTE` array
         """
         ret_struct = (CK_ATTRIBUTE * len(list(self.keys())))()
 
@@ -400,7 +399,7 @@ class Attributes(dict):
         """
         Build out a dictionary from a c_struct.
 
-        :param c_struct: Pointer to an array of :class:`~pycryptoki.cryptoki.CK_ATTRIBUTE` structs
+        :param c_struct: Pointer to an array of :class:`~pypkcs11.cryptoki.CK_ATTRIBUTE` structs
         :return: dict
         """
         return c_struct_to_python(c_struct)

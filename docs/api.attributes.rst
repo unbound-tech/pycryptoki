@@ -2,10 +2,10 @@ Attributes and Conversions
 ==========================
 
 
-.. automodule:: pycryptoki.attributes
+.. automodule:: pypkcs11.attributes
     :members:
 
-    .. data:: pycryptoki.attributes.KEY_TRANSFORMS
+    .. data:: pypkcs11.attributes.KEY_TRANSFORMS
         :annotation: CK_ATTRIBUTE Types mapped to Python->C transformation functions
 
 .. _conversions:
@@ -13,6 +13,6 @@ Attributes and Conversions
 Conversions
 -----------
 
-.. automodule:: pycryptoki.conversions
+.. automodule:: pypkcs11.conversions
     :members:
 

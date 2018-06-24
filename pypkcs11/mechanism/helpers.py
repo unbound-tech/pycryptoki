@@ -1,6 +1,6 @@
 """
 Mechanism base class, as well as helper functions for parsing Mechanism arguments
-to pycryptoki functions.
+to pypkcs11 functions.
 """
 
 import logging
@@ -8,7 +8,7 @@ from ctypes import c_void_p, cast, pointer, POINTER, sizeof, create_string_buffe
 
 from six import integer_types
 
-from pycryptoki.lookup_dicts import MECH_NAME_LOOKUP
+from pypkcs11.lookup_dicts import MECH_NAME_LOOKUP
 from ..cryptoki import CK_AES_CBC_PAD_EXTRACT_PARAMS, CK_MECHANISM, \
     CK_ULONG, CK_ULONG_PTR, CK_AES_CBC_PAD_INSERT_PARAMS, CK_BYTE, CK_BYTE_PTR, CK_MECHANISM_TYPE
 # from ..defines import *
@@ -29,7 +29,7 @@ class MechanismException(Exception):
 
 class Mechanism(object):
     """
-    Base class for pycryptoki mechanisms.
+    Base class for pypkcs11 mechanisms.
     Performs checks for missing parameters w/ created mechs, and
     creates the base Mechanism Struct for conversion to ctypes.
     """
@@ -77,7 +77,7 @@ class Mechanism(object):
         """
         Create the Mechanism structure & set the mech type to the passed-in flavor.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         self.mech = CK_MECHANISM()
         self.mech.mechanism = CK_MECHANISM_TYPE(self.mech_type)
@@ -90,7 +90,7 @@ def get_c_struct_from_mechanism(python_dictionary, params_type_string):
     :param python_dictionary: The python dictionary representing the C struct,
         see :class:`CK_AES_CBC_PAD_EXTRACT_PARAMS` for an example
     :param params_type_string: A string representing the parameter struct.
-        ex. for  :class:`~pycryptoki.cryptoki.CK_AES_CBC_PAD_EXTRACT_PARAMS` use the
+        ex. for  :class:`~pypkcs11.cryptoki.CK_AES_CBC_PAD_EXTRACT_PARAMS` use the
         string ``CK_AES_CBC_PAD_EXTRACT_PARAMS``
     :returns: A C struct
 
@@ -126,7 +126,7 @@ def get_c_struct_from_mechanism(python_dictionary, params_type_string):
         params.pBuffer = cast(create_string_buffer(python_dictionary['pBuffer']), CK_BYTE_PTR)
         params.ulBufferLen = len(python_dictionary['pBuffer'])
     else:
-        raise Exception("Unsupported parameter type, pycryptoki can be extended to make it work")
+        raise Exception("Unsupported parameter type, pypkcs11 can be extended to make it work")
 
     return mech
 
@@ -137,7 +137,7 @@ def get_python_dict_from_c_mechanism(c_mechanism, params_type_string):
 
     :param c_mechanism: The c mechanism to convert to a python dictionary
     :param params_type_string: A string representing the parameter struct.
-        ex. for  :class:`~pycryptoki.cryptoki.CK_AES_CBC_PAD_EXTRACT_PARAMS` use the
+        ex. for  :class:`~pypkcs11.cryptoki.CK_AES_CBC_PAD_EXTRACT_PARAMS` use the
         string ``CK_AES_CBC_PAD_EXTRACT_PARAMS``
     :returns: A python dictionary representing the c struct
     """
@@ -176,7 +176,7 @@ def get_python_dict_from_c_mechanism(c_mechanism, params_type_string):
         python_dictionary['pbFileName'] = 0  # TODO
         python_dictionary['pBuffer'] = 0  # TODO
     else:
-        raise Exception("Unsupported parameter type, pycryptoki can be extended to make it work")
+        raise Exception("Unsupported parameter type, pypkcs11 can be extended to make it work")
 
     return python_dictionary
 
@@ -186,7 +186,7 @@ def parse_mechanism(mechanism_param):
     Designed for use with any function call that takes in a mechanism,
     this will handle a mechanism parameter that is one of the following:
 
-        1. ``CKM_`` integer constant -- will create a :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        1. ``CKM_`` integer constant -- will create a :class:`~pypkcs11.cryptoki.CK_MECHANISM`
            with only mech_type set.
 
            .. code-block :: python
@@ -200,7 +200,7 @@ def parse_mechanism(mechanism_param):
 
         2. Dictionary with ``mech_type`` as a mandatory key, and ``params`` as an optional key. This
            will be passed into the :class:`Mechanism` class for conversion to
-           a :class:`~pycryptoki.cryptoki.CK_MECHANISM`.
+           a :class:`~pypkcs11.cryptoki.CK_MECHANISM`.
 
            .. code-block :: python
 
@@ -213,14 +213,14 @@ def parse_mechanism(mechanism_param):
                 mech.pParameter = iv_ba
                 mech.usParameterLen = iv_len
 
-        3. :class:`~pycryptoki.cryptoki.CK_MECHANISM` struct -- passed directly into the raw C Call.
+        3. :class:`~pypkcs11.cryptoki.CK_MECHANISM` struct -- passed directly into the raw C Call.
         4. Mechanism class -- will call to_c_mech() on the class, and use the results.
 
     .. note:: You can look at ``REQUIRED_PARAMS`` on each mechanism class to see what parameters are
         required.
 
     :param mechanism_param: Parameter to convert to a C Mechanism.
-    :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM` struct.
+    :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM` struct.
     """
 
     if isinstance(mechanism_param, dict):

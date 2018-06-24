@@ -7,7 +7,7 @@ LOG = logging.getLogger(__name__)
 
 class CryptokiException(Exception):
     """
-    Base exception class for every custom exception raised by pycryptoki.
+    Base exception class for every custom exception raised by pypkcs11.
     """
     pass
 

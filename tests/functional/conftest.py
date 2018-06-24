@@ -1,5 +1,5 @@
 """
-Fixtures for pycryptoki functional tests
+Fixtures for pypkcs11 functional tests
 """
 import logging
 import os
@@ -7,13 +7,13 @@ import sys
 
 import pytest
 
-from pycryptoki.defaults import ADMINISTRATOR_PASSWORD, ADMIN_PARTITION_LABEL, CO_PASSWORD
-from pycryptoki.defines import CKF_RW_SESSION, CKF_SERIAL_SESSION, CKR_OK,  \
+from pypkcs11.defaults import ADMINISTRATOR_PASSWORD, CO_PASSWORD
+from pypkcs11.defines import CKF_RW_SESSION, CKF_SERIAL_SESSION, CKR_OK,  \
     CKF_PROTECTED_AUTHENTICATION_PATH
-from pycryptoki.session_management import c_initialize, c_close_all_sessions, \
+from pypkcs11.session_management import c_initialize, \
         c_open_session, login, c_finalize, \
     c_close_session, c_logout, c_get_token_info, get_firmware_version
-from pycryptoki.token_management import c_init_token, c_get_mechanism_list
+from pypkcs11.token_management import c_init_token, c_get_mechanism_list
 from . import config as test_config
 
 LOG = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ def pytest_addoption(parser):
     """
     Set up some commandline options so we can specify what we want to test.
     """
-    optiongroup = parser.getgroup("pycryptoki", "Pycryptoki test options")
+    optiongroup = parser.getgroup("pypkcs11", "Pypkcs11 test options")
 
     optiongroup.addoption("--slot",
                           help="Specify the slot you are testing on (Can be Admin or "
@@ -141,7 +141,7 @@ def valid_mechanisms():
     """
     Fixture that will query the active slot to get a list of valid mechanisms.
     This can be used for assertions across FW versions/configurations. Note, this ends up being
-    just a list of constants, but it should match up w/ what you're using from `pycryptoki.defines`.
+    just a list of constants, but it should match up w/ what you're using from `pypkcs11.defines`.
 
     :return: list of integers, each corresponding to a mechanism.
     """

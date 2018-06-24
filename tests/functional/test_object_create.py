@@ -5,14 +5,14 @@ Testcases for object creation
 import logging
 
 import pytest
-from pycryptoki.key_generator import c_destroy_object
+from pypkcs11.key_generator import c_destroy_object
 
-from pycryptoki.defines import CKA_VALUE, CKR_OK
+from pypkcs11.defines import CKA_VALUE, CKR_OK
 
-from pycryptoki.object_attr_lookup import c_get_attribute_value
+from pypkcs11.object_attr_lookup import c_get_attribute_value
 
-from pycryptoki.default_templates import CERTIFICATE_TEMPLATE, DATA_TEMPLATE
-from pycryptoki.misc import c_create_object
+from pypkcs11.default_templates import CERTIFICATE_TEMPLATE, DATA_TEMPLATE
+from pypkcs11.misc import c_create_object
 from . import config as test_config
 from .util import get_session_template
 

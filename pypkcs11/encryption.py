@@ -43,12 +43,12 @@ def c_encrypt(h_session, h_key, data, mechanism, output_buffer=None):
 
 
             References:
-                * :py:func:`~pycryptoki.conversions.to_hex`
-                * :py:func:`~pycryptoki.conversions.from_hex`
-                * :py:func:`~pycryptoki.conversions.to_bytestring`
-                * :py:func:`~pycryptoki.conversions.from_bytestring`
+                * :py:func:`~pypkcs11.conversions.to_hex`
+                * :py:func:`~pypkcs11.conversions.from_hex`
+                * :py:func:`~pypkcs11.conversions.to_bytestring`
+                * :py:func:`~pypkcs11.conversions.from_bytestring`
 
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
     :param list|int output_buffer: Integer or list of integers that specify a size of output 
         buffer to use for an operation. By default will query with NULL pointer buffer
@@ -142,12 +142,12 @@ def c_decrypt(h_session, h_key, encrypted_data, mechanism, output_buffer=None):
 
 
             References:
-                * :py:func:`~pycryptoki.conversions.to_hex`
-                * :py:func:`~pycryptoki.conversions.from_hex`
-                * :py:func:`~pycryptoki.conversions.to_bytestring`
-                * :py:func:`~pycryptoki.conversions.from_bytestring`
+                * :py:func:`~pypkcs11.conversions.to_hex`
+                * :py:func:`~pypkcs11.conversions.from_hex`
+                * :py:func:`~pypkcs11.conversions.to_bytestring`
+                * :py:func:`~pypkcs11.conversions.from_bytestring`
 
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
     :param list|int output_buffer: Integer or list of integers that specify a size of output 
         buffer to use for an operation. By default will query with NULL pointer buffer
@@ -230,10 +230,10 @@ def do_multipart_operation(h_session,
 
 
             References:
-                * :py:func:`~pycryptoki.conversions.to_hex`
-                * :py:func:`~pycryptoki.conversions.from_hex`
-                * :py:func:`~pycryptoki.conversions.to_bytestring`
-                * :py:func:`~pycryptoki.conversions.from_bytestring`
+                * :py:func:`~pypkcs11.conversions.to_hex`
+                * :py:func:`~pypkcs11.conversions.from_hex`
+                * :py:func:`~pypkcs11.conversions.to_bytestring`
+                * :py:func:`~pypkcs11.conversions.from_bytestring`
 
     :param list output_buffer: List of integers that specify a size of output buffers to use
         for multi-part operations. By default will query with NULL pointer buffer
@@ -326,7 +326,7 @@ def c_wrap_key(h_session, h_wrapping_key, h_key, mechanism, output_buffer=None):
     :param int h_session: The session to use
     :param int h_wrapping_key: The handle of the key to use to wrap another key
     :param int h_key: The key to wrap based on the encryption flavor
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
     :returns: (Retcode, python bytestring representing wrapped key)
     :rtype: tuple
@@ -375,13 +375,13 @@ def c_unwrap_key(h_session, h_unwrapping_key, wrapped_key, key_template, mechani
 
 
             References:
-                * :py:func:`~pycryptoki.conversions.to_hex`
-                * :py:func:`~pycryptoki.conversions.from_hex`
-                * :py:func:`~pycryptoki.conversions.to_bytestring`
-                * :py:func:`~pycryptoki.conversions.from_bytestring`
+                * :py:func:`~pypkcs11.conversions.to_hex`
+                * :py:func:`~pypkcs11.conversions.from_hex`
+                * :py:func:`~pypkcs11.conversions.to_bytestring`
+                * :py:func:`~pypkcs11.conversions.from_bytestring`
 
     :param dict key_template: The python template representing the new key's template
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
     :returns: (Retcode, unwrapped key handle)
     :rtype: tuple

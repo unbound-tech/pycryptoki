@@ -1,14 +1,14 @@
 API Reference
 =============
 
-There are some general guidelines to using pycryptoki:
+There are some general guidelines to using pypkcs11:
 
 
     1. If you want to perform a PKCS11 operation as a multi-part operation, provide the input data
        as a list or a tuple.
     2. Data should always be passed into ``c_`` functions as raw byte data (bytestrings).
        Conversions are available to convert hex data or binary data to bytes at
-       :ref:`pycryptoki.conversions<conversions>`
+       :ref:`pypkcs11.conversions<conversions>`
     3. Returned encrypted/decrypted data is always raw bytestrings.
 
 

@@ -11,10 +11,10 @@ from setuptools import setup
 setup(name='unbound-pkcs11',
       description="A python wrapper around the PKCS#11 C library.",
       maintainer='Michael Kraitsberg',
-      url='https://github.com/unbound-tech/pycryptoki',
-      version='2.1.1',
-      packages=['pycryptoki',
-                'pycryptoki.mechanism'],
+      url='https://github.com/unbound-tech/unbound-pypkcs11',
+      version='1.0.0',
+      packages=['pypkcs11',
+                'pypkcs11.mechanism'],
       tests_require=['pytest', 'hypothesis', 'mock', 'pytz'],
       install_requires=['six']
       )

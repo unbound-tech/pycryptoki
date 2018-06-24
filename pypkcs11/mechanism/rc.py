@@ -5,14 +5,6 @@ from ctypes import c_void_p, cast, pointer, sizeof
 
 from . import Mechanism
 from ..attributes import to_byte_array
-from ..cryptoki import CK_AES_CBC_PAD_EXTRACT_PARAMS, \
-    CK_ULONG, CK_ULONG_PTR, CK_AES_CBC_PAD_INSERT_PARAMS, CK_BYTE, CK_BYTE_PTR, CK_RC2_CBC_PARAMS, \
-    CK_RC5_PARAMS, CK_RC5_CBC_PARAMS, CK_MECHANISM_TYPE, CK_AES_XTS_PARAMS, \
-    CK_RSA_PKCS_OAEP_PARAMS, \
-    CK_AES_GCM_PARAMS, CK_RSA_PKCS_PSS_PARAMS, CK_KEY_DERIVATION_STRING_DATA, c_ubyte, \
-    CK_AES_CBC_ENCRYPT_DATA_PARAMS
-from ..defines import *
-from ..exceptions import CryptokiException
 
 
 class RC2Mechanism(Mechanism):
@@ -25,7 +17,7 @@ class RC2Mechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(RC2Mechanism, self).to_c_mech()
         effective_bits = CK_ULONG(self.params['usEffectiveBits'])
@@ -44,7 +36,7 @@ class RC2CBCMechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(RC2CBCMechanism, self).to_c_mech()
         effective_bits = self.params['usEffectiveBits']
@@ -66,7 +58,7 @@ class RC5Mechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(RC5Mechanism, self).to_c_mech()
         rc5_params = CK_RC5_PARAMS()
@@ -87,7 +79,7 @@ class RC5CBCMechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(RC5CBCMechanism, self).to_c_mech()
         rc5_params = CK_RC5_CBC_PARAMS()

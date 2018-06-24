@@ -1,7 +1,7 @@
 """
 Utility functions for testing
 """
-from pycryptoki.defines import CKA_TOKEN
+from pypkcs11.defines import CKA_TOKEN
 
 
 def get_session_template(default_template):

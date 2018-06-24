@@ -1,25 +1,25 @@
-## Pycryptoki
-[![Doc Status](https://readthedocs.org/projects/pycryptoki/badge/?version=latest)](http://pycryptoki.readthedocs.io/en/latest/)
+## Pypkcs11
+[![Doc Status](https://readthedocs.org/projects/pypkcs11/badge/?version=latest)](http://pypkcs11.readthedocs.io/en/latest/)
 
-Pycryptoki is a python wrapper around the PKCS11 library.
+Pypkcs11 is a python wrapper around the PKCS11 library.
 
 ## Documentation
 
-Latest API documentation can be found on [readthedocs](http://pycryptoki.readthedocs.io/en/latest/index.html).
+Latest API documentation can be found on [readthedocs](http://pypkcs11.readthedocs.io/en/latest/index.html).
 
 
 ## Installation
 
-pip install git+https://github.com/gemalto/pycryptoki
+pip install git+https://github.com/gemalto/pypkcs11
 
 ## Key Generation Example
 
 ```py
-from pycryptoki.default_templates import *
-from pycryptoki.defines import *
-from pycryptoki.key_generator import *
-from pycryptoki.session_management import *
-from pycryptoki.encryption import *
+from pypkcs11.default_templates import *
+from pypkcs11.defines import *
+from pypkcs11.key_generator import *
+from pypkcs11.session_management import *
+from pypkcs11.encryption import *
 
 # NOTE: Return value checks are omitted for brevity
 c_initialize()
@@ -43,7 +43,7 @@ c_finalize()
 ```
 ## Verbose logging
 
-If you want to see what calls to the C library are being performed, set pycryptoki logging to `DEBUG`:
+If you want to see what calls to the C library are being performed, set pypkcs11 logging to `DEBUG`:
 
 ```py
 import logging

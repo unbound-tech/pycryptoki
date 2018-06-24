@@ -10,7 +10,7 @@ from hypothesis import given
 from hypothesis.strategies import text, lists, sampled_from, integers
 from six import b
 
-from pycryptoki.common_utils import AutoCArray
+from pypkcs11.common_utils import AutoCArray
 
 c_types = [c_short, c_ushort, c_long, c_ulong, c_int, c_uint, c_float, c_double,
            c_longlong, c_ulonglong, c_byte, c_ubyte, c_char, c_char_p, c_void_p, c_bool]

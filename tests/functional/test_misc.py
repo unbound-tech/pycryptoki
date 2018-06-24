@@ -5,11 +5,11 @@ import logging
 
 import pytest
 
-from pycryptoki.defines import CKR_OK
+from pypkcs11.defines import CKR_OK
 from . import config as test_config
-from pycryptoki.misc import c_generate_random, c_seed_random, \
+from pypkcs11.misc import c_generate_random, c_seed_random, \
     c_generate_random
-from pycryptoki.lookup_dicts import ret_vals_dictionary
+from pypkcs11.lookup_dicts import ret_vals_dictionary
 
 logger = logging.getLogger(__name__)
 

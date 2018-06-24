@@ -4,9 +4,9 @@ import logging
 
 import pytest
 
-from pycryptoki.default_templates import get_default_key_template, get_default_key_pair_template, \
+from pypkcs11.default_templates import get_default_key_template, get_default_key_pair_template, \
     MECHANISM_LOOKUP_EXT
-from pycryptoki.defines import (CKM_DES_CBC, CKM_DES_KEY_GEN,
+from pypkcs11.defines import (CKM_DES_CBC, CKM_DES_KEY_GEN,
                                 CKM_AES_CBC, CKM_AES_ECB, CKM_AES_GCM, CKM_AES_KEY_GEN,
                                 CKM_DES3_CBC, CKM_DES3_ECB, CKM_DES3_CBC_PAD, CKM_DES3_KEY_GEN,
                                 CKM_CAST3_CBC, CKM_CAST3_ECB, CKM_CAST3_KEY_GEN,
@@ -18,10 +18,10 @@ from pycryptoki.defines import (CKM_DES_CBC, CKM_DES_KEY_GEN,
                                 CKM_SHA_1, CKG_MGF1_SHA1,
                                 CKR_MECHANISM_INVALID, CKR_MECHANISM_PARAM_INVALID, CKM_AES_CTR,
                                 CKM_AES_GMAC)
-from pycryptoki.defines import (CKR_OK, CKR_DATA_LEN_RANGE, CKR_KEY_SIZE_RANGE)
-from pycryptoki.encryption import c_encrypt, c_decrypt
-from pycryptoki.key_generator import c_generate_key, c_generate_key_pair, c_destroy_object
-from pycryptoki.lookup_dicts import ret_vals_dictionary
+from pypkcs11.defines import (CKR_OK, CKR_DATA_LEN_RANGE, CKR_KEY_SIZE_RANGE)
+from pypkcs11.encryption import c_encrypt, c_decrypt
+from pypkcs11.key_generator import c_generate_key, c_generate_key_pair, c_destroy_object
+from pypkcs11.lookup_dicts import ret_vals_dictionary
 from .util import get_session_template
 
 logger = logging.getLogger(__name__)

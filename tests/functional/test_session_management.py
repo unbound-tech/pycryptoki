@@ -7,8 +7,8 @@ import logging
 from six import integer_types
 
 from . import config as test_config
-from pycryptoki.defines import CKR_OK
-import pycryptoki.session_management as sess_mang
+from pypkcs11.defines import CKR_OK
+import pypkcs11.session_management as sess_mang
 
 logger = logging.getLogger(__name__)
 

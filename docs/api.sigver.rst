@@ -7,13 +7,13 @@ Sign/Verify operations
 Sign
 ----
 
-.. autofunction:: pycryptoki.sign_verify.c_sign
+.. autofunction:: pypkcs11.sign_verify.c_sign
 
 
 Verify
 ------
 
-.. autofunction:: pycryptoki.sign_verify.c_verify
+.. autofunction:: pypkcs11.sign_verify.c_verify
 
-.. autofunction:: pycryptoki.sign_verify.do_multipart_verify
+.. autofunction:: pypkcs11.sign_verify.do_multipart_verify
 

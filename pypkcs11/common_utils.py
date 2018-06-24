@@ -1,5 +1,5 @@
 """
-Utilities for pycryptoki
+Utilities for pypkcs11
 """
 from six import b, string_types
 import logging

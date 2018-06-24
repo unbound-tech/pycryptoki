@@ -2,17 +2,16 @@
 import logging
 import pytest
 
-from pycryptoki.sign_verify import c_sign, c_verify
-from pycryptoki.key_generator import c_generate_key_pair, c_generate_key, c_destroy_object
-from pycryptoki.defines import (CKM_AES_GMAC, CKM_AES_CMAC, CKM_AES_KEY_GEN,
-                                CKM_DES_MAC, CKM_DES_KEY_GEN,
+from pypkcs11.sign_verify import c_sign, c_verify
+from pypkcs11.key_generator import c_generate_key_pair, c_generate_key, c_destroy_object
+from pypkcs11.defines import (CKM_AES_GMAC, CKM_AES_CMAC, CKM_AES_KEY_GEN,
                                 CKM_DES3_MAC, CKM_DES3_CMAC, CKM_DES3_KEY_GEN,
                                 # CKM_CAST3_MAC, CKM_CAST3_KEY_GEN,
                                 # CKM_CAST5_MAC, CKM_CAST5_KEY_GEN,
                                 CKM_DSA, CKM_DSA_KEY_PAIR_GEN,
                                 CKM_ECDSA, CKM_ECDSA_KEY_PAIR_GEN,
                                 CKR_OK)
-from pycryptoki.default_templates import (CKM_DSA_KEY_PAIR_GEN_PRIVTEMP,
+from pypkcs11.default_templates import (CKM_DSA_KEY_PAIR_GEN_PRIVTEMP,
                                           CKM_DSA_KEY_PAIR_GEN_PUBTEMP_1024_160,
                                           CKM_DSA_KEY_PAIR_GEN_PUBTEMP_2048_224,
                                           CKM_DSA_KEY_PAIR_GEN_PUBTEMP_2048_256,
@@ -23,7 +22,7 @@ from pycryptoki.default_templates import (CKM_DSA_KEY_PAIR_GEN_PRIVTEMP,
 
                                           MECHANISM_LOOKUP_EXT, get_default_key_template)
 
-from pycryptoki.lookup_dicts import ret_vals_dictionary
+from pypkcs11.lookup_dicts import ret_vals_dictionary
 from .util import get_session_template
 
 logger = logging.getLogger(__name__)

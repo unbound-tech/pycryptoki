@@ -1,6 +1,6 @@
 """
 Module that contains lookup dictionaries for easy logging of
-error codes and other constants within pycryptoki.
+error codes and other constants within pypkcs11.
 """
 
 from .defines import *

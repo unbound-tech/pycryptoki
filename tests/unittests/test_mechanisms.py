@@ -6,14 +6,14 @@ from ctypes import cast, c_ulong, c_ubyte
 from mock import patch
 from six import integer_types
 
-from pycryptoki.conversions import from_hex, to_bytestring
-from pycryptoki.cryptoki import (CK_RSA_PKCS_PSS_PARAMS,
+from pypkcs11.conversions import from_hex, to_bytestring
+from pypkcs11.cryptoki import (CK_RSA_PKCS_PSS_PARAMS,
                                  POINTER,
                                  CK_ULONG,
                                  CK_AES_GCM_PARAMS,
                                  CK_MECHANISM)
-from pycryptoki.defines import *
-from pycryptoki.mechanism import (Mechanism,
+from pypkcs11.defines import *
+from pypkcs11.mechanism import (Mechanism,
                                   MechanismException,
                                   AutoMech,
                                   MECH_LOOKUP,

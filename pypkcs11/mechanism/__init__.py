@@ -4,7 +4,7 @@ Conversions for pure-python dictionaries to C struct mechanisms.
 To implement a new Mechanism:
 
     1. Create a new mechanism class, deriving from
-       :py:class:`~pycryptoki.mechanism.helpers.Mechanism`
+       :py:class:`~pypkcs11.mechanism.helpers.Mechanism`
     2. Set ``REQUIRED_PARAMS`` as a class variable. ``REQUIRED_PARAMS`` should be a list of strings,
        defining required parameter keys.
 

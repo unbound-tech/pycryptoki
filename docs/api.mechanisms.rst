@@ -1,7 +1,7 @@
 Mechanisms
 ----------
 
-.. automodule:: pycryptoki.mechanism
+.. automodule:: pypkcs11.mechanism
     :members:
     :undoc-members:
     :show-inheritance:
@@ -10,7 +10,7 @@ Mechanisms
 Helpers
 =======
 
-.. automodule:: pycryptoki.mechanism.helpers
+.. automodule:: pypkcs11.mechanism.helpers
     :members:
     :undoc-members:
     :show-inheritance:
@@ -19,7 +19,7 @@ Helpers
 AES Mechanisms
 ==============
 
-.. automodule:: pycryptoki.mechanism.aes
+.. automodule:: pypkcs11.mechanism.aes
     :members:
     :undoc-members:
     :show-inheritance:
@@ -27,7 +27,7 @@ AES Mechanisms
 Generic Mechanisms
 ==================
 
-.. automodule:: pycryptoki.mechanism.generic
+.. automodule:: pypkcs11.mechanism.generic
     :members:
     :undoc-members:
     :show-inheritance:
@@ -35,7 +35,7 @@ Generic Mechanisms
 RC Mechanisms
 =============
 
-.. automodule:: pycryptoki.mechanism.rc
+.. automodule:: pypkcs11.mechanism.rc
     :members:
     :undoc-members:
     :show-inheritance:
@@ -43,7 +43,7 @@ RC Mechanisms
 RSA Mechanisms
 ==============
 
-.. automodule:: pycryptoki.mechanism.rsa
+.. automodule:: pypkcs11.mechanism.rsa
     :members:
     :undoc-members:
     :show-inheritance:

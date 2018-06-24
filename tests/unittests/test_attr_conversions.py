@@ -16,7 +16,7 @@ from six import b, integer_types
 
 from _ctypes import POINTER
 
-from pycryptoki.attributes import (CK_ATTRIBUTE,
+from pypkcs11.attributes import (CK_ATTRIBUTE,
                                    CKA_CLASS,
                                    CK_BYTE,
                                    to_long,
@@ -344,7 +344,7 @@ class TestAttrConversions(object):
         """
         mock_xform_dict = defaultdict(lambda: to_bool)
         mock_xform_dict.update({key: to_bool for key in KEY_TRANSFORMS})
-        with mock.patch('pycryptoki.attributes.KEY_TRANSFORMS', new=mock_xform_dict):
+        with mock.patch('pypkcs11.attributes.KEY_TRANSFORMS', new=mock_xform_dict):
             pointer, leng = to_sub_attributes(test_dic)
             self.verify_c_type(pointer, leng)
 

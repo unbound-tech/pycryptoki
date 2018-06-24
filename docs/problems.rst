@@ -15,13 +15,13 @@ For example::
 
      c_encrypt(session, key, "this is some test data", mechanism)
 
-Will work in Python 2, but NOT Python 3. Instead, use the :ref:`pycryptoki.conversions<conversions>`
+Will work in Python 2, but NOT Python 3. Instead, use the :ref:`pypkcs11.conversions<conversions>`
 module to ensure that any data you pass into the cryptoki library is of the correct form.
 
 Another 'gotcha' is that hex data represented as a string that is then used in an encrypt call would
 result in 2x the length of expected data::
 
-    from pycryptoki.conversions import to_bytestring, from_hex
+    from pypkcs11.conversions import to_bytestring, from_hex
     hex_data = "deadbeef"
     assert len(hex_data) == 8
     raw_data = list(from_hex(hex_data))
@@ -31,7 +31,7 @@ result in 2x the length of expected data::
 
 Another example::
 
-    from pycryptoki.conversions import to_bytestring, from_hex
+    from pypkcs11.conversions import to_bytestring, from_hex
     some_hex_data = "06abde23df89"
     data_to_encrypt = to_bytestring(from_hex(some_hex_data))
     c_encrypt(session, key, data_to_encrypt, mechanism)
@@ -53,14 +53,14 @@ PKCS11 Calling Conventions
        required buffer size in ``*pulBufLen``.
 
 
-Pycryptoki will let you perform either method for any function that returns data in a variable-length
+Pypkcs11 will let you perform either method for any function that returns data in a variable-length
 buffer with the ``output_buffer`` keyword argument. This argument takes either an integer, or a list
 of integers. The integer specifies the *size* of the buffer to use for the returned output. This means
 if you use a very small integer, you could get back ``CKR_BUFFER_TOO_SMALL`` (and you could also
 allocate a buffer that is incredibly large -- limited by the memory of your system).
 
 
-By default, pycryptoki will use method #2 (querying the library for buffer size)::
+By default, pypkcs11 will use method #2 (querying the library for buffer size)::
 
     data = b"deadbeef"
     c_decrypt(session, key, data, mechanism)
@@ -71,10 +71,10 @@ Will result in the raw underlying PKCS11 calls:
 
 .. code-block:: none
 
-    DEBUG: Cryptoki call: C_DecryptInit(8, <pycryptoki.cryptoki.CK_MECHANISM object at 0x7f693480c598>, c_ulong(26))
-    DEBUG: Cryptoki call: C_Decrypt(8, <pycryptoki.cryptoki.LP_c_ubyte object at 0x7f69347df598>, c_ulong(2056), None, <pycryptoki.cryptoki.LP_c_ulong object at 0x7f69347dfbf8>)
+    DEBUG: Cryptoki call: C_DecryptInit(8, <pypkcs11.cryptoki.CK_MECHANISM object at 0x7f693480c598>, c_ulong(26))
+    DEBUG: Cryptoki call: C_Decrypt(8, <pypkcs11.cryptoki.LP_c_ubyte object at 0x7f69347df598>, c_ulong(2056), None, <pypkcs11.cryptoki.LP_c_ulong object at 0x7f69347dfbf8>)
     DEBUG: Allocating <class 'ctypes.c_ubyte'> buffer of size: 2048
-    DEBUG: Cryptoki call: C_Decrypt(8, <pycryptoki.cryptoki.LP_c_ubyte object at 0x7f69347df598>, c_ulong(2056), <pycryptoki.cryptoki.LP_c_ubyte object at 0x7f693498c9d8>, <pycryptoki.cryptoki.LP_c_ulong object at 0x7f693498c840>)
+    DEBUG: Cryptoki call: C_Decrypt(8, <pypkcs11.cryptoki.LP_c_ubyte object at 0x7f69347df598>, c_ulong(2056), <pypkcs11.cryptoki.LP_c_ubyte object at 0x7f693498c9d8>, <pypkcs11.cryptoki.LP_c_ulong object at 0x7f693498c840>)
 
 
 .. note::
@@ -91,9 +91,9 @@ And the resulting PKCS11 calls:
 
 .. code-block:: none
 
-    DEBUG: Cryptoki call: C_DecryptInit(8, <pycryptoki.cryptoki.CK_MECHANISM object at 0x7f693480c598>, c_ulong(26))
+    DEBUG: Cryptoki call: C_DecryptInit(8, <pypkcs11.cryptoki.CK_MECHANISM object at 0x7f693480c598>, c_ulong(26))
     DEBUG: Allocating <class 'ctypes.c_ubyte'> buffer of size: 2048
-    DEBUG: Cryptoki call: C_Decrypt(8, <pycryptoki.cryptoki.LP_c_ubyte object at 0x7f69347df598>, c_ulong(2056), <pycryptoki.cryptoki.LP_c_ubyte object at 0x7f693498c9d8>, <pycryptoki.cryptoki.LP_c_ulong object at 0x7f693498c840>)
+    DEBUG: Cryptoki call: C_Decrypt(8, <pypkcs11.cryptoki.LP_c_ubyte object at 0x7f69347df598>, c_ulong(2056), <pypkcs11.cryptoki.LP_c_ubyte object at 0x7f693498c9d8>, <pypkcs11.cryptoki.LP_c_ulong object at 0x7f693498c840>)
 
 
 For multi-part operations, ``output_buffer`` should be a list of integers of equal size to the

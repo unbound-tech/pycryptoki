@@ -4,7 +4,7 @@ their string equivalents -- backwards compatibility
 """
 import warnings
 
-warnings.warn("Deprecated! Use 'pycryptoki.lookup_dicts' instead", DeprecationWarning)
+warnings.warn("Deprecated! Use 'pypkcs11.lookup_dicts' instead", DeprecationWarning)
 
 # Backwards compatibility for now...
 from .lookup_dicts import ret_vals_dictionary

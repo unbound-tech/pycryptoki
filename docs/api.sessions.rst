@@ -6,7 +6,7 @@ Modules for Token and session creation and management.
 Session Management
 ------------------
 
-.. automodule:: pycryptoki.session_management
+.. automodule:: pypkcs11.session_management
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +15,7 @@ Session Management
 Token Management
 ----------------
 
-.. automodule:: pycryptoki.token_management
+.. automodule:: pypkcs11.token_management
     :members:
     :undoc-members:
     :show-inheritance:

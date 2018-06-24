@@ -2,9 +2,9 @@
 import logging
 import pytest
 
-from pycryptoki.return_values import ret_vals_dictionary
-from pycryptoki.defines import CKR_OK, CKM_MD5, CKM_SHA_1, CKM_SHA256, CKM_SHA384, CKM_SHA512
-from pycryptoki.misc import c_digest
+from pypkcs11.return_values import ret_vals_dictionary
+from pypkcs11.defines import CKR_OK, CKM_MD5, CKM_SHA_1, CKM_SHA256, CKM_SHA384, CKM_SHA512
+from pypkcs11.misc import c_digest
 
 logger = logging.getLogger(__name__)
 

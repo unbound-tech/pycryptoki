@@ -50,7 +50,7 @@ def c_generate_key(h_session, mechanism=None, template=None):
 
     :param int h_session: Session handle
     :param dict template: The template to use to generate the key
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
     :return: (retcode, generated key handle)
     :rtype tuple:
@@ -85,7 +85,7 @@ def c_generate_key_pair(h_session,
     :param int h_session: Session handle
     :param dict pbkey_template: The public key template to use for key generation
     :param dict prkey_template: The private key template to use for key generation
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
     :returns: (retcode, public key handle, private key handle)
     :rtype: tuple
@@ -120,7 +120,7 @@ def c_derive_key(h_session, h_base_key, template, mechanism=None):
     :param int h_session: Session handle
     :param int h_base_key: The base key
     :param dict template: A python template of attributes to set on derived key
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
     :returns: The result code, The derived key's handle
 

@@ -7,7 +7,7 @@ from .helpers import Mechanism
 from ..attributes import to_byte_array
 from ..cryptoki import CK_ULONG, CK_RSA_PKCS_OAEP_PARAMS, \
     CK_RSA_PKCS_PSS_PARAMS
-from ..defines import *
+# from ..defines import *
 
 
 class RSAPKCSOAEPMechanism(Mechanism):
@@ -21,7 +21,7 @@ class RSAPKCSOAEPMechanism(Mechanism):
         """
         Convert extra parameters to ctypes, then build out the mechanism.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(RSAPKCSOAEPMechanism, self).to_c_mech()
         oaep_params = CK_RSA_PKCS_OAEP_PARAMS()
@@ -57,7 +57,7 @@ class RSAPKCSPSSMechanism(Mechanism):
         Uses default salt length of 8.
         Can be overridden w/ a parameter though.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(RSAPKCSPSSMechanism, self).to_c_mech()
         c_params = CK_RSA_PKCS_PSS_PARAMS()

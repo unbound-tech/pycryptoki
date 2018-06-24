@@ -12,7 +12,7 @@ from ctypes import create_string_buffer, cast, byref, string_at, c_ubyte
 
 from six import integer_types
 
-from pycryptoki.conversions import from_bytestring
+from pypkcs11.conversions import from_bytestring
 from .attributes import Attributes, to_byte_array
 from .common_utils import refresh_c_arrays, AutoCArray
 from .cryptoki import C_GenerateRandom, CK_BYTE_PTR, CK_ULONG, \
@@ -63,7 +63,7 @@ def c_digest(h_session, data_to_digest, digest_flavor, mechanism=None, output_bu
         If this is a list a multipart operation will be used
     :param int digest_flavor: The flavour of the mechanism to digest (MD2, SHA-1, HAS-160,
         SHA224, SHA256, SHA384, SHA512)
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values. If None will use digest flavor.
     :param list|int output_buffer: Integer or list of integers that specify a size of output 
         buffer to use for an operation. By default will query with NULL pointer buffer
@@ -131,7 +131,7 @@ def c_digestkey(h_session, h_key, digest_flavor, mechanism=None):
     :param int h_session: Session handle
     :param int h_key: Key to digest
     :param int digest_flavor: Digest flavor
-    :param mechanism: See the :py:func:`~pycryptoki.mechanism.parse_mechanism` function
+    :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values. If None will use digest flavor.
     """
     if mechanism is None:

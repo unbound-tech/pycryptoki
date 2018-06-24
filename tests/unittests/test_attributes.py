@@ -10,7 +10,7 @@ import mock
 from hypothesis import given
 from hypothesis.strategies import dictionaries, integers, one_of, none, just
 
-from pycryptoki.attributes import Attributes, KEY_TRANSFORMS, c_struct_to_python
+from pypkcs11.attributes import Attributes, KEY_TRANSFORMS, c_struct_to_python
 
 
 MAX_INT = 2 ** (sizeof(c_ulong) * 8) - 1
@@ -34,7 +34,7 @@ mock_xform_dict.update({key: new_xform for key in KEY_TRANSFORMS})
 @pytest.yield_fixture()
 def setup_mock_dict():
     """ Fixture for creating dictionary of mockxforms """
-    with mock.patch('pycryptoki.attributes.KEY_TRANSFORMS', new=mock_xform_dict):
+    with mock.patch('pypkcs11.attributes.KEY_TRANSFORMS', new=mock_xform_dict):
         yield
 
 

@@ -6,23 +6,23 @@ Encryption/Decryption
 Encryption
 ----------
 
-.. autofunction:: pycryptoki.encryption.c_encrypt
+.. autofunction:: pypkcs11.encryption.c_encrypt
 
 Decryption
 ----------
 
-.. autofunction:: pycryptoki.encryption.c_decrypt
+.. autofunction:: pypkcs11.encryption.c_decrypt
 
 
 Key Wrapping/Unwrapping
 -----------------------
 
-.. autofunction:: pycryptoki.encryption.c_wrap_key
+.. autofunction:: pypkcs11.encryption.c_wrap_key
 
-.. autofunction:: pycryptoki.encryption.c_unwrap_key
+.. autofunction:: pypkcs11.encryption.c_unwrap_key
 
 
 Multipart Helper
 ----------------
 
-.. autofunction:: pycryptoki.encryption.do_multipart_operation
+.. autofunction:: pypkcs11.encryption.do_multipart_operation

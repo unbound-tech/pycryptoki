@@ -23,7 +23,7 @@ class ConcatenationDeriveMechanism(Mechanism):
         """
         Add in a pointer to the second key in the resulting mech structure.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(ConcatenationDeriveMechanism, self).to_c_mech()
         c_second_key = CK_ULONG(self.params['h_second_key'])
@@ -42,7 +42,7 @@ class StringDataDerivationMechanism(Mechanism):
         """
         Convert data to bytearray, then use in the resulting mech structure.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(StringDataDerivationMechanism, self).to_c_mech()
         parameters = CK_KEY_DERIVATION_STRING_DATA()
@@ -64,7 +64,7 @@ class NullMech(Mechanism):
         """
         Simply set the pParameter to null pointer.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(NullMech, self).to_c_mech()
         self.mech.pParameter = c_void_p(0)
@@ -86,7 +86,7 @@ class AutoMech(Mechanism):
         Attempt to handle generic mechanisms by introspection of the
         structure.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
         """
         super(AutoMech, self).to_c_mech()
         c_params_type = getattr(cryptoki,

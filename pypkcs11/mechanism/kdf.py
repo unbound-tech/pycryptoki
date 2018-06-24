@@ -1,7 +1,7 @@
 """KDF-specific mechanism implementations."""
 
-from _ctypes import pointer, sizeof
 from ctypes import cast, c_void_p
+from _ctypes import pointer, sizeof
 
 from . import Mechanism
 from ..attributes import to_byte_array
@@ -16,7 +16,7 @@ class PRFKDFDeriveMechanism(Mechanism):
         """
         Create the Param structure, then convert the data into byte arrays.
 
-        :return: :class:`~pycryptoki.cryptoki.CK_MECHANISM`
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
 
         """
         super(PRFKDFDeriveMechanism, self).to_c_mech()

@@ -2,14 +2,14 @@ import logging
 
 import pytest
 
-from pycryptoki.default_templates import \
+from pypkcs11.default_templates import \
     (CKM_DSA_KEY_PAIR_GEN_PRIVTEMP,
      CKM_DSA_KEY_PAIR_GEN_PUBTEMP_1024_160, CKM_DSA_KEY_PAIR_GEN_PUBTEMP_2048_224,
      CKM_DSA_KEY_PAIR_GEN_PUBTEMP_2048_256, CKM_DSA_KEY_PAIR_GEN_PUBTEMP_3072_256,
      CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP,
      curve_list, get_default_key_template, get_default_key_pair_template,
      MECHANISM_LOOKUP_EXT)
-from pycryptoki.defines import \
+from pypkcs11.defines import \
     (CKM_DES_KEY_GEN, CKM_DES2_KEY_GEN, CKM_DES3_KEY_GEN, CKM_CAST3_KEY_GEN, CKM_CAST5_KEY_GEN,
      CKM_RC2_KEY_GEN, CKM_RC4_KEY_GEN, CKM_RC5_KEY_GEN, CKM_GENERIC_SECRET_KEY_GEN,
      CKM_AES_KEY_GEN, CKM_ARIA_KEY_GEN,
@@ -23,14 +23,14 @@ from pycryptoki.defines import \
      CKR_OK, CKA_VALUE_LEN, CKR_KEY_SIZE_RANGE, CKD_NULL, CKM_ECDH1_DERIVE, CKA_CLASS,
      CKO_SECRET_KEY, CKA_EC_POINT, CKA_SENSITIVE, CKA_PRIVATE, CKA_DECRYPT, CKA_ENCRYPT, CKK_DES,
      CKA_KEY_TYPE, CKM_DES_ECB, CKR_MECHANISM_INVALID)
-from pycryptoki.encryption import c_encrypt, c_decrypt
-from pycryptoki.key_generator import \
+from pypkcs11.encryption import c_encrypt, c_decrypt
+from pypkcs11.key_generator import \
     c_generate_key, c_generate_key_pair, c_derive_key, c_generate_key, c_destroy_object, \
     c_derive_key, c_generate_key_pair
-from pycryptoki.mechanism import NullMech
-from pycryptoki.object_attr_lookup import c_get_attribute_value, c_find_objects
-from pycryptoki.return_values import ret_vals_dictionary
-from pycryptoki.test_functions import verify_object_attributes
+from pypkcs11.mechanism import NullMech
+from pypkcs11.object_attr_lookup import c_get_attribute_value, c_find_objects
+from pypkcs11.return_values import ret_vals_dictionary
+from pypkcs11.test_functions import verify_object_attributes
 from .util import get_session_template
 
 logger = logging.getLogger(__name__)

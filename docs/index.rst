@@ -1,26 +1,26 @@
-Pycryptoki
+Pypkcs11
 ==========
 
 
 Overview
 --------
 
-Pycryptoki is an open-source Python wrapper around Safenet's C PKCS11 library. Using python's ctypes library,
+Pypkcs11 is an open-source Python wrapper around PKCS#11 C library. Using python's ctypes library,
 we can simplify memory management, and provide easy, pythonic access to a PKCS11 shared library.
 
-The primary function of pycryptoki is to *simplify* PKCS11 calls. Rather than needing to calculate
+The primary function of pypkcs11 is to *simplify* PKCS11 calls. Rather than needing to calculate
 data sizes, buffers, or other low-level memory manipulation, you simply need to pass in data.
 
 It's highly recommended that you have the `PKCS11 <https://www.cryptsoft.com/pkcs11doc/v220/>`_ documentation
-handy, as pycryptoki uses that as the underlying C interface. Session management, object management,
+handy, as pypkcs11 uses that as the underlying C interface. Session management, object management,
 and other concepts are unchanged from PKCS11.
 
 .. code-block:: python
 
-   from pycryptoki.default_templates import *
-   from pycryptoki.defines import *
-   from pycryptoki.key_generator import *
-   from pycryptoki.session_management import *
+   from pypkcs11.default_templates import *
+   from pypkcs11.defines import *
+   from pypkcs11.key_generator import *
+   from pypkcs11.session_management import *
 
 
    c_initialize()
