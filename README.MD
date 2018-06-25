@@ -5,7 +5,7 @@ Pypkcs11 is a python wrapper around the PKCS11 library.
 
 ## Documentation
 
-Latest API documentation can be found on [readthedocs](http://unbound-pypkcs11.readthedocs.io).
+The latest API documentation can be found on [readthedocs](http://unbound-pypkcs11.readthedocs.io).
 
 
 ## Key Generation Example
@@ -37,7 +37,7 @@ c_logout(auth_session)
 c_close_session(auth_session)
 c_finalize()
 ```
-## Verbose logging
+## Verbose Logging
 
 If you want to see what calls to the C library are being performed, set pypkcs11 logging to `DEBUG`:
 
@@ -50,14 +50,14 @@ logging.basicConfig(level=logging.DEBUG)
 
 Test requirements can be installed via `pip install -r test_requirements.txt`.
 
-Unittests can be run on any environment via:
+Unit tests can be run on any environment via:
 ```
 py.test tests/unittests
 ```
 
-Functional tests require an EKM to test against, and will actively test the integration
- with the libCryptoki library. This *will* create and destroy objects on the EKM, so don't run
-  on a production EKM!
+Functional tests require a UKC to test against, and actively test the integration
+ with the libCryptoki library. These tests *will* create and destroy objects on the UKC, so don't run
+  on a production UKC!
 
 ```
 py.test tests/functional --slot=<slot_num> [--password=<pwd>] [--copassword=<pwd>] [--user=<user>] [--loglevel=<level>]
