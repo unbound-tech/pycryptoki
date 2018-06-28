@@ -62,3 +62,7 @@ Functional tests require a UKC to test against, and actively test the integratio
 ```
 py.test tests/functional --slot=<slot_num> [--password=<pwd>] [--copassword=<pwd>] [--user=<user>] [--loglevel=<level>]
 ```
+
+## Change Note
+
+Please note that this file have been modified by Unbound Tech.

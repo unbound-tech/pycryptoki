@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """
 This module contains a wrapper around the key attributes and the template struct
 generation to make it possible to create templates in python and easily

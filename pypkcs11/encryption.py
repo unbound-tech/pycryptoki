@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """
 Methods related to encrypting data/files.
 """

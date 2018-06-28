@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """
 File containing a number of templates taken from CKDemo and manually converted into python format.
 See the attributes.py file for methods to convert them into the proper C format.

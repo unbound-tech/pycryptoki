@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """
 Mechanism base class, as well as helper functions for parsing Mechanism arguments
 to pypkcs11 functions.

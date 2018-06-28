@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """
 Module that contains lookup dictionaries for easy logging of
 error codes and other constants within pypkcs11.

@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """
 This file contains all of the ctypes definitions for the cryptoki library.
 The ctypes definitions outline the structures for the cryptoki C API.

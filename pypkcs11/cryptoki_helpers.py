@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """
 Helper functions to get us access to the PKCS11 library.
 """

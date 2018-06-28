@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """
 Provide low-level conversions between common data types.
 
@@ -38,8 +41,8 @@ from six import b
 
 def _chunks(inval, chunk_size):
     """
-    Split an iterable into chunks of the given size. 
-    
+    Split an iterable into chunks of the given size.
+
     :param inval: Iterable to be chunked.
     :param chunk_size: Size of chunks.
     :return: Iterator
@@ -51,10 +54,10 @@ def _chunks(inval, chunk_size):
 def from_bytestring(ascii_):
     """
     Convert an iterable of strings into an iterable of integers.
-    
+
     .. note:: For bytestrings on python3, this does effectively nothing, since
         iterating over a bytestring in python 3 will return integers.
-    
+
     :param ascii_: String to convert
     :return: iterator
     """
@@ -68,7 +71,7 @@ def from_bytestring(ascii_):
 def to_bytestring(ascii_):
     """
     Convert an iterable of integers into a bytestring.
-    
+
     :param iterable ascii_: Iterable of integers
     :return: bytestring
     """
@@ -78,8 +81,8 @@ def to_bytestring(ascii_):
 def from_bin(bin_):
     """
     Convert a string-representation of binary into a list
-    of integers.  
-    
+    of integers.
+
     :param str bin_: String representation of binary data (ex: "10110111")
     :return: iterator over integers
     """
@@ -90,7 +93,7 @@ def from_bin(bin_):
 def to_bin(ascii_):
     """
     Convert an iterable of integers to a binary representation.
-    
+
     :param iterable ascii_: iterable of integers
     :return: bytestring of the binary values
     """

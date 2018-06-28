@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """KDF-specific mechanism implementations."""
 
 from ctypes import cast, c_void_p

@@ -1,3 +1,6 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
 """
 Lookup dictionary for converting CK_ULONG return codes into
 their string equivalents -- backwards compatibility
