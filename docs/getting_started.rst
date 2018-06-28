@@ -32,3 +32,6 @@ This example will print out information about the given token slot.
         print("Firmware version: {}".format(get_firmware_version(0)))
 
         c_finalize()
+
+.. footer:: Please note that this document have been modified by Unbound Tech.
+

@@ -26,3 +26,6 @@ Multipart Helper
 ----------------
 
 .. autofunction:: pypkcs11.encryption.do_multipart_operation
+
+.. footer:: Please note that this document have been modified by Unbound Tech.
+

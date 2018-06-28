@@ -19,3 +19,6 @@ Token Management
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. footer:: Please note that this document have been modified by Unbound Tech.
+

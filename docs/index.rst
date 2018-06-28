@@ -54,3 +54,5 @@ and other concepts are unchanged from PKCS11.
    Frequent Issues      <problems>
    API Reference        <api>
 
+.. footer:: Please note that this document have been modified by Unbound Tech.
+

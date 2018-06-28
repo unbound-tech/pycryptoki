@@ -106,3 +106,6 @@ number of parts in the operation::
 
 For a multi-part operation that returns data in the ``C_*Final`` function, the output buffer will be
 equivalent to the largest buffer size specified in the output_buffer list.
+
+.. footer:: Please note that this document have been modified by Unbound Tech.
+

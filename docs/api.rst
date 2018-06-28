@@ -22,3 +22,6 @@ There are some general guidelines to using pypkcs11:
    Mechanisms <api.mechanisms>
    Miscellaneous <api.misc>
    Helpers <api.helpers>
+
+.. footer:: Please note that this document have been modified by Unbound Tech.
+

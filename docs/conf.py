@@ -1,3 +1,7 @@
+#
+# Please note that this file have been modified by Unbound Tech
+#
+
 # -*- coding: utf-8 -*-
 #
 # Pypkcs11 documentation build configuration file, created by
@@ -230,7 +234,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'pypkcs11', u'Pypkcs11 Documentation',
-     [u'Gemalto'], 1)
+     [u'Unbound Tech'], 1)
 ]
 
 # If true, show URL addresses after external links.

@@ -181,3 +181,6 @@ we'll find one that was already used.
 
        c_close_session(session)
        c_finalize()
+
+.. footer:: Please note that this document have been modified by Unbound Tech.
+
