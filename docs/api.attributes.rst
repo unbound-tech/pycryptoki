@@ -16,5 +16,5 @@ Conversions
 .. automodule:: pypkcs11.conversions
     :members:
 
-.. footer:: Please note that this document have been modified by Unbound Tech.
+.. footer:: Note that this document has been modified by Unbound Tech.
 
