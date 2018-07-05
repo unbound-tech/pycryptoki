@@ -1,5 +1,5 @@
 #
-# Please note that this file have been modified by Unbound Tech
+# Please note that this file has been modified by Unbound Tech
 #
 """
 Lookup dictionary for converting CK_ULONG return codes into
