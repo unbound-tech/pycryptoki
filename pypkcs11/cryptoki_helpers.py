@@ -23,6 +23,7 @@ class CryptokiConfigException(CryptokiException):
     """
     pass
 
+
 class CryptokiDLLException(Exception):
     """Custom exception class used to print an error when a call to the Cryptoki DLL failed.
     The late binding makes debugging a little bit more difficult because function calls
@@ -48,9 +49,11 @@ class CryptokiDLLSingleton(object):
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super(CryptokiDLLSingleton, cls).__new__(cls, *args, **kwargs)
+            cls._instance = super(CryptokiDLLSingleton, cls).__new__(
+                cls, *args, **kwargs)
 
-            dll_path = os.environ['PKCS11_LIB']
+            default_lib_name = 'ekmpkcs11.dll' if 'win' in sys.platform else 'libekmpkcs11.so'
+            dll_path = os.getenv('PKCS11_LIB', default_lib_name)
             cls._instance.dll_path = dll_path
             if 'win' in sys.platform and IS_64B:
                 import ctypes
@@ -68,7 +71,7 @@ class CryptokiDLLSingleton(object):
 
 def log_args(funcname, args):
     """Log function name & arguments for a cryptoki ctypes call.
-    
+
     :param str funcname: Function name
     :param tuple args: Arguments to be passed to ctypes function.
     """
@@ -92,7 +95,8 @@ def make_late_binding_function(function_name):
         :param **kwargs:
 
         """
-        late_binded_function = getattr(CryptokiDLLSingleton().get_dll(), function_name)
+        late_binded_function = getattr(
+            CryptokiDLLSingleton().get_dll(), function_name)
         late_binded_function.restype = cryptoki_function.restype
         late_binded_function.argtypes = cryptoki_function.argtypes
 
