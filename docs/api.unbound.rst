@@ -13,7 +13,7 @@ Certificate X509 Sign
 
 .. autofunction:: pypkcs11.unbound.dyc_sign_x509
 
- Create X509 Certificate Sign Request
+Create X509 Certificate Sign Request
 ----------
 
 .. autofunction:: pypkcs11.unbound.dyc_create_x509_request
