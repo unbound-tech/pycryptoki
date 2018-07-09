@@ -52,11 +52,11 @@ This example creates a 1024b RSA Key Pair.
 
 
 --------------------------------
-Encrypting data with AES-CBC-PAD
+Encrypting data with AES-256-GCM
 --------------------------------
 
-This example generates a 24-byte AES key, then encrypts some data
-with that key using the AES-CBC-PAD mechanism.
+This example generates a 32-byte AES key, then encrypts some data
+with that key using the AES-GCM mechanism.
 
    .. code-block:: python
 
@@ -80,7 +80,7 @@ with that key using the AES-CBC-PAD mechanism.
                                        CKA_VALUE_LEN,
                                        CKA_EXTRACTABLE,
                                        CKA_PRIVATE,
-                                       CKM_AES_CBC_PAD)
+                                       CKM_AES_GCM)
        from pypkcs11.key_generator import c_generate_key
        from pypkcs11.encryption import c_encrypt
        from pypkcs11.conversions import to_bytestring, from_hex
@@ -103,9 +103,9 @@ with that key using the AES-CBC-PAD mechanism.
                    CKA_WRAP: True,
                    CKA_UNWRAP: True,
                    CKA_DERIVE: True,
-                   CKA_VALUE_LEN: 24,
+                   CKA_VALUE_LEN: 32,
                    CKA_EXTRACTABLE: True,}
-       aes_key = c_generate_key(session, CKM_AES_KEY_GEN, template)
+       ret, aes_key = c_generate_key(session, CKM_AES_KEY_GEN, template)
 
        # Data is in hex format here
        raw_data = "d0d77c63ab61e75a5fd4719fa77cc2de1d817efedcbd43e7663736007672e8c7"
@@ -115,8 +115,9 @@ with that key using the AES-CBC-PAD mechanism.
 
 
        # Note: this is *bad crypto practice*! DO NOT USE STATIC IVS!!
-       mechanism = Mechanism(mech_type=CKM_AES_CBC_PAD,
-                             params={"iv": list(range(16))})
+       mechanism = Mechanism(mech_type=CKM_AES_GCM,
+                             params={"iv": list(range(16)), 'AAD': b'deadbeef', 'ulTagBits': 32})
+
        ret, static_iv_encrypted_data = c_encrypt(session, aes_key, data_to_encrypt, mechanism)
 
        c_close_session(session)
