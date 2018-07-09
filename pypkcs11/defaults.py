@@ -1,5 +1,5 @@
 #
-# Please note that this file have been modified by Unbound Tech
+# Please note that this file has been modified by Unbound Tech
 #
 """
 A file containing commonly used strings or other data similar to a config file

@@ -1,5 +1,5 @@
 #
-# Please note that this file have been modified by Unbound Tech
+# Please note that this file has been modified by Unbound Tech
 #
 """
 Methods responsible for managing a user's session and login/c_logout
