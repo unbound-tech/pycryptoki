@@ -475,6 +475,8 @@ CK_DYC_SelfSignX509 = CFUNCTYPE(CK_RV, CK_SESSION_HANDLE, CK_OBJECT_HANDLE, CK_M
 CK_DYC_SignX509 = CFUNCTYPE(CK_RV, CK_SESSION_HANDLE, CK_OBJECT_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_MECHANISM_TYPE,
                             CK_BYTE_PTR, CK_ULONG,
                             CK_BYTE_PTR, CK_ULONG, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR)
+CK_DYC_CreateX509Request = CFUNCTYPE(CK_RV, CK_SESSION_HANDLE, CK_OBJECT_HANDLE, CK_MECHANISM_TYPE, CK_CHAR_PTR,
+                                    CK_BYTE_PTR, CK_ULONG_PTR)
 
 if 'win' in sys.platform:
     CK_FUNCTION_LIST._pack_ = 1
@@ -550,6 +552,7 @@ CK_FUNCTION_LIST._fields_ = [
     ('C_WaitForSlotEvent', CK_C_WaitForSlotEvent),
     ('DYC_SelfSignX509', CK_DYC_SelfSignX509),
     ('DYC_SignX509', CK_DYC_SignX509),
+    ('DYC_CreateX509Request', CK_DYC_CreateX509Request),
 ]
 
 C_Initialize = make_late_binding_function('C_Initialize')
@@ -778,6 +781,11 @@ DYC_SignX509.restype = CK_RV
 DYC_SignX509.argtypes = [CK_SESSION_HANDLE, CK_OBJECT_HANDLE, CK_BYTE_PTR, CK_ULONG, CK_MECHANISM_TYPE,
                          CK_BYTE_PTR, CK_ULONG,
                          CK_BYTE_PTR, CK_ULONG, CK_ULONG, CK_BYTE_PTR, CK_ULONG_PTR]
+
+DYC_CreateX509Request = make_late_binding_function('DYC_CreateX509Request')
+DYC_CreateX509Request.restype = CK_RV
+DYC_CreateX509Request.argtypes = [CK_SESSION_HANDLE, CK_OBJECT_HANDLE, CK_MECHANISM_TYPE, CK_CHAR_PTR,
+                                  CK_BYTE_PTR, CK_ULONG_PTR]
 
 
 CK_LONG = c_long
@@ -1564,7 +1572,7 @@ __all__ = ['CK_OTP_SIGNATURE_INFO',
            'C_UnwrapKey', 'Int32',
            'C_SetAttributeValue',
            'C_VerifyFinal', 'CK_DATE',
-            'CK_WTLS_PRF_PARAMS',
+           'CK_WTLS_PRF_PARAMS',
             'C_GetInfo',
             'CK_ATTRIBUTE_PTR', 'CK_VERSION',
             'C_WaitForSlotEvent',
@@ -1822,7 +1830,8 @@ __all__ = ['CK_OTP_SIGNATURE_INFO',
            'Int8',
            'Float32',
            'CK_ECIES_PARAMS_PTR',
-           'C_GetObjectSize',
+            'C_GetObjectSize',
             'DYC_SelfSignX509',
             'DYC_SignX509',
+            'DYC_CreateX509Request',
         ]
