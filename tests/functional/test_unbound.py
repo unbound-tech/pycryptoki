@@ -23,7 +23,7 @@ import pytest
 
 from pypkcs11.key_generator import c_generate_key_pair, c_destroy_object
 from pypkcs11.defines import *
-from pypkcs11.unbound import dyc_self_sign_x509, dyc_sign_x509
+from pypkcs11.unbound import dyc_self_sign_x509, dyc_sign_x509, dyc_create_x509_request
 from pypkcs11.default_templates import CKM_RSA_PKCS_KEY_PAIR_GEN_PUBTEMP, CKM_RSA_PKCS_KEY_PAIR_GEN_PRIVTEMP
 
 def _get_data_file(filename):
@@ -48,14 +48,19 @@ class TestUnbound(object):
                                                     pbkey_template=CKM_RSA_PKCS_KEY_PAIR_GEN_PUBTEMP,
                                                     prkey_template=CKM_RSA_PKCS_KEY_PAIR_GEN_PRIVTEMP)
         assert ret == CKR_OK
+        ret, pub_key2, priv_key2 = c_generate_key_pair(self.h_session,
+                                                    mechanism=CKM_RSA_PKCS_KEY_PAIR_GEN,
+                                                    pbkey_template=CKM_RSA_PKCS_KEY_PAIR_GEN_PUBTEMP,
+                                                    prkey_template=CKM_RSA_PKCS_KEY_PAIR_GEN_PRIVTEMP)
+        assert ret == CKR_OK
         try:
             mechanism = CKM_RSA_X_509
             ret, x509CA = dyc_self_sign_x509(self.h_session, priv_key, CKM_SHA256,
                                             'CN=some guy, L=around, C=US', None, 365)
             assert ret == CKR_OK
 
-            with open(_get_data_file('test_csr.der'), mode='rb') as file:
-                csr = file.read()
+            ret, csr = dyc_create_x509_request(self.h_session, priv_key2, CKM_SHA256, 'CN=some guy, L=around, C=US')
+            assert ret == CKR_OK
 
             ret, x509 = dyc_sign_x509(self.h_session, priv_key, x509CA, CKM_SHA256, csr)
             assert ret == CKR_OK
@@ -64,4 +69,8 @@ class TestUnbound(object):
                 c_destroy_object(self.h_session, pub_key)
             if (priv_key != None):
                 c_destroy_object(self.h_session, priv_key)
+            if (pub_key2 != None):
+                c_destroy_object(self.h_session, pub_key2)
+            if (priv_key2 != None):
+                c_destroy_object(self.h_session, priv_key2)
 
