@@ -8,22 +8,14 @@ import pytest
 from pypkcs11.sign_verify import c_sign, c_verify
 from pypkcs11.key_generator import c_generate_key_pair, c_generate_key, c_destroy_object
 from pypkcs11.defines import (CKM_AES_GMAC, CKM_AES_CMAC, CKM_AES_KEY_GEN,
-                                CKM_DES3_MAC, CKM_DES3_CMAC, CKM_DES3_KEY_GEN,
-                                # CKM_CAST3_MAC, CKM_CAST3_KEY_GEN,
-                                # CKM_CAST5_MAC, CKM_CAST5_KEY_GEN,
-                                CKM_DSA, CKM_DSA_KEY_PAIR_GEN,
-                                CKM_ECDSA, CKM_ECDSA_KEY_PAIR_GEN,
-                                CKR_OK)
-from pypkcs11.default_templates import (CKM_DSA_KEY_PAIR_GEN_PRIVTEMP,
-                                          CKM_DSA_KEY_PAIR_GEN_PUBTEMP_1024_160,
-                                          CKM_DSA_KEY_PAIR_GEN_PUBTEMP_2048_224,
-                                          CKM_DSA_KEY_PAIR_GEN_PUBTEMP_2048_256,
-                                          CKM_DSA_KEY_PAIR_GEN_PUBTEMP_3072_256,
+                              CKM_DES3_MAC, CKM_DES3_CMAC, CKM_DES3_KEY_GEN,
+                              CKM_ECDSA_SHA1, CKM_ECDSA_KEY_PAIR_GEN,
+                              CKR_OK)
+from pypkcs11.default_templates import (
+    CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP,
+    CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP,
 
-                                          CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP,
-                                          CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP,
-
-                                          MECHANISM_LOOKUP_EXT, get_default_key_template)
+    MECHANISM_LOOKUP_EXT, get_default_key_template)
 
 from pypkcs11.lookup_dicts import ret_vals_dictionary
 from .util import get_session_template
@@ -34,19 +26,16 @@ DATA = [b"This is some test string to sign.", [b"a" * 1024, b"b" * 1024]]
 
 SYM_PARAMS = [(CKM_AES_KEY_GEN, CKM_AES_CMAC),
               #(CKM_AES_KEY_GEN, CKM_AES_GMAC),
-            #   (CKM_DES3_KEY_GEN, CKM_DES3_MAC),
+              #   (CKM_DES3_KEY_GEN, CKM_DES3_MAC),
               (CKM_DES3_KEY_GEN, CKM_DES3_CMAC),
-            #   (CKM_CAST3_KEY_GEN, CKM_CAST3_MAC),
-            #   (CKM_CAST5_KEY_GEN, CKM_CAST5_MAC),
+              #   (CKM_CAST3_KEY_GEN, CKM_CAST3_MAC),
+              #   (CKM_CAST5_KEY_GEN, CKM_CAST5_MAC),
               ]
 SYM_KEYS = [key for key, _ in SYM_PARAMS]
 
-DSA_PUB_TEMPS = [CKM_DSA_KEY_PAIR_GEN_PUBTEMP_1024_160, CKM_DSA_KEY_PAIR_GEN_PUBTEMP_2048_224,
-                 CKM_DSA_KEY_PAIR_GEN_PUBTEMP_2048_256, CKM_DSA_KEY_PAIR_GEN_PUBTEMP_3072_256]
 ASYM_PARAMS = \
     [(CKM_ECDSA_KEY_PAIR_GEN, CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP,
-      CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, CKM_ECDSA)] + \
-    [(CKM_DSA_KEY_PAIR_GEN, x, CKM_DSA_KEY_PAIR_GEN_PRIVTEMP, CKM_DSA) for x in DSA_PUB_TEMPS]
+      CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, CKM_ECDSA_SHA1)]
 
 FORMAT_ASYM = [(key, sig) for (key, _, _, sig) in ASYM_PARAMS]
 
@@ -71,7 +60,8 @@ def sym_keys(auth_session):
             if ret == CKR_OK:
                 keys[key_type] = key_handle
             else:
-                logger.info("Failed to generate key: {}\nReturn code: {}".format(key_type, ret))
+                logger.info(
+                    "Failed to generate key: {}\nReturn code: {}".format(key_type, ret))
         yield keys
 
     finally:
@@ -88,12 +78,14 @@ def asym_keys(auth_session):
             key_type, pub_temp, prv_temp, _ = params
             ret, pub_key, prv_key = c_generate_key_pair(auth_session,
                                                         key_type,
-                                                        get_session_template(pub_temp),
+                                                        get_session_template(
+                                                            pub_temp),
                                                         get_session_template(prv_temp))
             if ret == CKR_OK:
                 keys[key_type] = (pub_key, prv_key)
             else:
-                logger.info("Failed to generate key: {}\nReturn code: {}".format(key_type, ret))
+                logger.info(
+                    "Failed to generate key: {}\nReturn code: {}".format(key_type, ret))
         yield keys
 
     finally:
@@ -133,13 +125,16 @@ class TestSignVerify(object):
         """
         # Auto-fail when key-generation fails
         if sym_keys.get(key_type) is None:
-            pytest.skip("No valid key found for {}".format(MECHANISM_LOOKUP_EXT[key_type][0]))
+            pytest.skip("No valid key found for {}".format(
+                MECHANISM_LOOKUP_EXT[key_type][0]))
         h_key = sym_keys[key_type]
 
-        ret, signature = c_sign(self.h_session, h_key, data,  mechanism=sign_flavor)
+        ret, signature = c_sign(self.h_session, h_key,
+                                data,  mechanism=sign_flavor)
         self.verify_ret(ret, CKR_OK)
 
-        ret = c_verify(self.h_session, h_key, data, signature, mechanism=sign_flavor)
+        ret = c_verify(self.h_session, h_key, data,
+                       signature, mechanism=sign_flavor)
         self.verify_ret(ret, CKR_OK)
 
     @pytest.mark.parametrize("data", DATA, ids=['String', "Block"])
@@ -154,13 +149,14 @@ class TestSignVerify(object):
         """
         # Auto-fail when key-generation fails
         if asym_keys.get(k_type) is None:
-            pytest.skip("No valid key found for {}".format(MECHANISM_LOOKUP_EXT[k_type][0]))
+            pytest.skip("No valid key found for {}".format(
+                MECHANISM_LOOKUP_EXT[k_type][0]))
         pub_key, prv_key = asym_keys[k_type]
 
-        ret, signature = c_sign(self.h_session, prv_key, data, mechanism=sig_mech)
+        ret, signature = c_sign(self.h_session, prv_key,
+                                data, mechanism=sig_mech)
         self.verify_ret(ret, CKR_OK)
 
-        ret = c_verify(self.h_session, pub_key, data, signature, mechanism=sig_mech)
+        ret = c_verify(self.h_session, pub_key, data,
+                       signature, mechanism=sig_mech)
         self.verify_ret(ret, CKR_OK)
-
-   

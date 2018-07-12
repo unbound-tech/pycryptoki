@@ -18,6 +18,7 @@ from .defines import CKR_OBJECT_HANDLE_INVALID
 from .defines import CKR_OK
 from .return_values import ret_vals_dictionary
 from .exceptions import CryptokiCallException
+from .object_attr_lookup import c_get_attribute_value
 
 LOG = logging.getLogger(__name__)
 
@@ -60,7 +61,6 @@ def verify_object_attributes(h_session, h_object, expected_template):
     :param expected_template: The expected template to compare against
 
     """
-    from .object_attr_lookup import c_get_attribute_value_ex
 
     # VERIFY OBJECT EXISTS
     h_object = CK_OBJECT_HANDLE(h_object)
@@ -72,7 +72,8 @@ def verify_object_attributes(h_session, h_object, expected_template):
 
     # VERIFY ATTRIBUTES are the same as the ones passed in
     desired_attrs = {x: None for x in expected_template.keys()}
-    ret, attr = c_get_attribute_value(h_session, h_object, template=desired_attrs)
+    ret, attr = c_get_attribute_value(
+        h_session, h_object, template=desired_attrs)
     assert ret == CKR_OK and attr == expected_template
 
 
@@ -109,7 +110,8 @@ def verify_object_exists(h_session, h_object, should_exist=True):
             "Object " + str(h_object.value) + " size is greater than zero."
     else:
         assert_test_return_value(ret, CKR_OBJECT_HANDLE_INVALID,
-                                 "Getting object " + str(h_object.value) + "'s size",
+                                 "Getting object " +
+                                 str(h_object.value) + "'s size",
                                  True)
         assert us_size.value <= 0, \
             "Object " + str(h_object.value) + " size is greater than zero."

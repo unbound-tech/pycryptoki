@@ -14,7 +14,7 @@ from pypkcs11.defaults import ADMINISTRATOR_PASSWORD, CO_PASSWORD
 from pypkcs11.defines import CKF_RW_SESSION, CKF_SERIAL_SESSION, CKR_OK,  \
     CKF_PROTECTED_AUTHENTICATION_PATH
 from pypkcs11.session_management import c_initialize, \
-        c_open_session, login, c_finalize, \
+    c_open_session, login, c_finalize, \
     c_close_session, c_logout, c_get_token_info, get_firmware_version
 from pypkcs11.token_management import c_init_token, c_get_mechanism_list
 from . import config as test_config
@@ -63,7 +63,8 @@ def pytest_configure(config):
     """
     if config.getoption("loglevel", None):
         logger = logging.getLogger()
-        log_formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s: %(message)s')
+        log_formatter = logging.Formatter(
+            '%(asctime)s:%(name)s:%(levelname)s: %(message)s')
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setFormatter(log_formatter)
         logger.addHandler(console_handler)
@@ -102,6 +103,7 @@ def pytest_configure(config):
     finally:
         c_finalize()
 
+
 @pytest.yield_fixture(scope='session', autouse=True)
 def initialize(pytestconfig):
     """
@@ -111,6 +113,7 @@ def initialize(pytestconfig):
     assert ret == CKR_OK
     yield
     c_finalize()
+
 
 @pytest.yield_fixture(scope="class")
 def session(pytestconfig, initialize):

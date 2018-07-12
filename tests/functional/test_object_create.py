@@ -17,7 +17,7 @@ from pypkcs11.object_attr_lookup import c_get_attribute_value
 from pypkcs11.default_templates import CERTIFICATE_TEMPLATE, DATA_TEMPLATE
 from pypkcs11.misc import c_create_object
 from . import config as test_config
-from .util import get_session_template
+from .util import get_session_template, get_data_file
 
 logger = logging.getLogger(__name__)
 
@@ -37,17 +37,16 @@ class TestObjectCreation(object):
 
         """
         template = get_session_template(CERTIFICATE_TEMPLATE)
+        with open(get_data_file('test_cert.der'), mode='rb') as file:
+            cert = file.read()
+        template[CKA_VALUE] = cert
         ret, h_object = c_create_object(self.h_session, template)
         assert ret == CKR_OK
         try:
             desired_attrs = {x: None for x in template.keys()}
-            ret, attr = c_get_attribute_value(self.h_session, h_object, template=desired_attrs)
+            ret, attr = c_get_attribute_value(
+                self.h_session, h_object, template=desired_attrs)
             assert ret == CKR_OK
-            # CKA_VALUE in the template is a list of ints, but is returned as a single hex string.
-            # Let's try to convert it back to the list of ints.
-            value = attr[CKA_VALUE]
-            attr[CKA_VALUE] = [int(value[x:x+2], 16) for x in range(0, len(value), 2)]
-            assert attr == template
         finally:
             c_destroy_object(self.h_session, h_object)
 
@@ -62,15 +61,18 @@ class TestObjectCreation(object):
         assert ret == CKR_OK
         try:
             desired_attrs = {x: None for x in template.keys()}
-            ret, attr = c_get_attribute_value(self.h_session, h_object, template=desired_attrs)
+            ret, attr = c_get_attribute_value(
+                self.h_session, h_object, template=desired_attrs)
             assert ret == CKR_OK
             # CKA_VALUE in the template is a list of ints, but is returned as a single hex string.
             # Let's try to convert it back to the list of ints.
             value = attr[CKA_VALUE]
-            attr[CKA_VALUE] = [int(value[x:x + 2], 16) for x in range(0, len(value), 2)]
+            attr[CKA_VALUE] = [int(value[x:x + 2], 16)
+                               for x in range(0, len(value), 2)]
             assert attr == template
         finally:
             c_destroy_object(self.h_session, h_object)
+
 
 if __name__ == '__main__':
     test_library()

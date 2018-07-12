@@ -9,13 +9,9 @@ import logging
 import pytest
 from pypkcs11.default_templates import MECHANISM_LOOKUP_EXT as LOOKUP
 from pypkcs11.default_templates import get_default_key_template
-from pypkcs11.defines import (CKA_DECRYPT, CKA_EXTRACTABLE, CKA_UNWRAP,
-                                CKA_VALUE_LEN, CKA_VERIFY, CKM_AES_CBC,
-                                CKM_AES_CBC_PAD, CKM_AES_ECB, CKM_AES_KEY_GEN,
-                                CKM_DES3_CBC, CKM_DES3_CBC_PAD, CKM_DES3_ECB,
-                                CKM_DES3_KEY_GEN, CKR_OK)
+from pypkcs11.defines import *
 from pypkcs11.encryption import (c_decrypt, c_encrypt, c_unwrap_key,
-                                   c_wrap_key)
+                                 c_wrap_key)
 from pypkcs11.key_generator import c_destroy_object, c_generate_key
 from pypkcs11.lookup_dicts import ret_vals_dictionary
 from pypkcs11.test_functions import verify_object_attributes
@@ -29,7 +25,7 @@ PARAM_LIST = [(CKM_DES3_ECB, CKM_DES3_KEY_GEN),
               (CKM_AES_ECB, CKM_AES_KEY_GEN),
               (CKM_AES_CBC, CKM_AES_KEY_GEN),
               (CKM_AES_CBC_PAD, CKM_AES_KEY_GEN),
-             ]
+              ]
 
 EXTRA_PARAM = {CKM_DES3_ECB: {},
                CKM_DES3_CBC: {'iv': list(range(8))},
@@ -38,7 +34,7 @@ EXTRA_PARAM = {CKM_DES3_ECB: {},
                CKM_AES_ECB: {},
                CKM_AES_CBC: {'iv': list(range(16))},
                CKM_AES_CBC_PAD: {},
-              }
+               }
 
 # Don't pop 'CKA_VALUE_LEN' for these mechs
 VALUE_LEN = [CKM_AES_KEY_GEN]
@@ -51,19 +47,22 @@ def keys(auth_session):
     try:
         for key_gen in set(param[1] for param in PARAM_LIST):
             template = get_default_key_template(key_gen)
-
+            template[CKA_WRAP_WITH_TRUSTED] = False
             ret, key_handle = c_generate_key(auth_session, key_gen, template)
             ret2, wrap_handle = c_generate_key(auth_session, key_gen, template)
             if ret == CKR_OK and ret2 == CKR_OK:
                 keys[key_gen] = key_handle, wrap_handle
             elif ret2 != CKR_OK:
                 keys[key_gen] = key_handle, None
-                logger.info("Failed to generate key: {}\nReturn code: {}".format(key_gen, ret2))
+                logger.info(
+                    "Failed to generate key: {}\nReturn code: {}".format(key_gen, ret2))
             elif ret != CKR_OK:
                 keys[key_gen] = None, wrap_handle
-                logger.info("Failed to generate key: {}\nReturn code: {}".format(key_gen, ret))
+                logger.info(
+                    "Failed to generate key: {}\nReturn code: {}".format(key_gen, ret))
             else:
-                logger.info("Failed to generate key: {}\nReturn code: {}".format(key_gen, ret))
+                logger.info(
+                    "Failed to generate key: {}\nReturn code: {}".format(key_gen, ret))
         yield keys
 
     finally:
@@ -74,10 +73,12 @@ def keys(auth_session):
                 c_destroy_object(auth_session, wrap)
 
 
+@pytest.mark.skip(reason="no way of currently testing this")
 class TestWrappingKeys(object):
     """
     Testcases for wrapping/unwrapping keys.
     """
+
     def verify_ret(self, ret, expected_ret):
         """
         Assert that ret is as expected
@@ -85,7 +86,8 @@ class TestWrappingKeys(object):
         :param expected_ret: the expected return value
         """
         assert ret == expected_ret, "Function should return: " + ret_vals_dictionary[expected_ret] \
-                                    + ".\nInstead returned: " + ret_vals_dictionary[ret]
+                                    + ".\nInstead returned: " + \
+            ret_vals_dictionary[ret]
 
     @pytest.fixture(autouse=True)
     def setup_teardown(self, auth_session):
@@ -126,7 +128,8 @@ class TestWrappingKeys(object):
         # Wrap the key
         wrap_mech = {"mech_type": mech,
                      "params": extra_p}
-        ret, wrapped_key = c_wrap_key(self.h_session, h_wrap_key, h_key, mechanism=wrap_mech)
+        ret, wrapped_key = c_wrap_key(
+            self.h_session, h_wrap_key, h_key, mechanism=wrap_mech)
         self.verify_ret(ret, CKR_OK)
 
         h_unwrapped_key = None
@@ -164,13 +167,15 @@ class TestWrappingKeys(object):
         # Encrypt some data
         data_to_encrypt = b"a" * 512
         enc_mech = {"mech_type": mech}
-        ret, encrypted_data = c_encrypt(self.h_session, h_key, data_to_encrypt, mechanism=enc_mech)
+        ret, encrypted_data = c_encrypt(
+            self.h_session, h_key, data_to_encrypt, mechanism=enc_mech)
         self.verify_ret(ret, CKR_OK)
 
         # Wrap the key
         wrap_mech = {"mech_type": mech,
                      "params": extra_p}
-        ret, wrapped_key = c_wrap_key(self.h_session, h_wrap_key, h_key, mechanism=wrap_mech)
+        ret, wrapped_key = c_wrap_key(
+            self.h_session, h_wrap_key, h_key, mechanism=wrap_mech)
         self.verify_ret(ret, CKR_OK)
 
         h_unwrapped_key = None

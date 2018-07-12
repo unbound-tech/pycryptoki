@@ -4,6 +4,7 @@
 """
 Utility functions for testing
 """
+import os
 from pypkcs11.defines import CKA_TOKEN
 
 
@@ -15,3 +16,13 @@ def get_session_template(default_template):
     default_template.copy()
     default_template[CKA_TOKEN] = False
     return default_template
+
+
+def get_data_file(filename):
+    """
+    Get absolute path to filename. Uses current directory as basis to find the testdata folder.
+
+    :param str filename: Filename to append
+    :return: full path to file
+    """
+    return os.path.join(os.path.split(os.path.abspath(__file__))[0], "testdata", filename)

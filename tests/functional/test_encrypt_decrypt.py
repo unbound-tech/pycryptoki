@@ -9,18 +9,14 @@ import pytest
 
 from pypkcs11.default_templates import get_default_key_template, get_default_key_pair_template, \
     MECHANISM_LOOKUP_EXT
-from pypkcs11.defines import (CKM_DES_CBC, CKM_DES_KEY_GEN,
-                                CKM_AES_CBC, CKM_AES_ECB, CKM_AES_GCM, CKM_AES_KEY_GEN,
-                                CKM_DES3_CBC, CKM_DES3_ECB, CKM_DES3_CBC_PAD, CKM_DES3_KEY_GEN,
-                                CKM_CAST3_CBC, CKM_CAST3_ECB, CKM_CAST3_KEY_GEN,
-                                CKM_CAST5_CBC, CKM_CAST5_ECB, CKM_CAST5_KEY_GEN,
-                                CKM_RC2_CBC, CKM_RC2_ECB, CKM_RC2_CBC_PAD, CKM_RC2_KEY_GEN,
-                                CKM_RC4, CKM_RC4_KEY_GEN,
-                                CKM_RSA_PKCS, CKM_RSA_PKCS_OAEP, CKM_RSA_PKCS_KEY_PAIR_GEN,
-                                CKM_RSA_X_509, CKM_RSA_X9_31_KEY_PAIR_GEN,
-                                CKM_SHA_1, CKG_MGF1_SHA1,
-                                CKR_MECHANISM_INVALID, CKR_MECHANISM_PARAM_INVALID, CKM_AES_CTR,
-                                CKM_AES_GMAC)
+from pypkcs11.defines import (
+    CKM_AES_CBC, CKM_AES_ECB, CKM_AES_GCM, CKM_AES_KEY_GEN,
+    CKM_DES3_CBC, CKM_DES3_ECB, CKM_DES3_CBC_PAD, CKM_DES3_KEY_GEN,
+    CKM_RSA_PKCS, CKM_RSA_PKCS_OAEP, CKM_RSA_PKCS_KEY_PAIR_GEN,
+    CKM_RSA_X_509,
+    CKM_SHA_1, CKG_MGF1_SHA1,
+    CKR_MECHANISM_INVALID, CKR_MECHANISM_PARAM_INVALID, CKM_AES_CTR,
+    CKM_AES_GMAC)
 from pypkcs11.defines import (CKR_OK, CKR_DATA_LEN_RANGE, CKR_KEY_SIZE_RANGE)
 from pypkcs11.encryption import c_encrypt, c_decrypt
 from pypkcs11.key_generator import c_generate_key, c_generate_key_pair, c_destroy_object
@@ -29,54 +25,40 @@ from .util import get_session_template
 
 logger = logging.getLogger(__name__)
 
-SYM_TABLE = {CKM_DES_CBC: CKM_DES_KEY_GEN,
-             CKM_AES_CBC: CKM_AES_KEY_GEN,
-             CKM_AES_ECB: CKM_AES_KEY_GEN,
-             CKM_AES_CTR: CKM_AES_KEY_GEN,
-             CKM_AES_GCM: CKM_AES_KEY_GEN,
-             CKM_DES3_CBC: CKM_DES3_KEY_GEN,
-             CKM_DES3_ECB: CKM_DES3_KEY_GEN,
-             CKM_DES3_CBC_PAD: CKM_DES3_KEY_GEN,
-             CKM_CAST3_CBC: CKM_CAST3_KEY_GEN,
-             CKM_CAST3_ECB: CKM_CAST3_KEY_GEN,
-             CKM_CAST5_CBC: CKM_CAST5_KEY_GEN,
-             CKM_CAST5_ECB: CKM_CAST5_KEY_GEN,
-             CKM_RC2_CBC: CKM_RC2_KEY_GEN,
-             CKM_RC2_ECB: CKM_RC2_KEY_GEN,
-             CKM_RC2_CBC_PAD: CKM_RC2_KEY_GEN,
-             CKM_RC4: CKM_RC4_KEY_GEN,
-            }
+SYM_TABLE = {
+    CKM_AES_CBC: CKM_AES_KEY_GEN,
+    CKM_AES_ECB: CKM_AES_KEY_GEN,
+    CKM_AES_CTR: CKM_AES_KEY_GEN,
+    CKM_AES_GCM: CKM_AES_KEY_GEN,
+    CKM_DES3_CBC: CKM_DES3_KEY_GEN,
+    CKM_DES3_ECB: CKM_DES3_KEY_GEN,
+    CKM_DES3_CBC_PAD: CKM_DES3_KEY_GEN,
+}
 
 ASYM_TABLE = {CKM_RSA_PKCS: CKM_RSA_PKCS_KEY_PAIR_GEN,
               CKM_RSA_PKCS_OAEP: CKM_RSA_PKCS_KEY_PAIR_GEN,
-              CKM_RSA_X_509: CKM_RSA_X9_31_KEY_PAIR_GEN}
+              #   CKM_RSA_X_509: CKM_RSA_PKCS_KEY_PAIR_GEN
+              }
 
 # MECH_FLAVOR: (<tuple of corresponding 'extra_params'>)
 #   *** Update as additional test params are added ***
-PARAM_TABLE = {CKM_DES_CBC: [{}, {'iv': list(range(8))}],
-               CKM_AES_CBC: [{}, {'iv': list(range(16))}],
-               CKM_AES_CTR: [{'cb': list(range(16)),
-                              'ulCounterBits': 16}],
-               #  Note: Supported in Q3/Q4 2016 SA
-               CKM_AES_ECB: [{}],
-               CKM_AES_GCM: [{'iv': list(range(8)), 'AAD': b'deadbeef', 'ulTagBits': 32}],
-               CKM_AES_GMAC: [{'iv': list(range(8)), 'AAD': b'deadbeef', 'ulTagBits': 32}],
-               CKM_DES3_CBC: [{}, {'iv': list(range(8))}],
-               CKM_DES3_ECB: [{}],
-               CKM_DES3_CBC_PAD: [{}, {'iv': list(range(8))}],
-               CKM_CAST3_CBC: [{}, {'iv': list(range(8))}],
-               CKM_CAST3_ECB: [{}],
-               CKM_CAST5_CBC: [{}],
-               CKM_CAST5_ECB: [{}],
-               CKM_RC2_CBC: [{'iv': list(range(8)), 'usEffectiveBits': 8}],
-               CKM_RC2_ECB: [{'usEffectiveBits': 8}],
-               CKM_RC2_CBC_PAD: [{'iv': list(range(8)), 'usEffectiveBits': 8}],
-               CKM_RC4: [{}],
-               CKM_RSA_PKCS: [{}],
-               CKM_RSA_PKCS_OAEP: [{'hashAlg': CKM_SHA_1,
-                                    'mgf': CKG_MGF1_SHA1,
-                                    'sourceData': list(range(12))}],
-               CKM_RSA_X_509: [{}]}
+PARAM_TABLE = {
+    CKM_AES_CBC: [{}, {'iv': list(range(16))}],
+    CKM_AES_CTR: [{'cb': list(range(16)),
+                   'ulCounterBits': 32}],
+    #  Note: Supported in Q3/Q4 2016 SA
+    CKM_AES_ECB: [{}],
+    CKM_AES_GCM: [{'iv': list(range(8)), 'AAD': b'deadbeef', 'ulTagBits': 32}],
+    CKM_AES_GMAC: [{'iv': list(range(8)), 'AAD': b'deadbeef', 'ulTagBits': 32}],
+    CKM_DES3_CBC: [{}, {'iv': list(range(8))}],
+    CKM_DES3_ECB: [{}],
+    CKM_DES3_CBC_PAD: [{}, {'iv': list(range(8))}],
+    CKM_RSA_PKCS: [{}],
+    CKM_RSA_PKCS_OAEP: [{'hashAlg': CKM_SHA_1,
+                         'mgf': CKG_MGF1_SHA1,
+                         'sourceData': list(range(12))}],
+    CKM_RSA_X_509: [{}]
+}
 
 # TESTING DATA
 PAD = b"a" * 0xfff0
@@ -93,13 +75,11 @@ MULTIPART_DATA_RAW = [b"a" * 11,
 
 # Flavors which auto-pad (will return 'CKR_OK' on un-padded(RAW) data)
 PADDING_ALGORITHMS = [CKM_DES3_CBC_PAD,
-                      CKM_RC2_CBC_PAD,
-                      CKM_RC4,
                       CKM_AES_GCM,
                       CKM_AES_CTR]
 
 # Ret error, however encrypt /decrypt is successful. Needs to be addressed at some point
-KEY_SIZE_RANGE = [CKM_RC2_CBC, CKM_RC2_ECB, CKM_RC2_CBC_PAD]
+KEY_SIZE_RANGE = []
 
 
 def ret_val(mech, data, valid_mechs=None):
@@ -153,7 +133,8 @@ def idfn(k_table):
             # Arg #2 is the tuple we want to unpack.
             test_args = test_args.args[1]
         m_type, params = test_args
-        id_str = MECHANISM_LOOKUP_EXT.get(m_type, ("Unknown",))[0].replace("CKM_", "")
+        id_str = MECHANISM_LOOKUP_EXT.get(m_type, ("Unknown",))[
+            0].replace("CKM_", "")
         for key, value in params.items():
             id_str += "-{}: {}".format(key, value)
         id_list.append(id_str)
@@ -173,7 +154,8 @@ def sym_keys(auth_session):
             if ret == CKR_OK:
                 keys[key_type] = key_handle
             else:
-                logger.info("Failed to generate key: %s\nReturn code: %s", key_type, ret)
+                logger.info(
+                    "Failed to generate key: %s\nReturn code: %s", key_type, ret)
         yield keys
 
     finally:
@@ -190,12 +172,14 @@ def asym_keys(auth_session):
             pub_temp, prv_temp = get_default_key_pair_template(key_type)
 
             ret, pub_key, prv_key = c_generate_key_pair(auth_session, key_type,
-                                                        get_session_template(pub_temp),
+                                                        get_session_template(
+                                                            pub_temp),
                                                         get_session_template(prv_temp))
             if ret == CKR_OK:
                 keys[key_type] = (pub_key, prv_key)
             else:
-                logger.info("Failed to generate key: %s\nReturn code: %s", key_type, ret)
+                logger.info(
+                    "Failed to generate key: %s\nReturn code: %s", key_type, ret)
         yield keys
 
     finally:
@@ -212,7 +196,8 @@ class TestEncryptData(object):
         :param expected_ret: the expected return value
         """
         if isinstance(expected_ret, collections.Iterable):
-            ret_codes = ", ".join(("{}".format(ret_vals_dictionary[val] for val in expected_ret)))
+            ret_codes = ", ".join(
+                ("{}".format(ret_vals_dictionary[val] for val in expected_ret)))
             err_message = ("Function should return one of: {}.\n"
                            "Instead returned: {}".format(ret_codes,
                                                          ret_vals_dictionary[ret]))
@@ -247,7 +232,8 @@ class TestEncryptData(object):
         """
         # Auto-fail when key-generation fails
         if sym_keys.get(SYM_TABLE[m_type]) is None:
-            pytest.skip("No valid key found for {}".format(MECHANISM_LOOKUP_EXT[m_type][0]))
+            pytest.skip("No valid key found for {}".format(
+                MECHANISM_LOOKUP_EXT[m_type][0]))
 
         exp_ret = ret_val(m_type, data, valid_mechanisms)
         h_key = sym_keys[SYM_TABLE[m_type]]
@@ -263,7 +249,8 @@ class TestEncryptData(object):
 
         # If not expecting error, proceed with testing
         if exp_ret in (CKR_OK, KEY_SIZE_RANGE):
-            ret, end_data = c_decrypt(auth_session, h_key, encrypted, mechanism=mech)
+            ret, end_data = c_decrypt(
+                auth_session, h_key, encrypted, mechanism=mech)
             self.verify_ret(ret, exp_ret)
 
             self.verify_data(data, end_data)
@@ -285,7 +272,8 @@ class TestEncryptData(object):
 
         # Auto-fail when key-generation is fails
         if sym_keys.get(SYM_TABLE[m_type]) is None:
-            pytest.skip("No valid key found for {}".format(MECHANISM_LOOKUP_EXT[m_type][0]))
+            pytest.skip("No valid key found for {}".format(
+                MECHANISM_LOOKUP_EXT[m_type][0]))
 
         exp_ret = ret_val(m_type, data, valid_mechanisms)
         h_key = sym_keys[SYM_TABLE[m_type]]
@@ -299,7 +287,8 @@ class TestEncryptData(object):
 
         # If not expecting error, proceed with testing
         if exp_ret in (CKR_OK, KEY_SIZE_RANGE):
-            ret, end_data = c_decrypt(auth_session, h_key, encrypted, mechanism=mech)
+            ret, end_data = c_decrypt(
+                auth_session, h_key, encrypted, mechanism=mech)
             self.verify_ret(ret, exp_ret)
             if m_type in PADDING_ALGORITHMS:
                 end_data = end_data.rstrip(b"\x00")
@@ -315,18 +304,21 @@ class TestEncryptData(object):
         :param auth_session:
         """
         if asym_keys.get(ASYM_TABLE[m_type]) is None:
-            pytest.skip("No valid key found for {}".format(MECHANISM_LOOKUP_EXT[m_type][0]))
+            pytest.skip("No valid key found for {}".format(
+                MECHANISM_LOOKUP_EXT[m_type][0]))
 
         expected_retcode = ret_val(m_type, RAW, valid_mechanisms)
         pub_key, prv_key = asym_keys[ASYM_TABLE[m_type]]
 
         mech = {"mech_type": m_type,
                 "params": params}
-        ret, decrypt_this = c_encrypt(auth_session, pub_key, RAW, mechanism=mech)
+        ret, decrypt_this = c_encrypt(
+            auth_session, pub_key, RAW, mechanism=mech)
         self.verify_ret(ret, expected_retcode)
 
         if expected_retcode == CKR_OK:
-            ret, decrypted_data = c_decrypt(auth_session, prv_key, decrypt_this, mechanism=mech)
+            ret, decrypted_data = c_decrypt(
+                auth_session, prv_key, decrypt_this, mechanism=mech)
             self.verify_ret(ret, expected_retcode)
 
         self.verify_data(RAW, decrypted_data.replace(b"\x00", b""))
