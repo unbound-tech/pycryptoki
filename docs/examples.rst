@@ -114,7 +114,7 @@ with that key using the AES-GCM mechanism.
        data_to_encrypt = to_bytestring(from_hex(raw_data))
 
 
-       # Note: this is *bad crypto practice*! DO NOT USE STATIC IVS!!
+       # Note: static IV is provided for simplicity; use random IVs instead
        mechanism = Mechanism(mech_type=CKM_AES_GCM,
                              params={"iv": list(range(16)), 'AAD': b'deadbeef', 'ulTagBits': 32})
 
@@ -154,7 +154,7 @@ we'll find one that was already used.
                                        CKA_VALUE_LEN,
                                        CKA_EXTRACTABLE,
                                        CKA_PRIVATE,
-                                       CKM_AES_CBC_PAD)
+                                       CKM_AES_GCM)
        from pypkcs11.encryption import c_decrypt
        from pypkcs11.conversions import to_bytestring, from_hex
        from pypkcs11.mechanism import Mechanism
@@ -175,9 +175,9 @@ we'll find one that was already used.
        data_to_decrypt = to_bytestring(from_hex(raw_data))
 
 
-       # Note: this is *bad crypto practice*! DO NOT USE STATIC IVS!!
-       mechanism = Mechanism(mech_type=CKM_AES_CBC_PAD,
-                             params={"iv": list(range(16))})
+       # Note: static IV is provided for simplicity; use random IVs instead
+       mechanism = Mechanism(mech_type=CKM_AES_GCM,
+                             params={"iv": list(range(16)), 'AAD': b'deadbeef', 'ulTagBits': 32})
        ret, original_data = c_decrypt(session, aes_key, data_to_decrypt, mechanism)
 
        c_close_session(session)
