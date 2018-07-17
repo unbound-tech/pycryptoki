@@ -32,7 +32,7 @@ def c_sign(h_session, h_key, data_to_sign, mechanism, output_buffer=None):
 
     :param int h_session: Session handle
     :param data_to_sign: The data to sign, either a string or a list of strings. If this is a list
-         a multipart operation will be used (using C_...Update and C_...Final)
+         a multipart operation will be used.
 
          ex:
 
@@ -69,7 +69,8 @@ def c_sign(h_session, h_key, data_to_sign, mechanism, output_buffer=None):
                                                             output_buffer=output_buffer)
     else:
         # Prepare the data to sign
-        c_data_to_sign, plain_date_len = to_byte_array(from_bytestring(data_to_sign))
+        c_data_to_sign, plain_date_len = to_byte_array(
+            from_bytestring(data_to_sign))
         c_data_to_sign = cast(c_data_to_sign, POINTER(c_ubyte))
 
         if output_buffer is not None:
@@ -93,7 +94,8 @@ def c_sign(h_session, h_key, data_to_sign, mechanism, output_buffer=None):
         if ret != CKR_OK:
             return ret, None
 
-        signature_string = string_at(signed_data.array, signed_data.size.contents.value)
+        signature_string = string_at(
+            signed_data.array, signed_data.size.contents.value)
 
     return ret, signature_string
 
@@ -128,10 +130,11 @@ def do_multipart_sign_or_digest(h_session, c_update_function, c_final_function,
             break
 
     # An Update function failed. We should still try to call C_**Final() though to ensure that the
-    # operation is still finalized, but we'll return the original error code. 
+    # operation is still finalized, but we'll return the original error code.
     if error:
         ret = c_final_function(h_session,
-                               cast(create_string_buffer(b'', MAX_BUFFER), CK_BYTE_PTR),
+                               cast(create_string_buffer(
+                                   b'', MAX_BUFFER), CK_BYTE_PTR),
                                CK_ULONG(MAX_BUFFER))
         LOG.debug("%s call after a %s failure returned: %s (%s)",
                   c_final_function.__name__,
@@ -187,10 +190,11 @@ def do_multipart_verify(h_session, input_data_list, signature):
 
     # An C_VerifyUpdate failed. We should still try to call C_**Final() though to ensure
     #  that the
-    # operation is still finalized, but we'll return the original error code. 
+    # operation is still finalized, but we'll return the original error code.
     if error:
         ret = C_VerifyFinal(h_session,
-                            cast(create_string_buffer(b"", MAX_BUFFER), CK_BYTE_PTR),
+                            cast(create_string_buffer(
+                                b"", MAX_BUFFER), CK_BYTE_PTR),
                             CK_ULONG(MAX_BUFFER))
         LOG.debug("C_VerifyFinal call after a C_VerifyUpdate failure returned:"
                   " %s (%s)", ret_vals_dictionary.get(ret, "Unknown retcode"), str(hex(ret)))
@@ -210,7 +214,7 @@ def c_verify(h_session, h_key, data_to_verify, signature, mechanism):
 
     :param int h_session: Session handle
     :param data_to_verify: The data to sign, either a string or a list of strings. If this is a list
-                         a multipart operation will be used (using C_...Update and C_...Final)
+                         a multipart operation will be used.
 
                          ex:
 
@@ -233,13 +237,15 @@ def c_verify(h_session, h_key, data_to_verify, signature, mechanism):
 
     # if a list is passed out do a verify operation on each string in the list,
     # otherwise just do one verify operation
-    is_multi_part_operation = isinstance(data_to_verify, list) or isinstance(data_to_verify, tuple)
+    is_multi_part_operation = isinstance(
+        data_to_verify, list) or isinstance(data_to_verify, tuple)
 
     if is_multi_part_operation:
         ret = do_multipart_verify(h_session, data_to_verify, signature)
     else:
         # Prepare the data to verify
-        c_data_to_verify, plain_data_len = to_byte_array(from_bytestring(data_to_verify))
+        c_data_to_verify, plain_data_len = to_byte_array(
+            from_bytestring(data_to_verify))
         c_data_to_verify = cast(c_data_to_verify, POINTER(c_ubyte))
 
         c_signature, c_sig_length = to_byte_array(from_bytestring(signature))
@@ -251,4 +257,3 @@ def c_verify(h_session, h_key, data_to_verify, signature, mechanism):
                        c_signature, c_sig_length)
 
     return ret
-
