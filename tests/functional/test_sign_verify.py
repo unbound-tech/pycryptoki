@@ -7,14 +7,10 @@ import pytest
 
 from pypkcs11.sign_verify import c_sign, c_verify
 from pypkcs11.key_generator import c_generate_key_pair, c_generate_key, c_destroy_object
-from pypkcs11.defines import (CKM_AES_GMAC, CKM_AES_CMAC, CKM_AES_KEY_GEN,
-                              CKM_DES3_MAC, CKM_DES3_CMAC, CKM_DES3_KEY_GEN,
-                              CKM_ECDSA_SHA1, CKM_ECDSA_KEY_PAIR_GEN,
-                              CKR_OK)
+from pypkcs11.defines import *
 from pypkcs11.default_templates import (
-    CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP,
-    CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP,
-
+    CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP,
+    EDDSA_KEY_GEN_PRIVTEMP, EDDSA_KEY_GEN_PUBTEMP,
     MECHANISM_LOOKUP_EXT, get_default_key_template)
 
 from pypkcs11.lookup_dicts import ret_vals_dictionary
@@ -28,14 +24,14 @@ SYM_PARAMS = [(CKM_AES_KEY_GEN, CKM_AES_CMAC),
               #(CKM_AES_KEY_GEN, CKM_AES_GMAC),
               #   (CKM_DES3_KEY_GEN, CKM_DES3_MAC),
               (CKM_DES3_KEY_GEN, CKM_DES3_CMAC),
-              #   (CKM_CAST3_KEY_GEN, CKM_CAST3_MAC),
-              #   (CKM_CAST5_KEY_GEN, CKM_CAST5_MAC),
               ]
 SYM_KEYS = [key for key, _ in SYM_PARAMS]
 
 ASYM_PARAMS = \
-    [(CKM_ECDSA_KEY_PAIR_GEN, CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP,
-      CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, CKM_ECDSA_SHA1)]
+    [(CKM_ECDSA_KEY_PAIR_GEN, CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP, CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, CKM_ECDSA_SHA1),
+     (DYCKM_EDDSA_KEY_GEN, EDDSA_KEY_GEN_PUBTEMP,
+      EDDSA_KEY_GEN_PRIVTEMP, DYCKM_EDDSA)
+     ]
 
 FORMAT_ASYM = [(key, sig) for (key, _, _, sig) in ASYM_PARAMS]
 
@@ -152,6 +148,11 @@ class TestSignVerify(object):
             pytest.skip("No valid key found for {}".format(
                 MECHANISM_LOOKUP_EXT[k_type][0]))
         pub_key, prv_key = asym_keys[k_type]
+
+        is_multi_part_operation = isinstance(data, (list, tuple))
+        if (sig_mech == DYCKM_EDDSA and is_multi_part_operation):
+            #skip: multi-part is not supported
+            return
 
         ret, signature = c_sign(self.h_session, prv_key,
                                 data, mechanism=sig_mech)
