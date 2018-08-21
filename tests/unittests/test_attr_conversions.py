@@ -9,27 +9,27 @@ from binascii import hexlify
 from collections import defaultdict
 from ctypes import cast, c_void_p, c_ulong, sizeof
 from string import ascii_letters as letters
+import datetime as dt
 
 import mock
 import pytest
 from hypothesis import given
-from hypothesis.extra.datetime import dates
-from hypothesis.strategies import integers, floats, text, booleans, lists, dictionaries, one_of
+from hypothesis.strategies import dates, integers, floats, text, booleans, lists, dictionaries, one_of
 from six import b, integer_types
 
 from _ctypes import POINTER
 
 from pypkcs11.attributes import (CK_ATTRIBUTE,
-                                   CKA_CLASS,
-                                   CK_BYTE,
-                                   to_long,
-                                   to_bool,
-                                   to_char_array,
-                                   to_ck_date,
-                                   to_byte_array,
-                                   to_sub_attributes,
-                                   Attributes,
-                                   convert_c_ubyte_array_to_string, KEY_TRANSFORMS)
+                                 CKA_CLASS,
+                                 CK_BYTE,
+                                 to_long,
+                                 to_bool,
+                                 to_char_array,
+                                 to_ck_date,
+                                 to_byte_array,
+                                 to_sub_attributes,
+                                 Attributes,
+                                 convert_c_ubyte_array_to_string, KEY_TRANSFORMS)
 
 LOG = logging.getLogger(__name__)
 MAX_INT = 2 ** (sizeof(c_ulong) * 8) - 1
@@ -174,7 +174,7 @@ class TestAttrConversions(object):
         """
         self.force_fail(object(), to_char_array, TypeError)
 
-    @given(dates(min_year=1900))
+    @given(dates(min_value=dt.date(1900, 1, 1)))
     def test_to_ck_date_string(self, date_val):
         """
         to_ck_date() with param:
@@ -187,20 +187,21 @@ class TestAttrConversions(object):
         py_date = self.reverse_case(pointer, leng, to_ck_date)
         assert b(date_string) == py_date
 
-    @given(dates(min_year=1900))
+    @given(dates(min_value=dt.date(1900, 1, 1)))
     def test_to_ck_date_dict(self, date_val):
         """
         to_ck_date() with param:
         :param date_val: random date to be converted to a dictionary.
         """
-        date_dict = {'year': date_val.year, 'month': date_val.month, 'day': date_val.day}
+        date_dict = {'year': date_val.year,
+                     'month': date_val.month, 'day': date_val.day}
         pointer, leng = to_ck_date(date_dict)
         self.verify_c_type(pointer, leng)
 
         py_date = self.reverse_case(pointer, leng, to_ck_date)
         assert b(date_val.strftime("%Y%m%d")) == py_date
 
-    @given(dates(min_year=1900))
+    @given(dates(min_value=dt.date(1900, 1, 1)))
     def test_to_ck_date(self, date_val):
         """
         to_ck_date() with param:
@@ -272,7 +273,8 @@ class TestAttrConversions(object):
         self.verify_c_type(pointer, leng)
 
         py_bytes = self.reverse_case(pointer, leng, to_byte_array)
-        LOG.debug("to_byte_array() data loss: %s => %s", b(hex(int_val)), py_bytes)
+        LOG.debug("to_byte_array() data loss: %s => %s",
+                  b(hex(int_val)), py_bytes)
         assert int(py_bytes, 16) != int_val
 
     @given(lists(elements=integers(min_value=0, max_value=255)))
