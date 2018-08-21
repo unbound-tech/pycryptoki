@@ -81,7 +81,7 @@ def get_token_by_label(label):
 
 
 def c_get_mechanism_list(slot):
-    """Gets the list of mechanisms 
+    """Gets the list of mechanisms
 
     :param slot: The slot number to get the mechanism list on
     :returns: The result code, A python dictionary representing the mechanism list
@@ -109,6 +109,6 @@ def c_get_mechanism_info(slot, mechanism_type):
 
     """
     mech_info = CK_MECHANISM_INFO()
-    ret = C_GetMechanismInfo(CK_ULONG(slot), CK_MECHANISM_TYPE(mechanism_type), byref(mech_info))
+    ret = C_GetMechanismInfo(CK_ULONG(slot), CK_MECHANISM_TYPE(
+        mechanism_type), byref(mech_info))
     return ret, mech_info
-

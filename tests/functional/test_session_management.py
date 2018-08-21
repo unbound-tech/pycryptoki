@@ -4,14 +4,14 @@
 """
 Tests session management functions
 """
-import pytest
 import logging
+import pytest
 
 from six import integer_types
 
-from . import config as test_config
 from pypkcs11.defines import CKR_OK
 import pypkcs11.session_management as sess_mang
+from . import config as test_config
 
 logger = logging.getLogger(__name__)
 

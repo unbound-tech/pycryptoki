@@ -5,8 +5,8 @@
 Methods related to encrypting data/files.
 """
 import logging
-from _ctypes import POINTER
 from ctypes import create_string_buffer, cast, byref, string_at, c_ubyte
+from _ctypes import POINTER
 
 from .attributes import Attributes, to_byte_array
 from .common_utils import AutoCArray, refresh_c_arrays
@@ -53,7 +53,7 @@ def c_encrypt(h_session, h_key, data, mechanism, output_buffer=None):
 
     :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
-    :param list|int output_buffer: Integer or list of integers that specify a size of output 
+    :param list|int output_buffer: Integer or list of integers that specify a size of output
         buffer to use for an operation. By default will query with NULL pointer buffer
         to get required size of buffer.
     :returns: (Retcode, Python bytestring of encrypted data)
@@ -99,7 +99,8 @@ def c_encrypt(h_session, h_key, data, mechanism, output_buffer=None):
             return ret, None
 
         # Convert encrypted data into a python string
-        encrypted_python_string = string_at(enc_data.array, enc_data.size.contents.value)
+        encrypted_python_string = string_at(
+            enc_data.array, enc_data.size.contents.value)
 
     return ret, encrypted_python_string
 
@@ -152,7 +153,7 @@ def c_decrypt(h_session, h_key, encrypted_data, mechanism, output_buffer=None):
 
     :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values.
-    :param list|int output_buffer: Integer or list of integers that specify a size of output 
+    :param list|int output_buffer: Integer or list of integers that specify a size of output
         buffer to use for an operation. By default will query with NULL pointer buffer
         to get required size of buffer.
     :returns: (Retcode, Python bytestring of decrypted data))
@@ -180,7 +181,8 @@ def c_decrypt(h_session, h_key, encrypted_data, mechanism, output_buffer=None):
         # number of bytes needed. So the python string that's returned in the
         # end needs to be adjusted based on the second called to C_Decrypt
         # which will have the right length
-        c_enc_data, c_enc_data_len = to_byte_array(from_bytestring(encrypted_data))
+        c_enc_data, c_enc_data_len = to_byte_array(
+            from_bytestring(encrypted_data))
         c_enc_data = cast(c_enc_data, POINTER(c_ubyte))
         if output_buffer is not None:
             size = CK_ULONG(output_buffer)
@@ -205,7 +207,8 @@ def c_decrypt(h_session, h_key, encrypted_data, mechanism, output_buffer=None):
             return ret, None
 
         # Convert the decrypted data to a python readable format
-        python_data = string_at(decrypted_data.array, decrypted_data.size.contents.value)
+        python_data = string_at(decrypted_data.array,
+                                decrypted_data.size.contents.value)
 
     return ret, python_data
 
@@ -248,7 +251,8 @@ def do_multipart_operation(h_session,
     for index, chunk in enumerate(input_data_list):
         if output_buffer:
             out_data_len = CK_ULONG(output_buffer[index])
-            out_data = cast(create_string_buffer(b'', output_buffer[index]), CK_BYTE_PTR)
+            out_data = cast(create_string_buffer(
+                b'', output_buffer[index]), CK_BYTE_PTR)
         else:
             out_data_len = CK_ULONG()
             out_data = None
@@ -268,7 +272,8 @@ def do_multipart_operation(h_session,
 
         if not output_buffer:
             # Need a second call to actually get the data.
-            LOG.debug("Creating cipher data buffer of size %s", out_data_len.value)
+            LOG.debug("Creating cipher data buffer of size %s",
+                      out_data_len.value)
             out_data = create_string_buffer(b'', out_data_len.value)
             ret = c_update_function(h_session,
                                     data_chunk, data_chunk_len,
@@ -287,7 +292,8 @@ def do_multipart_operation(h_session,
     if error:
         # Make sure we finalize the operation -- don't want to leave any operations active.
         ret = c_finalize_function(h_session,
-                                  cast(create_string_buffer(b'', MAX_BUFFER), CK_BYTE_PTR),
+                                  cast(create_string_buffer(
+                                      b'', MAX_BUFFER), CK_BYTE_PTR),
                                   CK_ULONG(MAX_BUFFER))
         LOG.debug("%s call after a %s failure returned: %s (%s)",
                   c_finalize_function.__name__,
@@ -341,7 +347,8 @@ def c_wrap_key(h_session, h_wrapping_key, h_key, mechanism, output_buffer=None):
         wrapped_key = AutoCArray(ctype=c_ubyte,
                                  size=size)
         ret = C_WrapKey(h_session, mech,
-                        CK_OBJECT_HANDLE(h_wrapping_key), CK_OBJECT_HANDLE(h_key),
+                        CK_OBJECT_HANDLE(
+                            h_wrapping_key), CK_OBJECT_HANDLE(h_key),
                         wrapped_key.array, wrapped_key.size)
     else:
         wrapped_key = AutoCArray(ctype=c_ubyte)
@@ -350,7 +357,8 @@ def c_wrap_key(h_session, h_wrapping_key, h_key, mechanism, output_buffer=None):
         def _wrap():
             """  Perform the Wrapping operation"""
             return C_WrapKey(h_session, mech,
-                             CK_OBJECT_HANDLE(h_wrapping_key), CK_OBJECT_HANDLE(h_key),
+                             CK_OBJECT_HANDLE(
+                                 h_wrapping_key), CK_OBJECT_HANDLE(h_key),
                              wrapped_key.array, wrapped_key.size)
 
         ret = _wrap()

@@ -21,7 +21,7 @@ from .cryptoki import (CK_ULONG,
                        CK_USER_TYPE,
                        CK_TOKEN_INFO,
                        CK_VOID_PTR,
-                       CK_BYTE, CK_INFO, C_GetInfo, c_ulong)
+                       CK_BYTE, CK_INFO, C_GetInfo)
 # Cryptoki Functions
 from .cryptoki import (C_Initialize,
                        C_GetSlotList,
@@ -36,7 +36,7 @@ from .cryptoki import (C_Initialize,
                        C_GetTokenInfo,
                        C_Finalize,
                        C_SetPIN,
-                        )
+                       )
 from .defines import CKR_OK, CKF_RW_SESSION, CKF_SERIAL_SESSION
 
 LOG = logging.getLogger(__name__)
@@ -174,8 +174,10 @@ def c_get_slot_info(slot):
     if ret != CKR_OK:
         return ret, {}
 
-    slot_info_dict['slotDescription'] = string_at(slot_info.slotDescription, 64).rstrip()
-    slot_info_dict['manufacturerID'] = string_at(slot_info.manufacturerID, 32).rstrip()
+    slot_info_dict['slotDescription'] = string_at(
+        slot_info.slotDescription, 64).rstrip()
+    slot_info_dict['manufacturerID'] = string_at(
+        slot_info.manufacturerID, 32).rstrip()
     slot_info_dict['flags'] = slot_info.flags
     hw_version = "{}.{}".format(slot_info.hardwareVersion.major,
                                 slot_info.hardwareVersion.minor)
@@ -222,7 +224,8 @@ def c_get_token_info(slot_id, rstrip=True):
 
     if ret == CKR_OK:
         token_info['label'] = string_at(c_token_info.label, 32)
-        token_info['manufacturerID'] = string_at(c_token_info.manufacturerID, 32)
+        token_info['manufacturerID'] = string_at(
+            c_token_info.manufacturerID, 32)
         token_info['model'] = string_at(c_token_info.model, 16)
         token_info['serialNumber'] = string_at(c_token_info.serialNumber, 16)
         token_info['flags'] = c_token_info.flags
@@ -256,7 +259,7 @@ def get_slot_dict(token_present=False):
     :returns: A python dictionary of the available slots
     """
     ret, slot_list = c_get_slot_list(token_present)
-    if (ret != 0): 
+    if (ret != 0):
         return ret
     slot_dict = {}
     ret = CKR_OK
@@ -343,6 +346,7 @@ def c_close_all_sessions(slot):
     ret = C_CloseAllSessions(CK_ULONG(slot))
     return ret
 
+
 def get_firmware_version(slot):
     """
     Calls to ``C_GetTokenInfo`` for the given slot.
@@ -362,4 +366,3 @@ def get_firmware_version(slot):
     subminor = raw_firmware.minor % 10
 
     return ret, "{}.{}.{}".format(major, minor, subminor)
-

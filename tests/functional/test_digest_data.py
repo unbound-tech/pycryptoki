@@ -5,7 +5,7 @@
 import logging
 import pytest
 
-from pypkcs11.return_values import ret_vals_dictionary
+from pypkcs11.lookup_dicts import ret_vals_dictionary
 from pypkcs11.defines import CKR_OK, CKM_MD5, CKM_SHA_1, CKM_SHA256, CKM_SHA384, CKM_SHA512
 from pypkcs11.misc import c_digest
 
@@ -17,7 +17,8 @@ MECHS = {CKM_MD5: "MD5",
          CKM_SHA384: "SHA384",
          CKM_SHA512: "SHA512"}
 
-DATA = [b"Some arbitrary string", [b"Some arbitrary string", b"Some second arbitrary string"]]
+DATA = [b"Some arbitrary string", [
+    b"Some arbitrary string", b"Some second arbitrary string"]]
 
 
 class TestDigestData(object):
@@ -29,7 +30,8 @@ class TestDigestData(object):
         :param expected_ret: the expected return value
         """
         assert ret == expected_ret, "Function should return: " + \
-            ret_vals_dictionary[expected_ret] + ".\nInstead returned: " + ret_vals_dictionary[ret]
+            ret_vals_dictionary[expected_ret] + \
+            ".\nInstead returned: " + ret_vals_dictionary[ret]
 
     @pytest.fixture(autouse=True)
     def setup_teardown(self, auth_session):

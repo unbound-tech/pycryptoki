@@ -5,18 +5,16 @@
 PKCS11 Operations related to Signing and Verifying data
 """
 import logging
-from _ctypes import POINTER
 from ctypes import create_string_buffer, cast, byref, string_at, c_ubyte
+from _ctypes import POINTER
 
 from pypkcs11.conversions import from_bytestring
 
-from .attributes import to_char_array, to_byte_array
+from .attributes import to_byte_array
 from .common_utils import refresh_c_arrays, AutoCArray
 from .conversions import from_bytestring
-from .cryptoki import CK_ULONG, \
-    CK_BYTE_PTR, C_SignInit, C_Sign
-from .cryptoki import C_VerifyInit, C_Verify, C_SignUpdate, \
-    C_SignFinal, C_VerifyUpdate, C_VerifyFinal
+from .cryptoki import CK_ULONG, CK_BYTE_PTR, C_SignInit, C_Sign
+from .cryptoki import C_VerifyInit, C_Verify, C_SignUpdate, C_SignFinal, C_VerifyUpdate, C_VerifyFinal
 from .defines import CKR_OK
 from .encryption import MAX_BUFFER
 from .lookup_dicts import ret_vals_dictionary

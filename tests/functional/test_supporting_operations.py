@@ -7,7 +7,7 @@ import pytest
 
 from pypkcs11.defines import CKR_OK
 from pypkcs11.misc import c_generate_random, c_seed_random
-from pypkcs11.return_values import ret_vals_dictionary
+from pypkcs11.lookup_dicts import ret_vals_dictionary
 from . import config as test_config
 
 logger = logging.getLogger(__name__)

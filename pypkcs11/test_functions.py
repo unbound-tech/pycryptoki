@@ -16,7 +16,7 @@ else:
 from .cryptoki import CK_OBJECT_HANDLE, CK_ULONG, C_GetObjectSize
 from .defines import CKR_OBJECT_HANDLE_INVALID
 from .defines import CKR_OK
-from .return_values import ret_vals_dictionary
+from .lookup_dicts import ret_vals_dictionary
 from .exceptions import CryptokiCallException
 from .object_attr_lookup import c_get_attribute_value
 

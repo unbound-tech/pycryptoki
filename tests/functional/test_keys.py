@@ -12,12 +12,10 @@ from pypkcs11.default_templates import \
      CKM_ECDH_KEY_PAIR_GEN_PRIVTEMP)
 from pypkcs11.defines import *
 from pypkcs11.encryption import c_encrypt, c_decrypt
-from pypkcs11.key_generator import \
-    c_generate_key, c_generate_key_pair, c_derive_key, c_generate_key, c_destroy_object, \
-    c_derive_key, c_generate_key_pair
+from pypkcs11.key_generator import c_generate_key, c_generate_key_pair, c_derive_key, c_destroy_object
 from pypkcs11.mechanism import NullMech
 from pypkcs11.object_attr_lookup import c_get_attribute_value, c_find_objects
-from pypkcs11.return_values import ret_vals_dictionary
+from pypkcs11.lookup_dicts import ret_vals_dictionary
 from pypkcs11.test_functions import verify_object_attributes
 from .util import get_session_template
 

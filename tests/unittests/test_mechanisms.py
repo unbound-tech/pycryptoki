@@ -11,46 +11,46 @@ from six import integer_types
 
 from pypkcs11.conversions import from_hex, to_bytestring
 from pypkcs11.cryptoki import (CK_RSA_PKCS_PSS_PARAMS,
-                                 POINTER,
-                                 CK_ULONG,
-                                 CK_AES_GCM_PARAMS,
-                                 CK_MECHANISM)
+                               POINTER,
+                               CK_ULONG,
+                               CK_AES_GCM_PARAMS,
+                               CK_MECHANISM)
 from pypkcs11.defines import *
 from pypkcs11.mechanism import (Mechanism,
-                                  MechanismException,
-                                  AutoMech,
-                                  MECH_LOOKUP,
-                                  AESGCMMechanism,
-                                  NullMech)
+                                MechanismException,
+                                AutoMech,
+                                MECH_LOOKUP,
+                                AESGCMMechanism,
+                                NullMech)
 
 MECH_PARAMS = {
-               CKM_DES3_CBC: {'iv': list(range(12)),
-                              'test_id': 'DES3'},
-               CKM_AES_CBC: {'iv': list(range(16)),
-                             'test_id': 'AES_CBC'},
-               CKM_RC2_ECB: {'usEffectiveBits': 8,
-                             'test_id': 'RC2_ECB'},
-               CKM_RC2_CBC: {'usEffectiveBits': 8,
-                             'iv': list(range(8)),
-                             'test_id': 'RC2_CBC'},
-               CKM_RC5_ECB: {'ulWordsize': 8,
-                             'ulRounds': 8,
-                             'test_id': 'RC5_ECB'},
-               CKM_RC5_CBC: {'ulWordsize': 8,
-                             'ulRounds': 2,
-                             'iv': list(range(12)),
-                             'test_id': 'RC5_CBC'},
-               CKM_RSA_PKCS_OAEP: {'hashAlg': CKM_SHA_1,
-                                   'mgf': CKG_MGF1_SHA1,
-                                   'sourceData': list(range(12)),
-                                   'test_id': 'RSA_OAEP'},
-               CKM_AES_GCM: {'iv': list(range(16)),
-                             'AAD': b'deadbeef',
-                             'ulTagBits': 32,
-                             'test_id': 'AES_GCM'},
-               CKM_RSA_PKCS_PSS: {'hashAlg': CKM_SHA_1,
-                                  'mgf': CKG_MGF1_SHA1,
-                                  'test_id': "RSA_PSS"}}
+    CKM_DES3_CBC: {'iv': list(range(12)),
+                   'test_id': 'DES3'},
+    CKM_AES_CBC: {'iv': list(range(16)),
+                  'test_id': 'AES_CBC'},
+    CKM_RC2_ECB: {'usEffectiveBits': 8,
+                  'test_id': 'RC2_ECB'},
+    CKM_RC2_CBC: {'usEffectiveBits': 8,
+                  'iv': list(range(8)),
+                  'test_id': 'RC2_CBC'},
+    CKM_RC5_ECB: {'ulWordsize': 8,
+                  'ulRounds': 8,
+                  'test_id': 'RC5_ECB'},
+    CKM_RC5_CBC: {'ulWordsize': 8,
+                  'ulRounds': 2,
+                  'iv': list(range(12)),
+                  'test_id': 'RC5_CBC'},
+    CKM_RSA_PKCS_OAEP: {'hashAlg': CKM_SHA_1,
+                        'mgf': CKG_MGF1_SHA1,
+                        'sourceData': list(range(12)),
+                        'test_id': 'RSA_OAEP'},
+    CKM_AES_GCM: {'iv': list(range(16)),
+                  'AAD': b'deadbeef',
+                  'ulTagBits': 32,
+                  'test_id': 'AES_GCM'},
+    CKM_RSA_PKCS_PSS: {'hashAlg': CKM_SHA_1,
+                       'mgf': CKG_MGF1_SHA1,
+                       'test_id': "RSA_PSS"}}
 
 
 def idfn(test):
@@ -60,7 +60,7 @@ def idfn(test):
 # noinspection PyArgumentList
 class TestMechanisms(object):
     @pytest.mark.parametrize('flavor,params',
-                              [(CKM_RC2_ECB, ['usEffectiveBits']),
+                             [(CKM_RC2_ECB, ['usEffectiveBits']),
                               (CKM_RC2_CBC, ['usEffectiveBits', 'iv']),
                               (CKM_RC5_ECB, ['ulWordsize', 'ulRounds']),
                               (CKM_RC5_CBC, ['ulWordsize', 'ulRounds', 'iv']),
@@ -95,7 +95,8 @@ class TestMechanisms(object):
                                                         "usSaltLen": 8})
             assert isinstance(pymech, AutoMech)
             cmech = pymech.to_c_mech()
-            params = cast(cmech.pParameter, POINTER(CK_RSA_PKCS_PSS_PARAMS)).contents
+            params = cast(cmech.pParameter, POINTER(
+                CK_RSA_PKCS_PSS_PARAMS)).contents
             assert params.hashAlg == CKM_SHA_1
             assert params.mgf == CKG_MGF1_SHA1
             assert params.usSaltLen == 8
@@ -190,4 +191,5 @@ class TestMechanisms(object):
             with pytest.raises(MechanismException) as excinfo:
                 cmech = AutoMech(CKM_DES3_CBC).to_c_mech()
 
-            assert "Failed to find a suitable Ctypes Parameter" in str(excinfo.value)
+            assert "Failed to find a suitable Ctypes Parameter" in str(
+                excinfo.value)

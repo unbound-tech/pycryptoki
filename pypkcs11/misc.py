@@ -10,10 +10,9 @@ PKCS11 Interface to the following functions:
 * c_digestkey
 * c_create_object
 """
-from _ctypes import POINTER
 from ctypes import create_string_buffer, cast, byref, string_at, c_ubyte
-
 from six import integer_types
+from _ctypes import POINTER
 
 from pypkcs11.conversions import from_bytestring
 from .attributes import Attributes, to_byte_array
@@ -42,6 +41,7 @@ def c_generate_random(h_session, length):
     data = string_at(data_ptr, length)
     return ret, data
 
+
 def c_seed_random(h_session, seed):
     """Seeds the random number generator
 
@@ -58,6 +58,7 @@ def c_seed_random(h_session, seed):
     ret = C_SeedRandom(h_session, seed_bytes, seed_length)
     return ret
 
+
 def c_digest(h_session, data_to_digest, digest_flavor, mechanism=None, output_buffer=None):
     """Digests some data
 
@@ -68,7 +69,7 @@ def c_digest(h_session, data_to_digest, digest_flavor, mechanism=None, output_bu
         SHA224, SHA256, SHA384, SHA512)
     :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values. If None will use digest flavor.
-    :param list|int output_buffer: Integer or list of integers that specify a size of output 
+    :param list|int output_buffer: Integer or list of integers that specify a size of output
         buffer to use for an operation. By default will query with NULL pointer buffer
         to get required size of buffer.
     :returns: (retcode, a python string of the digested data)
@@ -95,7 +96,8 @@ def c_digest(h_session, data_to_digest, digest_flavor, mechanism=None, output_bu
                                                                   output_buffer=output_buffer)
     else:
         # Get arguments
-        c_data_to_digest, c_digest_data_len = to_byte_array(from_bytestring(data_to_digest))
+        c_data_to_digest, c_digest_data_len = to_byte_array(
+            from_bytestring(data_to_digest))
         c_data_to_digest = cast(c_data_to_digest, POINTER(c_ubyte))
 
         if output_buffer is not None:
@@ -162,6 +164,7 @@ def c_create_object(h_session, template):
     """
     c_template = Attributes(template).get_c_struct()
     new_object_handle = CK_ULONG()
-    ret = C_CreateObject(h_session, c_template, CK_ULONG(len(template)), byref(new_object_handle))
+    ret = C_CreateObject(h_session, c_template, CK_ULONG(
+        len(template)), byref(new_object_handle))
 
     return ret, new_object_handle.value

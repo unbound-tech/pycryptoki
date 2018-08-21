@@ -18,7 +18,6 @@
 """
 Testcases for Unbound Tech functions.
 """
-import os
 import pytest
 
 from pypkcs11.key_generator import c_generate_key_pair, c_destroy_object
