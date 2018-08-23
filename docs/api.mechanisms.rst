@@ -48,5 +48,13 @@ RSA Mechanisms
     :undoc-members:
     :show-inheritance:
 
+Unbound Mechanisms
+==============
+
+.. automodule:: pypkcs11.mechanism.unbound
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 .. footer:: Please note that this document have been modified by Unbound Tech.
 
