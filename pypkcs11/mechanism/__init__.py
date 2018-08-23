@@ -35,7 +35,7 @@ To implement a new Mechanism:
                     else:
                         iv_ba, iv_len = to_byte_array(self.params['iv'])
                     self.mech.pParameter = iv_ba
-                    self.mech.usParameterLen = iv_len
+                    self.mech.ulParameterLen = iv_len
                     return self.mech
 
 
@@ -51,7 +51,7 @@ To implement a new Mechanism:
                     xts_params.cb = (CK_BYTE * 16)(*self.params['cb'])
                     xts_params.hTweakKey = CK_ULONG(self.params['hTweakKey'])
                     self.mech.pParameter = cast(pointer(xts_params), c_void_p)
-                    self.mech.usParameterLen = CK_ULONG(sizeof(xts_params))
+                    self.mech.ulParameterLen = CK_ULONG(sizeof(xts_params))
                     return self.mech
 
 """
@@ -126,6 +126,7 @@ from ..defines import (CKM_DES_CBC,
                        CKM_ECDH1_DERIVE,
                        CKM_AES_CTR,
                        CKM_AES_GMAC,
+                       #    DYCKM_DERIVE_ECDSA_BIP,
                        )
 
 MECH_LOOKUP = {
@@ -179,4 +180,5 @@ MECH_LOOKUP = {
     CKM_CONCATENATE_DATA_AND_BASE: StringDataDerivationMechanism,
 
     CKM_ECDH1_DERIVE: ECDH1DeriveMechanism,
+
 }

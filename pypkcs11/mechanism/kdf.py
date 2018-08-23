@@ -13,7 +13,8 @@ from ..cryptoki import CK_PRF_KDF_PARAMS, CK_BYTE_PTR, CK_ULONG
 
 class PRFKDFDeriveMechanism(Mechanism):
     """PRF KDF-specific mechanism."""
-    REQUIRED_PARAMS = ['prf_type', 'label', 'context', 'counter', 'encoding_scheme']
+    REQUIRED_PARAMS = ['prf_type', 'label',
+                       'context', 'counter', 'encoding_scheme']
 
     def to_c_mech(self):
         """
@@ -48,5 +49,5 @@ class PRFKDFDeriveMechanism(Mechanism):
         params.ulCounter = counter
         params.ulEncodingScheme = ul_encoding_scheme
         self.mech.pParameter = cast(pointer(params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(params))
         return self.mech

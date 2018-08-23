@@ -31,7 +31,7 @@ class ConcatenationDeriveMechanism(Mechanism):
         super(ConcatenationDeriveMechanism, self).to_c_mech()
         c_second_key = CK_ULONG(self.params['h_second_key'])
         self.mech.pParameter = cast(pointer(c_second_key), c_void_p)
-        self.mech.usParameterLen = sizeof(c_second_key)
+        self.mech.ulParameterLen = sizeof(c_second_key)
         return self.mech
 
 
@@ -53,7 +53,7 @@ class StringDataDerivationMechanism(Mechanism):
         parameters.pData = cast(data, POINTER(c_ubyte))
         parameters.ulLen = length
         self.mech.pParameter = parameters
-        self.mech.usParameterLen = sizeof(parameters)
+        self.mech.ulParameterLen = sizeof(parameters)
         return self.mech
 
 
@@ -71,7 +71,7 @@ class NullMech(Mechanism):
         """
         super(NullMech, self).to_c_mech()
         self.mech.pParameter = c_void_p(0)
-        self.mech.usParameterLen = CK_ULONG(0)
+        self.mech.ulParameterLen = CK_ULONG(0)
         return self.mech
 
 
@@ -99,7 +99,7 @@ class AutoMech(Mechanism):
             raise MechanismException("Failed to find a suitable "
                                      "Ctypes Parameter Struct for type {}. "
                                      "Make sure to set 'params_name' in the arguments!".format(
-                repr(self.mech_type)))
+                                         repr(self.mech_type)))
 
         fields = c_params_type._fields_
         c_params = c_params_type()
@@ -108,7 +108,8 @@ class AutoMech(Mechanism):
             if hasattr(c_type, '_length_'):
                 c_type = c_type._type_
                 if c_type not in CONVERSIONS:
-                    raise CryptokiException("Cannot convert to c_type: {}".format(c_type))
+                    raise CryptokiException(
+                        "Cannot convert to c_type: {}".format(c_type))
                 ptr, length = CONVERSIONS[c_type](self.params[name])
                 setattr(c_params, name, cast(ptr, POINTER(c_type)))
             # Otherwise, do a direct conversion.
@@ -116,5 +117,5 @@ class AutoMech(Mechanism):
                 # c_type = c_type._type_
                 setattr(c_params, name, c_type(self.params[name]))
         self.mech.pParameter = cast(pointer(c_params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(c_params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(c_params))
         return self.mech

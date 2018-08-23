@@ -118,7 +118,7 @@ class TestMechanisms(object):
             assert isinstance(pymech, NullMech)
             cmech = pymech.to_c_mech()
             assert cmech.pParameter is None
-            assert cmech.usParameterLen == 0
+            assert cmech.ulParameterLen == 0
 
     def test_exact_mechanism_use(self):
         """
@@ -147,7 +147,7 @@ class TestMechanisms(object):
         # Would prefer to check if it's a c_void_p, but it gets transformed directly to
         # an int/long depending on memory location.
         assert isinstance(cmech.pParameter, (integer_types, c_ulong))
-        assert isinstance(cmech.usParameterLen, (integer_types, c_ulong))
+        assert isinstance(cmech.ulParameterLen, (integer_types, c_ulong))
         assert isinstance(cmech, CK_MECHANISM)
         assert cmech.mechanism == flavor
 
@@ -158,7 +158,7 @@ class TestMechanisms(object):
         cmech = Mechanism(CKM_DES3_CBC).to_c_mech()
 
         rawiv = cast(cmech.pParameter, POINTER(c_ubyte))
-        iv = [rawiv[x] for x in range(cmech.usParameterLen)]
+        iv = [rawiv[x] for x in range(cmech.ulParameterLen)]
         assert iv == [0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38]
 
     def test_default_iv6_params(self):
@@ -168,7 +168,7 @@ class TestMechanisms(object):
         cmech = Mechanism(CKM_AES_CBC).to_c_mech()
 
         rawiv = cast(cmech.pParameter, POINTER(c_ubyte))
-        iv = [rawiv[x] for x in range(cmech.usParameterLen)]
+        iv = [rawiv[x] for x in range(cmech.ulParameterLen)]
         assert iv == [1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]
 
     @pytest.mark.parametrize("flavor", [CKM_SHA256, CKM_SHA512, CKM_DSA, CKM_RSA_PKCS],
@@ -180,7 +180,7 @@ class TestMechanisms(object):
         cmech = NullMech(flavor).to_c_mech()
 
         assert cmech.pParameter is None
-        assert cmech.usParameterLen == 0
+        assert cmech.ulParameterLen == 0
 
     def test_no_params_given_automech(self):
         """

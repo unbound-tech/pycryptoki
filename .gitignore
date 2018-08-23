@@ -109,3 +109,6 @@ _docbuild
 # PyBuilder
 target/
 
+.hypothesis
+.vscode
+.pytest_cache

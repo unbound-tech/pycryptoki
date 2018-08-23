@@ -158,11 +158,13 @@ def to_ck_date(val, reverse=False):
         return string_at(cast(val.pValue, POINTER(c_char)), val.usValueLen)
 
     if isinstance(val, dict):
-        val = datetime.date(year=val['year'], month=val['month'], day=val['day'])
+        val = datetime.date(
+            year=val['year'], month=val['month'], day=val['day'])
 
     if isinstance(val, string_types):
         if len(val) != 8:
-            raise TypeError("Invalid date string passed! Should be of type YYYYMMDD")
+            raise TypeError(
+                "Invalid date string passed! Should be of type YYYYMMDD")
         date_val = create_string_buffer(b(val), len(val))
 
     elif isinstance(val, datetime.date):
@@ -199,7 +201,8 @@ def to_byte_array(val, reverse=False):
         return fin
 
     if not isinstance(val, (binary_type, collections.Iterable, integer_types)):
-        raise TypeError("Unknown conversion to byte array for type {}".format(type(val)))
+        raise TypeError(
+            "Unknown conversion to byte array for type {}".format(type(val)))
 
     if isinstance(val, binary_type):
         # Hex-string in form '0xdeadbeef''
@@ -227,7 +230,8 @@ def to_byte_array(val, reverse=False):
         str_val = fmt.format(val)
         n = 8
         str_array = [str_val[i:i + n] for i in range(0, len(str_val), n)]
-        byte_array = (CK_BYTE * len(str_array))(*[int(x, 2) for x in str_array])
+        byte_array = (CK_BYTE * len(str_array))(*
+                                                [int(x, 2) for x in str_array])
 
     return cast(pointer(byte_array), c_void_p), CK_ULONG(sizeof(byte_array))
 
@@ -380,7 +384,8 @@ class Attributes(dict):
             if value is None:
                 # Create an empty CK_ATTRIBUTE struct so it can be overwritten with length
                 # data by the C_GetAttributeValue call.
-                blank_attr = CK_ATTRIBUTE(CK_ATTRIBUTE_TYPE(key), None, CK_ULONG(0))
+                blank_attr = CK_ATTRIBUTE(
+                    CK_ATTRIBUTE_TYPE(key), None, CK_ULONG(0))
                 ret_struct[index] = blank_attr
             elif key in self.new_transforms:
                 p_value, ul_length = self.new_transforms[key](value)
@@ -388,9 +393,9 @@ class Attributes(dict):
                                                  p_value,
                                                  ul_length)
             else:
-                if key not in KEY_TRANSFORMS:
-                    LOG.warning("Using default `to_byte_array` transformation for key %s "
-                                "and data %s", key, value)
+                # if key not in KEY_TRANSFORMS:
+                #     LOG.warning("Using default `to_byte_array` transformation for key %s "
+                #                 "and data %s", key, value)
                 p_value, ul_length = KEY_TRANSFORMS[key](value)
                 ret_struct[index] = CK_ATTRIBUTE(CK_ATTRIBUTE_TYPE(key),
                                                  p_value,
@@ -420,7 +425,8 @@ def c_struct_to_python(c_struct):
         if c_struct[i].pValue is None:
             py_data[obj_type] = None
         else:
-            py_data[obj_type] = KEY_TRANSFORMS[obj_type](c_struct[i], reverse=True)
+            py_data[obj_type] = KEY_TRANSFORMS[obj_type](
+                c_struct[i], reverse=True)
 
     return py_data
 

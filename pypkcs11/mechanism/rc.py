@@ -10,6 +10,7 @@ from . import Mechanism
 from ..attributes import to_byte_array
 from ..cryptoki import CK_RC2_CBC_PARAMS, CK_RC5_CBC_PARAMS, CK_RC5_PARAMS, CK_ULONG, CK_BYTE, CK_BYTE_PTR
 
+
 class RC2Mechanism(Mechanism):
     """
     Sets the mechanism parameter to the usEffectiveBits
@@ -25,7 +26,7 @@ class RC2Mechanism(Mechanism):
         super(RC2Mechanism, self).to_c_mech()
         effective_bits = CK_ULONG(self.params['usEffectiveBits'])
         self.mech.pParameter = cast(pointer(effective_bits), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(effective_bits))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(effective_bits))
         return self.mech
 
 
@@ -47,7 +48,7 @@ class RC2CBCMechanism(Mechanism):
         cbc_params.usEffectiveBits = CK_ULONG(effective_bits)
         cbc_params.iv = (CK_BYTE * 8)(*self.params['iv'])
         self.mech.pParameter = cast(pointer(cbc_params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(cbc_params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(cbc_params))
         return self.mech
 
 
@@ -68,7 +69,7 @@ class RC5Mechanism(Mechanism):
         rc5_params.ulWordsize = CK_ULONG(self.params['ulWordsize'])
         rc5_params.ulRounds = CK_ULONG(self.params['ulRounds'])
         self.mech.pParameter = cast(pointer(rc5_params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(rc5_params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(rc5_params))
         return self.mech
 
 
@@ -92,6 +93,5 @@ class RC5CBCMechanism(Mechanism):
         rc5_params.pIv = cast(iv, CK_BYTE_PTR)
         rc5_params.ulIvLen = ivlen
         self.mech.pParameter = cast(pointer(rc5_params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(rc5_params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(rc5_params))
         return self.mech
-

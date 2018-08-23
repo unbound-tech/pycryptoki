@@ -19,11 +19,15 @@
 Testcases for Unbound Tech functions.
 """
 import pytest
+import binascii
 
-from pypkcs11.key_generator import c_generate_key_pair, c_destroy_object
+from pypkcs11.key_generator import c_generate_key_pair, c_destroy_object, c_derive_key
 from pypkcs11.defines import *
 from pypkcs11.unbound import dyc_self_sign_x509, dyc_sign_x509, dyc_create_x509_request
 from pypkcs11.default_templates import CKM_RSA_PKCS_KEY_PAIR_GEN_PUBTEMP, CKM_RSA_PKCS_KEY_PAIR_GEN_PRIVTEMP
+from pypkcs11.misc import c_create_object
+from pypkcs11.object_attr_lookup import c_get_attribute_value
+from pypkcs11.mechanism.unbound import EcdsaBipDeriveMechanism
 
 
 class TestUnbound(object):
@@ -66,3 +70,53 @@ class TestUnbound(object):
                 c_destroy_object(self.h_session, pub_key2)
             if (priv_key2 != None):
                 c_destroy_object(self.h_session, priv_key2)
+
+    def test_bip(self):
+        seed = "000102030405060708090a0b0c0d0e0f"
+        t_new_seed_key = {CKA_CLASS: CKO_SECRET_KEY,
+                          CKA_KEY_TYPE: CKK_GENERIC_SECRET,
+                          CKA_TOKEN: True,
+                          CKA_VALUE: binascii.unhexlify(seed),
+                          }
+        ret, hSeed = c_create_object(self.h_session, t_new_seed_key)
+        assert ret == CKR_OK
+        hBip, hBipDer = None, None
+        try:
+            secp256k1_oid = '06052b8104000a'
+            t_new_ec_key = {CKA_CLASS: CKO_PRIVATE_KEY,
+                            CKA_KEY_TYPE: CKK_EC,
+                            CKA_TOKEN: True,
+                            CKA_EC_PARAMS: binascii.unhexlify(secp256k1_oid),
+                            CKA_SIGN: True,
+                            CKA_DERIVE: True,
+                            }
+            ret, hBip = c_derive_key(
+                self.h_session, hSeed, t_new_ec_key, DYCKM_DERIVE_ECDSA_BIP)
+            assert ret == CKR_OK
+
+            t_info = {DYCKA_ECDSA_BIP_LEVEL: None,
+                      DYCKA_ECDSA_BIP_CHILD_NUMBER: None,
+                      DYCKA_ECDSA_BIP_PARENT_FINGERPRINT: None,
+                      DYCKA_ECDSA_BIP_CPAR: None,
+                      DYCKA_ECDSA_BIP_HARDENED: None,
+                      }
+            ret, attrs = c_get_attribute_value(self.h_session, hBip, t_info)
+            assert ret == CKR_OK
+            assert attrs[DYCKA_ECDSA_BIP_CPAR].decode(
+                "utf-8") == '873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508'
+
+            bip_mech = EcdsaBipDeriveMechanism(True, 0)
+            ret, hBipDer = c_derive_key(
+                self.h_session, hBip, t_new_ec_key, bip_mech)
+            ret, attrs = c_get_attribute_value(self.h_session, hBipDer, t_info)
+            assert ret == CKR_OK
+            assert attrs[DYCKA_ECDSA_BIP_CPAR].decode(
+                "utf-8") == '47fdacbd0f1097043b78c63c20c34ef4ed9a111d980047ad16282c7ae6236141'
+
+        finally:
+            if (hSeed != None):
+                c_destroy_object(self.h_session, hSeed)
+            if (hBip != None):
+                c_destroy_object(self.h_session, hBip)
+            if (hBipDer != None):
+                c_destroy_object(self.h_session, hBipDer)

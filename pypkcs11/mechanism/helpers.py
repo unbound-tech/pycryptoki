@@ -13,13 +13,15 @@ from six import integer_types
 
 from pypkcs11.lookup_dicts import MECH_NAME_LOOKUP
 from ..cryptoki import CK_AES_CBC_PAD_EXTRACT_PARAMS, CK_MECHANISM, \
-    CK_ULONG, CK_ULONG_PTR, CK_AES_CBC_PAD_INSERT_PARAMS, CK_BYTE, CK_BYTE_PTR, CK_MECHANISM_TYPE
+    CK_ULONG, CK_ULONG_PTR, CK_AES_CBC_PAD_INSERT_PARAMS, CK_BYTE, CK_BYTE_PTR, CK_MECHANISM_TYPE, DYCK_DERIVE_ECDSA_BIP_PARAMS
 # from ..defines import *
 
 LOG = logging.getLogger(__name__)
 
 supported_parameters = {'CK_AES_CBC_PAD_EXTRACT_PARAMS': CK_AES_CBC_PAD_EXTRACT_PARAMS,
-                        'CK_AES_CBC_PAD_INSERT_PARAMS': CK_AES_CBC_PAD_INSERT_PARAMS}
+                        'CK_AES_CBC_PAD_INSERT_PARAMS': CK_AES_CBC_PAD_INSERT_PARAMS,
+                        'DYCK_DERIVE_ECDSA_BIP_PARAMS': DYCK_DERIVE_ECDSA_BIP_PARAMS,
+                        }
 
 
 class MechanismException(Exception):
@@ -103,7 +105,7 @@ def get_c_struct_from_mechanism(python_dictionary, params_type_string):
     mech = CK_MECHANISM()
     mech.mechanism = python_dictionary['mechanism']
     mech.pParameter = cast(pointer(params), c_void_p)
-    mech.usParameterLen = CK_ULONG(sizeof(params_type))
+    mech.ulParameterLen = CK_ULONG(sizeof(params_type))
 
     # Automatically handle the simpler fields
     for entry in params_type._fields_:
@@ -113,7 +115,8 @@ def get_c_struct_from_mechanism(python_dictionary, params_type_string):
         if key_type == CK_ULONG:
             setattr(params, key_name, CK_ULONG(python_dictionary[key_name]))
         elif key_type == CK_ULONG_PTR:
-            setattr(params, key_name, pointer(CK_ULONG(python_dictionary[key_name])))
+            setattr(params, key_name, pointer(
+                CK_ULONG(python_dictionary[key_name])))
         else:
             continue
 
@@ -126,10 +129,12 @@ def get_c_struct_from_mechanism(python_dictionary, params_type_string):
         # params.pbFileName = 0 #TODO convert byte pointer to serializable type
     elif params_type == CK_AES_CBC_PAD_INSERT_PARAMS:
         # params.pbFileName =  TODO
-        params.pBuffer = cast(create_string_buffer(python_dictionary['pBuffer']), CK_BYTE_PTR)
+        params.pBuffer = cast(create_string_buffer(
+            python_dictionary['pBuffer']), CK_BYTE_PTR)
         params.ulBufferLen = len(python_dictionary['pBuffer'])
     else:
-        raise Exception("Unsupported parameter type, pypkcs11 can be extended to make it work")
+        raise Exception(
+            "Unsupported parameter type, pypkcs11 can be extended to make it work")
 
     return mech
 
@@ -158,7 +163,8 @@ def get_python_dict_from_c_mechanism(c_mechanism, params_type_string):
         if key_type == CK_ULONG:
             python_dictionary[key_name] = getattr(params_struct, key_name)
         elif key_type == CK_ULONG_PTR:
-            python_dictionary[key_name] = getattr(params_struct, key_name).contents.value
+            python_dictionary[key_name] = getattr(
+                params_struct, key_name).contents.value
         else:
             continue
 
@@ -179,7 +185,8 @@ def get_python_dict_from_c_mechanism(c_mechanism, params_type_string):
         python_dictionary['pbFileName'] = 0  # TODO
         python_dictionary['pBuffer'] = 0  # TODO
     else:
-        raise Exception("Unsupported parameter type, pypkcs11 can be extended to make it work")
+        raise Exception(
+            "Unsupported parameter type, pypkcs11 can be extended to make it work")
 
     return python_dictionary
 
@@ -199,7 +206,7 @@ def parse_mechanism(mechanism_param):
                 mech = CK_MECHANISM()
                 mech.mechanism = CK_MECHANISM_TYPE(CKM_RSA_PKCS)
                 mech.pParameter = None
-                mech.usParameterLen = 0
+                mech.ulParameterLen = 0
 
         2. Dictionary with ``mech_type`` as a mandatory key, and ``params`` as an optional key. This
            will be passed into the :class:`Mechanism` class for conversion to
@@ -214,7 +221,7 @@ def parse_mechanism(mechanism_param):
                 mech.mechanism = CK_MECHANISM_TYPE(CKM_AES_CBC)
                 iv_ba, iv_len = to_byte_array(list(range(8)))
                 mech.pParameter = iv_ba
-                mech.usParameterLen = iv_len
+                mech.ulParameterLen = iv_len
 
         3. :class:`~pypkcs11.cryptoki.CK_MECHANISM` struct -- passed directly into the raw C Call.
         4. Mechanism class -- will call to_c_mech() on the class, and use the results.

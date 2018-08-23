@@ -30,7 +30,8 @@ class IvMechanism(Mechanism):
         """
         super(IvMechanism, self).to_c_mech()
         if self.params is None or 'iv' not in self.params:
-            self.params['iv'] = [0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38]
+            self.params['iv'] = [0x31, 0x32, 0x33,
+                                 0x34, 0x35, 0x36, 0x37, 0x38]
             LOG.warning("Using static IVs can be insecure! ")
         if len(self.params['iv']) == 0:
             LOG.debug("Setting IV to NULL (using internal)")
@@ -39,7 +40,7 @@ class IvMechanism(Mechanism):
         else:
             iv_ba, iv_len = to_byte_array(self.params['iv'])
         self.mech.pParameter = iv_ba
-        self.mech.usParameterLen = iv_len
+        self.mech.ulParameterLen = iv_len
         return self.mech
 
 
@@ -57,7 +58,8 @@ class Iv16Mechanism(Mechanism):
         """
         super(Iv16Mechanism, self).to_c_mech()
         if self.params is None or 'iv' not in self.params:
-            self.params['iv'] = [1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]
+            self.params['iv'] = [1, 2, 3, 4, 5,
+                                 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]
             LOG.warning("Using static IVs can be insecure! ")
         if len(self.params['iv']) == 0:
             LOG.debug("Setting IV to NULL (using internal)")
@@ -66,13 +68,13 @@ class Iv16Mechanism(Mechanism):
         else:
             iv_ba, iv_len = to_byte_array(self.params['iv'])
         self.mech.pParameter = iv_ba
-        self.mech.usParameterLen = iv_len
+        self.mech.ulParameterLen = iv_len
         return self.mech
 
 
 class AESXTSMechanism(Mechanism):
     """
-    Creates the AES-XTS specific param structure & converts python types to C types. 
+    Creates the AES-XTS specific param structure & converts python types to C types.
     """
     REQUIRED_PARAMS = ['cb', 'hTweakKey']
 
@@ -87,7 +89,7 @@ class AESXTSMechanism(Mechanism):
         xts_params.cb = (CK_BYTE * 16)(*self.params['cb'])
         xts_params.hTweakKey = CK_ULONG(self.params['hTweakKey'])
         self.mech.pParameter = cast(pointer(xts_params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(xts_params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(xts_params))
         return self.mech
 
 
@@ -120,7 +122,7 @@ class AESGCMMechanism(Mechanism):
         gcm_params.ulAADLen = aadlen
         gcm_params.ulTagBits = CK_ULONG(self.params['ulTagBits'])
         self.mech.pParameter = cast(pointer(gcm_params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(gcm_params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(gcm_params))
         return self.mech
 
 
@@ -145,7 +147,7 @@ class AESECBEncryptDataMechanism(Mechanism):
         params.pData = pdata
         params.ulLen = CK_ULONG(data_len)
         self.mech.pParameter = cast(pointer(params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(params))
         return self.mech
 
 
@@ -174,15 +176,15 @@ class AESCBCEncryptDataMechanism(Mechanism):
         params.ulLen = CK_ULONG(data_len)
         params.iv = p_iv
         self.mech.pParameter = cast(pointer(params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(params))
         return self.mech
 
 
 class AESCTRMechanism(Mechanism):
     """
     AES CTR Mechanism param conversion.
-    
-    
+
+
     """
 
     REQUIRED_PARAMS = ['cb', 'ulCounterBits']
@@ -198,5 +200,5 @@ class AESCTRMechanism(Mechanism):
         ctr_params.cb = (CK_BYTE * 16)(*self.params['cb'])
         ctr_params.ulCounterBits = CK_ULONG(self.params['ulCounterBits'])
         self.mech.pParameter = cast(pointer(ctr_params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(ctr_params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(ctr_params))
         return self.mech

@@ -44,7 +44,7 @@ class RSAPKCSOAEPMechanism(Mechanism):
         oaep_params.ulSourceDataLen = data_len
 
         self.mech.pParameter = cast(pointer(oaep_params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(oaep_params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(oaep_params))
         return self.mech
 
 
@@ -68,5 +68,5 @@ class RSAPKCSPSSMechanism(Mechanism):
         c_params.mgf = CK_ULONG(self.params['mgf'])
         c_params.usSaltLen = CK_ULONG(self.params.get('usSaltLen', 8))
         self.mech.pParameter = cast(pointer(c_params), c_void_p)
-        self.mech.usParameterLen = CK_ULONG(sizeof(c_params))
+        self.mech.ulParameterLen = CK_ULONG(sizeof(c_params))
         return self.mech

@@ -39,6 +39,7 @@ class CK_AES_GCM_PARAMS(Structure):
 CK_BYTE = c_ubyte
 CK_BYTE_PTR = POINTER(CK_BYTE)
 CK_ULONG = c_ulong
+CK_BBOOL = CK_BYTE
 if 'win' in sys.platform:
     CK_AES_GCM_PARAMS._pack_ = 1
 CK_AES_GCM_PARAMS._fields_ = [
@@ -246,6 +247,17 @@ CK_AES_CBC_PAD_INSERT_PARAMS._fields_ = [
 ]
 CK_AES_CBC_PAD_INSERT_PARAMS_PTR = POINTER(CK_AES_CBC_PAD_INSERT_PARAMS)
 
+class DYCK_DERIVE_ECDSA_BIP_PARAMS(Structure):
+    pass
+
+# if 'win' in sys.platform:
+#     DYCK_DERIVE_ECDSA_BIP_PARAMS._pack_ = 1
+DYCK_DERIVE_ECDSA_BIP_PARAMS._fields_ = [
+    ('hardened', CK_BBOOL),
+    ('ulChildNumber', CK_ULONG),
+]
+DYCK_DERIVE_ECDSA_BIP_PARAMS_PTR = POINTER(DYCK_DERIVE_ECDSA_BIP_PARAMS)
+
 
 class CK_CLUSTER_STATE(Structure):
     pass
@@ -284,7 +296,6 @@ CK_NOTIFICATION = CK_ULONG
 CK_NOTIFY = CFUNCTYPE(CK_RV, CK_SESSION_HANDLE, CK_NOTIFICATION, CK_VOID_PTR)
 CK_SESSION_HANDLE_PTR = POINTER(CK_SESSION_HANDLE)
 CK_OBJECT_HANDLE_PTR = POINTER(CK_OBJECT_HANDLE)
-CK_BBOOL = CK_BYTE
 
 CK_GetTotalOperations = CFUNCTYPE(CK_RV, CK_SLOT_ID, POINTER(c_int))
 CK_ResetTotalOperations = CFUNCTYPE(CK_RV, CK_SLOT_ID)
@@ -871,7 +882,7 @@ if 'win' in sys.platform:
 CK_MECHANISM._fields_ = [
     ('mechanism', CK_MECHANISM_TYPE),
     ('pParameter', CK_VOID_PTR),
-    ('usParameterLen', CK_ULONG),
+    ('ulParameterLen', CK_ULONG),
 ]
 if 'win' in sys.platform:
     CK_MECHANISM_INFO._pack_ = 1
