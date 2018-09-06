@@ -46,10 +46,8 @@ def pytest_addoption(parser):
                           action="store",
                           type=str)
     optiongroup.addoption("--user",
-                          help="User type to test with. Defaults to SO. Can also test w/ "
-                               "Crypto Officer",
-                          choices=["SO", "CO"],
-                          default="SO",
+                          help="User name to test with. Defaults to \'user\'. ",
+                          default="user",
                           action="store")
     optiongroup.addoption("--loglevel",
                           help="Specify what level of logging to run the tests ",
