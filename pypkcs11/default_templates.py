@@ -750,7 +750,7 @@ CKM_ECDH_KEY_PAIR_GEN_PRIVTEMP = {CKA_TOKEN: True,
                                   CKA_DERIVE: True,
                                   CKA_LABEL: b"ECDH Private Key"}
 
-EDDSA_KEY_GEN_PUBTEMP = {CKA_TOKEN: True,
+EDDSA_KEY_GEN_PUBTEMP = {CKA_TOKEN: False,
                          CKA_PRIVATE: False,
                          CKA_VERIFY: True,
                          CKA_LABEL: b"EDDSA Public Key"}
