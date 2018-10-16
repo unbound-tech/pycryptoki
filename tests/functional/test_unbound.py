@@ -25,9 +25,12 @@ from pypkcs11.key_generator import c_generate_key_pair, c_destroy_object, c_deri
 from pypkcs11.defines import *
 from pypkcs11.unbound import dyc_self_sign_x509, dyc_sign_x509, dyc_create_x509_request
 from pypkcs11.default_templates import CKM_RSA_PKCS_KEY_PAIR_GEN_PUBTEMP, CKM_RSA_PKCS_KEY_PAIR_GEN_PRIVTEMP
+from pypkcs11.default_templates import DYCKM_EDDSA_KEY_GEN, EDDSA_KEY_GEN_PUBTEMP, EDDSA_KEY_GEN_PRIVTEMP
 from pypkcs11.misc import c_create_object
 from pypkcs11.object_attr_lookup import c_get_attribute_value
 from pypkcs11.mechanism.unbound import EcdsaBipDeriveMechanism
+from pypkcs11.sign_verify import c_sign, c_verify
+from pypkcs11.default_templates import CURVE_SECP256K1
 
 
 class TestUnbound(object):
@@ -82,11 +85,10 @@ class TestUnbound(object):
         assert ret == CKR_OK
         hBip, hBipDer = None, None
         try:
-            secp256k1_oid = '06052b8104000a'
             t_new_ec_key = {CKA_CLASS: CKO_PRIVATE_KEY,
                             CKA_KEY_TYPE: CKK_EC,
                             CKA_TOKEN: True,
-                            CKA_EC_PARAMS: binascii.unhexlify(secp256k1_oid),
+                            CKA_EC_PARAMS: CURVE_SECP256K1,
                             CKA_SIGN: True,
                             CKA_DERIVE: True,
                             }
@@ -120,3 +122,19 @@ class TestUnbound(object):
                 c_destroy_object(self.h_session, hBip)
             if (hBipDer != None):
                 c_destroy_object(self.h_session, hBipDer)
+
+    def test_eddsa(self):
+        data = b"This is some test string to sign."
+        ret, pub_key, priv_key = c_generate_key_pair(self.h_session,
+                                                     mechanism=DYCKM_EDDSA_KEY_GEN,
+                                                     pbkey_template=EDDSA_KEY_GEN_PUBTEMP,
+                                                     prkey_template=EDDSA_KEY_GEN_PRIVTEMP)
+
+        assert ret == CKR_OK
+        ret, signature = c_sign(self.h_session, priv_key,
+                                data,  mechanism=DYCKM_EDDSA)
+        assert ret == CKR_OK
+
+        ret = c_verify(self.h_session, pub_key, data,
+                       signature, mechanism=DYCKM_EDDSA)
+        assert ret == CKR_OK
