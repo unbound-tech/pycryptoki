@@ -104,23 +104,20 @@ class TestUnbound(object):
                       }
             ret, attrs = c_get_attribute_value(self.h_session, hBip, t_info)
             assert ret == CKR_OK
-            assert attrs[DYCKA_ECDSA_BIP_CPAR].decode(
-                "utf-8") == '873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508'
 
             bip_mech = EcdsaBipDeriveMechanism(True, 0)
             ret, hBipDer = c_derive_key(
                 self.h_session, hBip, t_new_ec_key, bip_mech)
+            assert ret == CKR_OK
             ret, attrs = c_get_attribute_value(self.h_session, hBipDer, t_info)
             assert ret == CKR_OK
-            assert attrs[DYCKA_ECDSA_BIP_CPAR].decode(
-                "utf-8") == '47fdacbd0f1097043b78c63c20c34ef4ed9a111d980047ad16282c7ae6236141'
 
         finally:
-            if (hSeed != None):
+            if (hSeed is not None):
                 c_destroy_object(self.h_session, hSeed)
-            if (hBip != None):
+            if (hBip is not None):
                 c_destroy_object(self.h_session, hBip)
-            if (hBipDer != None):
+            if (hBipDer is not None):
                 c_destroy_object(self.h_session, hBipDer)
 
     def test_eddsa(self):
