@@ -65,13 +65,13 @@ class TestUnbound(object):
                 self.h_session, priv_key, x509CA, CKM_SHA256, csr)
             assert ret == CKR_OK
         finally:
-            if (pub_key != None):
+            if pub_key is not None:
                 c_destroy_object(self.h_session, pub_key)
-            if (priv_key != None):
+            if priv_key is not None:
                 c_destroy_object(self.h_session, priv_key)
-            if (pub_key2 != None):
+            if pub_key2 is not None:
                 c_destroy_object(self.h_session, pub_key2)
-            if (priv_key2 != None):
+            if priv_key2 is not None:
                 c_destroy_object(self.h_session, priv_key2)
 
     def test_bip(self):
@@ -113,11 +113,11 @@ class TestUnbound(object):
             assert ret == CKR_OK
 
         finally:
-            if (hSeed is not None):
+            if hSeed is not None:
                 c_destroy_object(self.h_session, hSeed)
-            if (hBip is not None):
+            if hBip is not None:
                 c_destroy_object(self.h_session, hBip)
-            if (hBipDer is not None):
+            if hBipDer is not None:
                 c_destroy_object(self.h_session, hBipDer)
 
     def test_eddsa(self):
