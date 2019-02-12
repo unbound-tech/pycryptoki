@@ -11,11 +11,11 @@ This example creates a 1024b RSA Key Pair.
 
    .. code-block:: python
 
-       from pypkcs11.session_management import (c_initialize_ex, c_finalize_ex,
-                                                  c_open_session_ex, c_close_session_ex,
-                                                  login_ex)
+       from pypkcs11.session_management import (c_initialize, c_finalize,
+                                                  c_open_session, c_close_session,
+                                                  login)
        from pypkcs11.defines import CKM_RSA_PKCS_KEY_PAIR_GEN
-       from pypkcs11.key_generator import c_generate_key_pair_ex
+       from pypkcs11.key_generator import c_generate_key_pair
 
         # NOTE: Return value checks are omitted for brevity
        c_initialize()
