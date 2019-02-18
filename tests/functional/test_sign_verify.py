@@ -8,17 +8,14 @@ import pytest
 from pypkcs11.sign_verify import c_sign, c_verify
 from pypkcs11.key_generator import c_generate_key_pair, c_generate_key, c_destroy_object
 from pypkcs11.defines import *
-from pypkcs11.default_templates import (
-    CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP,
-    EDDSA_KEY_GEN_PRIVTEMP, EDDSA_KEY_GEN_PUBTEMP,
-    MECHANISM_LOOKUP_EXT, get_default_key_template)
+from pypkcs11.default_templates import *
 
 from pypkcs11.lookup_dicts import ret_vals_dictionary
 from .util import get_session_template
 
 logger = logging.getLogger(__name__)
 
-DATA = [b"This is some test string to sign.", [b"a" * 1024, b"b" * 1024]]
+DATA = [b"This is some test string to sign", [b"a" * 1024, b"b" * 1024]]
 
 SYM_PARAMS = [(CKM_AES_KEY_GEN, CKM_AES_CMAC),
               #(CKM_AES_KEY_GEN, CKM_AES_GMAC),
@@ -27,8 +24,14 @@ SYM_PARAMS = [(CKM_AES_KEY_GEN, CKM_AES_CMAC),
               ]
 SYM_KEYS = [key for key, _ in SYM_PARAMS]
 
+ECDSA_SIG_MECHS = [CKM_ECDSA_SHA1, CKM_ECDSA_SHA256,
+                   CKM_ECDSA_SHA384, CKM_ECDSA_SHA512]
+SCHNORR_PUBTEMP = CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP.copy()
+SCHNORR_PUBTEMP[CKA_ECDSA_PARAMS] = CURVE_SECP256K1
+
 ASYM_PARAMS = \
-    [(CKM_ECDSA_KEY_PAIR_GEN, CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP, CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, CKM_ECDSA_SHA1),
+    [(CKM_ECDSA_KEY_PAIR_GEN, CKM_ECDSA_KEY_PAIR_GEN_PUBTEMP, CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, x) for x in ECDSA_SIG_MECHS] + \
+    [(CKM_ECDSA_KEY_PAIR_GEN, SCHNORR_PUBTEMP, CKM_ECDSA_KEY_PAIR_GEN_PRIVTEMP, DYCKM_SCHNORR),
      (DYCKM_EDDSA_KEY_GEN, EDDSA_KEY_GEN_PUBTEMP,
       EDDSA_KEY_GEN_PRIVTEMP, DYCKM_EDDSA)
      ]
@@ -150,7 +153,7 @@ class TestSignVerify(object):
         pub_key, prv_key = asym_keys[k_type]
 
         is_multi_part_operation = isinstance(data, (list, tuple))
-        if (sig_mech == DYCKM_EDDSA and is_multi_part_operation):
+        if ((sig_mech == DYCKM_EDDSA or sig_mech == DYCKM_SCHNORR) and is_multi_part_operation):
             #skip: multi-part is not supported
             return
 
