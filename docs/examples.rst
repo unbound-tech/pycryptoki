@@ -134,10 +134,10 @@ we'll find one that was already used.
 
 .. code-block:: python
 
-       from pypkcs11.session_management import (c_initialize_ex, c_finalize_ex,
-                                                  c_open_session_ex, c_close_session_ex,
-                                                  login_ex)
-       from pypkcs11.object_attr_lookup import c_find_objects_ex
+       from pypkcs11.session_management import (c_initialize, c_finalize,
+                                                  c_open_session, c_close_session,
+                                                  login)
+       from pypkcs11.object_attr_lookup import c_find_objects
        from pypkcs11.defines import (CKM_AES_KEY_GEN,
                                        CKA_LABEL,
                                        CKA_ENCRYPT,
