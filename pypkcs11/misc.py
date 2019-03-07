@@ -138,6 +138,8 @@ def c_digestkey(h_session, h_key, digest_flavor, mechanism=None):
     :param int digest_flavor: Digest flavor
     :param mechanism: See the :py:func:`~pypkcs11.mechanism.parse_mechanism` function
         for possible values. If None will use digest flavor.
+    :returns: (retcode, a python string of the digested data)
+    :rtype: tuple
     """
     if mechanism is None:
         mech = parse_mechanism(digest_flavor)
@@ -147,11 +149,22 @@ def c_digestkey(h_session, h_key, digest_flavor, mechanism=None):
     # Initialize Digestion
     ret = C_DigestInit(h_session, mech)
     if ret != CKR_OK:
-        return ret
+        return ret, None
 
     ret = C_DigestKey(h_session, h_key)
 
-    return ret
+    digest_data = AutoCArray(ctype=c_ubyte)
+
+    @refresh_c_arrays(1)
+    def _digest_final():
+        return C_DigestFinal(h_session, digest_data.array, digest_data.size)
+
+    ret = _digest_final()
+    if ret != CKR_OK:
+        return ret, None
+    signature_string = string_at(
+        digest_data.array, digest_data.size.contents.value)
+    return ret, signature_string
 
 
 def c_create_object(h_session, template):
