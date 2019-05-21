@@ -86,7 +86,7 @@ CKM_GENERIC_SECRET_KEY_GEN_TEMP = {CKA_CLASS: CKO_SECRET_KEY,
                                    CKA_EXTRACTABLE: True,
                                    CKA_LABEL: b"GENERIC SECRET Key"}
 
-CKM_RSA_PKCS_KEY_PAIR_GEN_PUBTEMP = {CKA_TOKEN: True,
+CKM_RSA_PKCS_KEY_PAIR_GEN_PUBTEMP = {CKA_TOKEN: False,
                                      CKA_ENCRYPT: True,
                                      CKA_VERIFY: True,
                                      CKA_WRAP: True,
