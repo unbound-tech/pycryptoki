@@ -52,3 +52,29 @@ class EcdsaBipDeriveMechanism(Mechanism):
         self.mech.pParameter = cast(pointer(params), c_void_p)
         self.mech.ulParameterLen = CK_ULONG(sizeof(params))
         return self.mech
+
+
+class EciesMechanism(Mechanism):
+    """
+    Parameters for ECIES
+    :param str AAD: additional authenticated data
+    """
+
+    def to_c_mech(self):
+        """
+        Convert extra parameters to ctypes, then build out the mechanism.
+
+        :return: :class:`~pypkcs11.cryptoki.CK_MECHANISM`
+        """
+        super(EciesMechanism, self).to_c_mech()
+
+        if 'AAD' in self.params:
+            aad = self.params['AAD']
+            aadLen = len(aad)
+        else:
+            aad = None
+            aadLen = 0
+
+        self.mech.pParameter = cast(aad, c_void_p)
+        self.mech.ulParameterLen = CK_ULONG(aadLen)
+        return self.mech
