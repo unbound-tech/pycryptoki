@@ -74,6 +74,8 @@ def get_token_by_label(label):
 
     for slot in slot_list:
         ret, token_info = c_get_token_info(slot)
+        if ret != CKR_OK:
+            return ret, None
         if token_info['label'] == label:
             return ret, slot
 
