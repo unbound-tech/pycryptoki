@@ -132,6 +132,6 @@ MECH_LOOKUP = {
     CKM_CONCATENATE_DATA_AND_BASE: StringDataDerivationMechanism,
 
     CKM_ECDH1_DERIVE: ECDH1DeriveMechanism,
-    DYCKM_DERIVE_ECDSA_BIP: EcdsaBipDeriveMechanism,
+    # DYCKM_DERIVE_ECDSA_BIP: EcdsaBipDeriveMechanism,
     DYCKM_ECIES: EciesMechanism,
 }
