@@ -79,6 +79,7 @@ class TestUnbound(object):
         t_new_seed_key = {CKA_CLASS: CKO_SECRET_KEY,
                           CKA_KEY_TYPE: CKK_GENERIC_SECRET,
                           CKA_TOKEN: True,
+                          CKA_DERIVE: True,
                           CKA_VALUE: binascii.unhexlify(seed),
                           }
         ret, hSeed = c_create_object(self.h_session, t_new_seed_key)
