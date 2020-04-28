@@ -20,6 +20,7 @@ Testcases for Unbound Tech functions.
 """
 import pytest
 import binascii
+import uuid
 
 from pypkcs11.key_generator import c_generate_key_pair, c_destroy_object, c_derive_key
 from pypkcs11.defines import *
@@ -75,7 +76,7 @@ class TestUnbound(object):
                 c_destroy_object(self.h_session, priv_key2)
 
     def test_bip(self):
-        seed = "000102030405060708090a0b0c0d0e0f"
+        seed = uuid.uuid4().hex
         t_new_seed_key = {CKA_CLASS: CKO_SECRET_KEY,
                           CKA_KEY_TYPE: CKK_GENERIC_SECRET,
                           CKA_TOKEN: True,
