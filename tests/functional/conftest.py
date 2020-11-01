@@ -75,6 +75,7 @@ def pytest_configure(config):
         # Factory Reset
         slot = test_config["test_slot"]
         ret, token_info = c_get_token_info(slot)
+        assert ret == CKR_OK
         flags = token_info['flags']
         is_ped = (flags & CKF_PROTECTED_AUTHENTICATION_PATH) != 0
         test_config["is_ped"] = is_ped
